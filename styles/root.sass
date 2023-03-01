@@ -1,0 +1,113 @@
+$bg : #748170
+$secondary : #FCF8E8
+$secondary50 : #FCF8E850
+  
+@mixin KF($animation-name)
+  @keyframes #{$animation-name}
+    @content
+  
+@mixin animation($str) 
+  -webkit-animation: #{$str}
+  animation: #{$str}
+
+@include KF(fade) 
+  0%
+    rotate: 0deg
+  100%
+    rotate: 360deg
+
+:root
+  background: $bg
+
+.logo
+  margin: 0 auto
+  max-width: 100%
+
+.preview
+  max-width: 150px
+  margin: .5em
+
+.input
+  min-height: 38px
+  padding: 6px 10px
+  background-color: #ffffff50
+  border: 1px dashed #D1D1D1
+  border-radius: 4px
+  box-shadow: none
+  box-sizing: border-box
+
+.error
+  color: #9F0000
+  font-size: 80%
+  margin: -10px 0px 10px 8px
+
+.button-primary
+  &:after
+    position: relative
+    content: ""
+    background-image: url(/loader.png)
+    background-size: 16px
+    background-repeat: no-repeat
+    height: 16px
+    width: 16px
+    left: 15px
+    top: 3px
+    display: inline-block
+    opacity: 0
+    
+  &[type="submit"]
+    position: relative
+    
+.loading
+  &:after
+    opacity: 1
+    transition: opacity 1s
+    @include animation('fade 1.5s infinite linear')
+
+
+@mixin vertical-center
+  display: flex
+  align-content: center
+  justify-content: right
+
+.menu
+  background: $secondary
+  max-height: 80px
+  display: flex
+  align-content: center
+
+.profile
+  max-height: 80px
+  heigth: 80px
+  display: flex
+  justify-content: center
+  align-content: center
+
+  img
+    border-radius: 25px
+    margin-right: 10px
+  span
+    padding: 20px 0px
+    display: inline-block
+  
+.menu
+  list-style-type: none
+  @include vertical-center
+  li
+    margin: 0 10px
+    
+.flex-end
+  display: flex
+  align-items: flex-end
+
+.status-pending
+  color: yellow
+  font-weight: 600
+
+.status-due
+  color: red
+  font-weight: 600
+
+.status-payed
+  color: green
+  font-weight: 600

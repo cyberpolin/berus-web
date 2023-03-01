@@ -1,0 +1,64 @@
+query IS_LOGGED {
+  authenticatedItem {
+    ... on User {
+      id
+    }
+  }
+}
+
+mutation LOG_IN($email: String!, $password: String!) {
+  authenticateUserWithPassword(email: $email, password: $password) {
+    ... on UserAuthenticationWithPasswordSuccess {
+      sessionToken
+      item {
+        properties {
+          square
+          lot
+        }
+      }
+    }
+    ... on UserAuthenticationWithPasswordFailure {
+      message
+    }
+  }
+}
+
+mutation CREATE_USER(
+  $name: String!
+  $phone: String!
+  $email: String!
+  $password: String!
+  $properties: [PropertyCreateInput!]
+) {
+  createUser(
+    data: {
+      name: $name
+      phone: $phone
+      email: $email
+      password: $password
+      properties: { create: $properties }
+    }
+  ) {
+    name
+  }
+}
+
+query GET_PAYMENTS($id: ID!) {
+  user(where: { id: $id }) {
+    properties {
+      id
+      square
+      lot
+      payments {
+        id
+        dueDate
+        status
+        dueAmount
+      }
+    }
+  }
+}
+
+mutation LOG_OUT {
+  endSession
+}
