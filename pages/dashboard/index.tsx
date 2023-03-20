@@ -3,8 +3,6 @@ import Layout from "./layout"
 export default function () {
   return (
     <Layout>
-      <p>hola soy el dashboard</p>
-
       <h2>Felicidades!</h2>
       <p>
         Todas tus cuotas han sido cubiertas, tus aportaciones ayudan a que el

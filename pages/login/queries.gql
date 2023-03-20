@@ -23,6 +23,13 @@ mutation LOG_IN($email: String!, $password: String!) {
   }
 }
 
+mutation UPDATE_PAYMENT($pId: ID!, $image: Upload) {
+  updatePayment(where: { id: $pId }, data: { status: pending, image: $image }) {
+    id
+    status
+  }
+}
+
 mutation CREATE_USER(
   $name: String!
   $phone: String!
@@ -51,7 +58,7 @@ query GET_PAYMENTS($id: ID!) {
       lot
       payments {
         id
-        dueDate
+        dueAt
         status
         dueAmount
       }

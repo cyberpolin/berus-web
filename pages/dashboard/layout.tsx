@@ -3,7 +3,7 @@ import UseAuth from "@/lib/UseAuth"
 import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/router"
-import React from "react"
+import React, { useEffect } from "react"
 
 export default function Layout(props) {
   const router = useRouter()
@@ -13,20 +13,21 @@ export default function Layout(props) {
     ? [...props.children]
     : [props.children]
 
-  if (!user) {
-    router.push("/login")
-  }
-
+  useEffect(() => {
+    if (!user) {
+      router?.push("/login")
+    }
+  }, [])
   return (
     <div>
       <div className="menu">
         <div className="container">
           <div className="row">
-            <div className="two columns">
+            <div className="four columns">
               <Image
-                src="/logo.png"
-                width={200}
-                height={80}
+                src="/c7logo.png"
+                width={240}
+                height={50}
                 alt="Altozano Tabasco"
               />
             </div>
@@ -40,7 +41,9 @@ export default function Layout(props) {
                 </li>
               </ul>
             </div>
+            {/* TODO: To activate later
             <div className="three columns">
+              /
               <div className="profile">
                 <Image
                   alt="Usuario"
@@ -52,6 +55,7 @@ export default function Layout(props) {
                 <span>Ramón Gomez</span>
               </div>
             </div>
+               */}
           </div>
         </div>
       </div>

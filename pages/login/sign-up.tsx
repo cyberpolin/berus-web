@@ -1,36 +1,11 @@
 import Field from "/components/Field"
 import { Formik, Form, FieldArray } from "formik"
-import * as yup from "yup"
+
 import { useState } from "react"
 import { useMutation } from "@apollo/client"
 import { CREATE_USER, LOG_IN, IS_LOGGED } from "./queries.gql"
 import Layout from "./Layout"
-
-const createUser = yup.object().shape({
-  name: yup.string().required(),
-  email: yup.string().email().required(),
-  phone: yup.number().required().positive().integer(),
-  password: yup.number().required().positive().integer(),
-})
-
-const addProperties = yup.object().shape({
-  properties: yup.array().of(
-    yup
-      .object()
-      .shape({
-        square: yup.number().required().positive().integer().label("Manzana"),
-        lot: yup.number().required().positive().integer().label("Lote"),
-      })
-      .required("Por favor elije una propiedad...")
-  ),
-})
-
-const makePayment = yup.object().shape({
-  name: yup.string().required(),
-  email: yup.string().email().required(),
-  phone: yup.number().required().positive().integer(),
-  password: yup.number().required().positive().integer(),
-})
+import { createUser, addProperties, makePayment } from "../schema"
 
 const CreateUser = ({ goNext, goBack, data, final }) => (
   <Formik
@@ -106,7 +81,7 @@ const AddProperties = ({ goBack, goNext, data, final }) => {
   const [loginMutation, loginMutationData] = useMutation(LOG_IN, {
     refetchQueries: [{ query: IS_LOGGED }],
   })
-  console.log(">>> ", { signUpMutationData, loginMutationData })
+
   return (
     <Layout>
       <Formik
@@ -121,9 +96,8 @@ const AddProperties = ({ goBack, goNext, data, final }) => {
           }
           try {
             const creation = await signUpMutation({ variables: props })
-            console.log("lets login", creation)
+
             if (creation.data.createUser) {
-              console.log("lets login", creation)
               loginMutation({
                 variables: { email: props.email, password: props.password },
               })

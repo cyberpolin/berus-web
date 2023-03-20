@@ -1,6 +1,7 @@
 import UseAuth from "@/lib/UseAuth"
 import { useRouter } from "next/router"
 import React from "react"
+import styled from "styled-components"
 
 export default (props) => {
   const router = useRouter()
@@ -16,8 +17,13 @@ export default (props) => {
     : [props.children]
 
   return (
-    <div>
+    <Layout>
       {childAry.map((child, i) => React.cloneElement(child, { ...props }))}
-    </div>
+    </Layout>
   )
 }
+
+const Layout = styled.div`
+  margin: 100px 0;
+  background-color: red;
+`

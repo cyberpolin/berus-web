@@ -18,6 +18,8 @@ $secondary50 : #FCF8E850
 
 :root
   background: $bg
+  li
+    list-style: none !important
 
 .logo
   margin: 0 auto
@@ -26,6 +28,22 @@ $secondary50 : #FCF8E850
 .preview
   max-width: 150px
   margin: .5em
+  opacity: .2
+
+.previewDone
+  max-width: 150px
+  margin: .5em
+  opacity: 1
+  transition: .5s opacity
+
+.previewLoading
+  opacity: .6
+  display: inherit
+  margin: 0 0 0 50px
+  transition: .5s display
+
+.previewContainer
+  position: relative
 
 .input
   min-height: 38px
@@ -94,7 +112,8 @@ $secondary50 : #FCF8E850
   list-style-type: none
   @include vertical-center
   li
-    margin: 0 10px
+    padding: 20px
+    margin: 0 !important
     
 .flex-end
   display: flex
