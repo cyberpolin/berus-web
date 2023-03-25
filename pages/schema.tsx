@@ -26,4 +26,5 @@ const makePayment = yup.object().shape({
   password: yup.number().required().positive().integer(),
 })
 
+export default () => <div>holo</div>
 export { createUser, addProperties, makePayment }
