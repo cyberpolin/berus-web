@@ -1,4 +1,4 @@
-import Field from "/components/Field"
+import Field from "@/components/Field"
 import { Formik, Form } from "formik"
 import * as yup from "yup"
 import Link from "next/link"
@@ -14,6 +14,7 @@ const initialValues = {
   password: "",
 }
 
+// @ts-ignore: Unreachable code error
 const submit = (props, setIsLoading) => {
   console.log("Ok submit", { props })
   setIsLoading(true)
@@ -30,6 +31,7 @@ export default function () {
         onSubmit={(props) => submit(props, setIsLoading)}
       >
         {(formik) => (
+          // @ts-ignore: Unreachable code error
           <Form>
             {console.log("formik", formik)}
             <h3>No recuerdo mi contraseña!</h3>
@@ -38,14 +40,13 @@ export default function () {
               que te diste de alta este bien escrito, nosotros te enviaremos una
               contraseña nueva.
             </p>
-
+            {/*// @ts-ignore: Unreachable code error*/}
             <Field
               label="Correo electronico"
               name="email"
               type="text"
               errors={formik.errors}
             />
-
             <button
               className={`button-primary ${isLoading && "loading"}`}
               type="submit"

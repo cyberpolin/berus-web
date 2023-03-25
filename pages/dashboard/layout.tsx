@@ -5,7 +5,7 @@ import Link from "next/link"
 import { useRouter } from "next/router"
 import React, { useEffect } from "react"
 
-export default function Layout(props) {
+export default function Layout(props: any) {
   const router = useRouter()
   const { user } = UseAuth()
 

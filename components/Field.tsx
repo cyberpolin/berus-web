@@ -3,6 +3,8 @@ import { Field } from "formik"
 type FieldProps = {
   label?: string
   value?: string
+  name: string
+  errors?: any
   className?: string
   id: string
   type: string

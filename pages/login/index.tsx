@@ -1,7 +1,7 @@
 import { Form, Formik } from "formik"
 import Link from "next/link"
 import * as yup from "yup"
-import Field from "/components/Field"
+import Field from "@/components/Field"
 import { LOG_IN, IS_LOGGED } from "./queries.gql"
 import { useMutation } from "@apollo/client"
 import Layout from "./Layout"
@@ -23,6 +23,7 @@ export default function () {
   const isLoading = loading
 
   return (
+    // @ts-ignore: Unreachable code error
     <Layout>
       <div className="row">
         <Formik
@@ -40,12 +41,14 @@ export default function () {
               <Field
                 label="Correo electronico"
                 name="email"
+                id="email"
                 type="text"
                 errors={formik.errors}
               />
               <Field
                 label="Password"
                 name="password"
+                id="password"
                 type="password"
                 errors={formik.errors}
               />

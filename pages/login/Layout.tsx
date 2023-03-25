@@ -3,7 +3,8 @@ import { useRouter } from "next/router"
 import React from "react"
 import styled from "styled-components"
 
-export default (props) => {
+
+export default (props: any) => {
   const router = useRouter()
   const { user } = UseAuth()
 

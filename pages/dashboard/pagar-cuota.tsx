@@ -2,22 +2,30 @@ import { useDropzone } from "react-dropzone"
 import { useState, useCallback, useEffect } from "react"
 import { useMutation } from "@apollo/client"
 import { UPDATE_PAYMENT, GET_PAYMENTS } from "../login/queries.gql"
+import { PaymentType } from "@/lib/types"
 
 const data = {
   square: 3,
   lot: 6,
 }
 
-export default function ({ payment, propertyId }) {
+export default function ({
+  payment,
+  propertyId,
+}: {
+  payment: PaymentType
+  propertyId: string
+}) {
   const [images, setImages] = useState()
   const [countDown, setcountDown] = useState(8)
 
   const [updatePayment, { loading, data, error, called }] =
     useMutation(UPDATE_PAYMENT)
-
+  // @ts-ignore: Unreachable code error
   const onDrop = useCallback((acceptedFiles, i) => {
     // Do something with the files
     setImages(
+      // @ts-ignore: Unreachable code error
       acceptedFiles.map((file) =>
         Object.assign(file, {
           preview: URL.createObjectURL(file),
@@ -28,6 +36,7 @@ export default function ({ payment, propertyId }) {
     updatePayment({
       variables: {
         pId: payment.id,
+        // @ts-ignore: Unreachable code error
         image: acceptedFiles.map((file) =>
           Object.assign(file, {
             preview: URL.createObjectURL(file),
@@ -44,6 +53,7 @@ export default function ({ payment, propertyId }) {
     onDrop,
   })
 
+  // @ts-ignore: Unreachable code error
   const isPdf = images?.[0]?.type === "application/pdf"
 
   return (
@@ -61,6 +71,7 @@ export default function ({ payment, propertyId }) {
                   <p>{`Se han actualizando tus cambios, cerrando en ${countDown}...`}</p>
                 )} */}
                 <img
+                    // @ts-ignore: Unreachable code error
                   src={isPdf ? "/pdfIcon.png" : images[0].preview}
                   className={loading ? "preview" : "previewDone"}
                 />

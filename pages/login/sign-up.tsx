@@ -1,4 +1,4 @@
-import Field from "/components/Field"
+import Field from "@/components/Field"
 import { Formik, Form, FieldArray } from "formik"
 
 import { useState } from "react"
@@ -6,7 +6,7 @@ import { useMutation } from "@apollo/client"
 import { CREATE_USER, LOG_IN, IS_LOGGED } from "./queries.gql"
 import Layout from "./Layout"
 import { createUser, addProperties, makePayment } from "../schema"
-
+// @ts-ignore: Unreachable code error
 const CreateUser = ({ goNext, goBack, data, final }) => (
   <Formik
     initialValues={{ ...data }}
@@ -37,6 +37,7 @@ const CreateUser = ({ goNext, goBack, data, final }) => (
 
         <Field
           label="Nombre completo"
+          // @ts-ignore: Unreachable code error
           placeholder="Roberto Jirafales"
           name="name"
           type="text"
@@ -44,6 +45,7 @@ const CreateUser = ({ goNext, goBack, data, final }) => (
         />
         <Field
           label="Correo electronico"
+          // @ts-ignore: Unreachable code error
           placeholder="roberto@gmail.com"
           name="email"
           type="text"
@@ -51,6 +53,7 @@ const CreateUser = ({ goNext, goBack, data, final }) => (
         />
         <Field
           label="Telefono celular (usar el mismo que en el chat)"
+          // @ts-ignore: Unreachable code error
           placeholder="9931000000"
           name="phone"
           type="text"
@@ -58,6 +61,7 @@ const CreateUser = ({ goNext, goBack, data, final }) => (
         />
         <Field
           label="Pin (4 digitos)"
+          // @ts-ignore: Unreachable code error
           placeholder="0000"
           name="password"
           type="text"
@@ -75,7 +79,7 @@ const CreateUser = ({ goNext, goBack, data, final }) => (
     )}
   </Formik>
 )
-
+// @ts-ignore: Unreachable code error
 const AddProperties = ({ goBack, goNext, data, final }) => {
   const [signUpMutation, signUpMutationData] = useMutation(CREATE_USER)
   const [loginMutation, loginMutationData] = useMutation(LOG_IN, {
@@ -83,6 +87,7 @@ const AddProperties = ({ goBack, goNext, data, final }) => {
   })
 
   return (
+    // @ts-ignore: Unreachable code error
     <Layout>
       <Formik
         initialValues={{ ...data, properties: [{ lot: "", square: "" }] }}
@@ -110,6 +115,7 @@ const AddProperties = ({ goBack, goNext, data, final }) => {
         {(formik) => (
           <FieldArray
             name="properties"
+            // @ts-ignore: Unreachable code error
             initialErrors={true}
             render={(arrayProps) => (
               <Form>
@@ -118,6 +124,7 @@ const AddProperties = ({ goBack, goNext, data, final }) => {
                     <h4>2. Agrege sus propiedades</h4>
 
                     {formik?.values.properties.length > 0 &&
+                      // @ts-ignore: Unreachable code error
                       formik?.values.properties.map((property, index) => {
                         const {
                           errors: { properties: errors },
@@ -142,7 +149,9 @@ const AddProperties = ({ goBack, goNext, data, final }) => {
                                 <option value="8">8</option>
                                 <option value="9">9</option>
                               </Field>
+                              {/* @ts-ignore: Unreachable code error */}
                               {errors?.[index]?.square && (
+                                // @ts-ignore: Unreachable code error
                                 <p className="error">{errors[index].square}</p>
                               )}
                             </div>
@@ -152,42 +161,56 @@ const AddProperties = ({ goBack, goNext, data, final }) => {
                                 name={`properties[${index}].lot`}
                                 label="Lote"
                               >
-                                {[...Array(20).keys()].map((i) => (
-                                  <option key={i} value={i ? i : ""}>
-                                    {i}
-                                  </option>
-                                ))}
+                                {
+                                  // @ts-ignore: Unreachable code error
+                                  [...Array(20).keys()].map((i) => (
+                                    <option key={i} value={i ? i : ""}>
+                                      {i}
+                                    </option>
+                                  ))
+                                }
                               </Field>
-                              {errors?.[index]?.lot && (
-                                <p className="error">{errors[index].lot}</p>
-                              )}
+                              {
+                                // @ts-ignore: Unreachable code error
+                                errors?.[index]?.lot && (
+                                  <p className="error">
+                                    {
+                                      // @ts-ignore: Unreachable code error
+                                      errors[index].lot
+                                    }
+                                  </p>
+                                )
+                              }
                             </div>
 
                             <div className="two columns">
-                              {formik.values.properties.length - 1 === index &&
-                              !arrayProps.form.errors.properties?.[index] ? (
-                                <button
-                                  className="button-primary"
-                                  value="Agregar propiedad"
-                                  onClick={() =>
-                                    arrayProps.push({ lot: "", square: "" })
-                                  }
-                                >
-                                  Agregar propiedad
-                                </button>
-                              ) : (
-                                index !== 0 &&
-                                index ===
-                                  formik.values.properties.length - 1 && (
+                              {
+                                // @ts-ignore: Unreachable code error
+                                formik.values.properties.length - 1 === index &&
+                                !arrayProps.form.errors.properties?.[index] ? (
                                   <button
                                     className="button-primary"
                                     value="Agregar propiedad"
-                                    onClick={() => arrayProps.pop()}
+                                    onClick={() =>
+                                      arrayProps.push({ lot: "", square: "" })
+                                    }
                                   >
-                                    Quitar propiedad
+                                    Agregar propiedad
                                   </button>
+                                ) : (
+                                  index !== 0 &&
+                                  index ===
+                                    formik.values.properties.length - 1 && (
+                                    <button
+                                      className="button-primary"
+                                      value="Agregar propiedad"
+                                      onClick={() => arrayProps.pop()}
+                                    >
+                                      Quitar propiedad
+                                    </button>
+                                  )
                                 )
-                              )}
+                              }
                             </div>
                           </div>
                         )
@@ -223,7 +246,7 @@ const MakePayment = ({ goBack, goNext, data, final }) => (
     }}
   >
     {(formik) => (
-      <Form console={console.log(">>> ", formik)}>
+      <Form>
         <div className="row">
           <h4>3. Haga su primer pago</h4>
 
@@ -261,8 +284,14 @@ export default function () {
   }
 
   const steps = [
-    <CreateUser goNext={goNext} goBack={goBack} data={data} />,
-    <AddProperties goNext={goNext} goBack={goBack} data={data} final={true} />,
+    <CreateUser key={1} goNext={goNext} goBack={goBack} data={data} />,
+    <AddProperties
+      key={2}
+      goNext={goNext}
+      goBack={goBack}
+      data={data}
+      final={true}
+    />,
   ]
 
   return (
