@@ -7,6 +7,7 @@ import { useMutation } from "@apollo/client"
 import { CREATE_USER, LOG_IN, IS_LOGGED } from "./queries.gql"
 
 import { createUser, addProperties, makePayment } from "../schema"
+import Layout from "@/components/layout/login"
 // @ts-ignore: Unreachable code error
 const CreateUser = ({ goNext, goBack, data, final }) => (
   <Formik
@@ -207,12 +208,14 @@ const SignUp = () => {
   ]
 
   return (
-    <div className="row">
-      <p>
-        Paso {currentStep + 1} de {steps.length}
-      </p>
-      <>{steps[currentStep]}</>
-    </div>
+    <Layout>
+      <div className="row">
+        <p>
+          Paso {currentStep + 1} de {steps.length}
+        </p>
+        <>{steps[currentStep]}</>
+      </div>
+    </Layout>
   )
 }
 

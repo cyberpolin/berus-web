@@ -32,6 +32,6 @@ const Layout = (props) => {
 export default Layout
 
 const LayoutComponent = styled.div`
-  margin: 100px 0;
-  background-color: red;
+  margin: 100px 10%;
+  text-align: center;
 `
