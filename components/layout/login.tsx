@@ -22,10 +22,12 @@ const Layout = (props) => {
   }
 
   return (
-    <LayoutComponent>
-      {childAry.map((child, i) => React.cloneElement(child, { ...props }))}
-      {/* {props.children} */}
-    </LayoutComponent>
+    (
+      <LayoutComponent>
+        {childAry.map((child, i) => React.cloneElement(child, { ...props }))}
+        {/* {props.children} */}
+      </LayoutComponent>
+    ) || null
   )
 }
 

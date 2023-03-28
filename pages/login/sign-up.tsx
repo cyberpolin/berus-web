@@ -208,6 +208,7 @@ const SignUp = () => {
   ]
 
   return (
+    // @ts-ignore: Unreachable code error
     <Layout>
       <div className="row">
         <p>
