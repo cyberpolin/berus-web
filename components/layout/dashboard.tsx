@@ -18,6 +18,13 @@ export default function Layout(props: any) {
       router?.push("/login")
     }
   }, [])
+
+
+
+  if (router.isFallback) {
+    ;<h1>Data is loading</h1>
+  }
+
   return (
     <div>
       <div className="menu">
@@ -61,7 +68,8 @@ export default function Layout(props: any) {
       </div>
       <div className="container">
         <div className="twelve columns">
-          {childAry.map((child) => React.cloneElement(child, { user }))}
+          {/* {childAry.map((child) => React.cloneElement(child, { user }))} */}
+          {props.children}
         </div>
       </div>
     </div>

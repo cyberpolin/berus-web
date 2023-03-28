@@ -16,13 +16,11 @@ const initialValues = {
 
 // @ts-ignore: Unreachable code error
 const submit = (props, setIsLoading) => {
-  console.log("Ok submit", { props })
   setIsLoading(true)
 }
 
 export default function () {
   const [isLoading, setIsLoading] = useState(false)
-  console.log("isloading", isLoading)
   return (
     <div className="row">
       <Formik
@@ -33,7 +31,6 @@ export default function () {
         {(formik) => (
           // @ts-ignore: Unreachable code error
           <Form>
-            {console.log("formik", formik)}
             <h3>No recuerdo mi contraseña!</h3>
             <p>
               Si no recuerdas tu contraseña por favor confirma que el correo con

@@ -1,11 +1,21 @@
 import Payments from "@/components/Payments"
 import { UserType } from "@/lib/types"
-import Layout from "./layout"
+import { useRouter } from "next/router"
+import Layout from "../../components/layout/dashboard"
 
-export default function ({ user }: UserType) {
+const Cuotas = ({ user }: UserType) => {
+  const router = useRouter()
+
+  if (router.isFallback) {
+    return <h1>Data is loading</h1>
+  }
+
   return (
     <Layout>
-      <Payments user={user} />
+      <h2>sd</h2>
+      {user && <Payments user={user} />}
     </Layout>
   )
 }
+
+export default Cuotas

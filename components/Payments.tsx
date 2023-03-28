@@ -5,7 +5,7 @@ import { GET_PAYMENTS } from "../pages/login/queries.gql"
 
 import PayForm from "../pages/dashboard/pagar-cuota"
 import { useState } from "react"
-import { PropertyType, UserType } from "@/lib/types"
+import { UserType } from "@/lib/types"
 
 const Status = ({ value }: { value: string }) => (
   <span className={`status-${value}`}>{value} </span>
@@ -66,10 +66,12 @@ const Payments = ({ user }: UserType) => {
       </li>
     ))
     return (
-      <li key={i}>
-        <h4>{`Manzana ${p.square} Lote ${p.lot}`}</h4>
-        <ul>{payments}</ul>
-      </li>
+      (
+        <li key={i}>
+          <h4>{`Manzana ${p.square} Lote ${p.lot}`}</h4>
+          <ul>{payments}</ul>
+        </li>
+      ) || null
     )
   })
 }

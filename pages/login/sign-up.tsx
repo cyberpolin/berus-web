@@ -1,10 +1,11 @@
 import Field from "@/components/Field"
 import { Formik, Form, FieldArray } from "formik"
+import { useRouter } from "next/router"
 
 import { useState } from "react"
 import { useMutation } from "@apollo/client"
 import { CREATE_USER, LOG_IN, IS_LOGGED } from "./queries.gql"
-import Layout from "./Layout"
+
 import { createUser, addProperties, makePayment } from "../schema"
 // @ts-ignore: Unreachable code error
 const CreateUser = ({ goNext, goBack, data, final }) => (
@@ -79,16 +80,16 @@ const CreateUser = ({ goNext, goBack, data, final }) => (
     )}
   </Formik>
 )
+
 // @ts-ignore: Unreachable code error
-const AddProperties = ({ goBack, goNext, data, final }) => {
+const AddProperties = ({ goNext, data, final }) => {
   const [signUpMutation, signUpMutationData] = useMutation(CREATE_USER)
   const [loginMutation, loginMutationData] = useMutation(LOG_IN, {
     refetchQueries: [{ query: IS_LOGGED }],
   })
 
   return (
-    // @ts-ignore: Unreachable code error
-    <Layout>
+    <div>
       <Formik
         initialValues={{ ...data, properties: [{ lot: "", square: "" }] }}
         initialErrors={{
@@ -129,91 +130,7 @@ const AddProperties = ({ goBack, goNext, data, final }) => {
                         const {
                           errors: { properties: errors },
                         } = arrayProps.form
-                        console.log("arrayProps ", errors)
-                        return (
-                          <div className="twelve columns flex-end" key={index}>
-                            <div className="four columns">
-                              <Field
-                                as="select"
-                                name={`properties[${index}].square`}
-                                label="Manzana"
-                              >
-                                <option value="">0</option>
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="4">4</option>
-                                <option value="5">5</option>
-                                <option value="6">6</option>
-                                <option value="7">7</option>
-                                <option value="8">8</option>
-                                <option value="9">9</option>
-                              </Field>
-                              {/* @ts-ignore: Unreachable code error */}
-                              {errors?.[index]?.square && (
-                                // @ts-ignore: Unreachable code error
-                                <p className="error">{errors[index].square}</p>
-                              )}
-                            </div>
-                            <div className="four columns">
-                              <Field
-                                as="select"
-                                name={`properties[${index}].lot`}
-                                label="Lote"
-                              >
-                                {
-                                  // @ts-ignore: Unreachable code error
-                                  [...Array(20).keys()].map((i) => (
-                                    <option key={i} value={i ? i : ""}>
-                                      {i}
-                                    </option>
-                                  ))
-                                }
-                              </Field>
-                              {
-                                // @ts-ignore: Unreachable code error
-                                errors?.[index]?.lot && (
-                                  <p className="error">
-                                    {
-                                      // @ts-ignore: Unreachable code error
-                                      errors[index].lot
-                                    }
-                                  </p>
-                                )
-                              }
-                            </div>
-
-                            <div className="two columns">
-                              {
-                                // @ts-ignore: Unreachable code error
-                                formik.values.properties.length - 1 === index &&
-                                !arrayProps.form.errors.properties?.[index] ? (
-                                  <button
-                                    className="button-primary"
-                                    value="Agregar propiedad"
-                                    onClick={() =>
-                                      arrayProps.push({ lot: "", square: "" })
-                                    }
-                                  >
-                                    Agregar propiedad
-                                  </button>
-                                ) : (
-                                  index !== 0 &&
-                                  index ===
-                                    formik.values.properties.length - 1 && (
-                                    <button
-                                      className="button-primary"
-                                      value="Agregar propiedad"
-                                      onClick={() => arrayProps.pop()}
-                                    >
-                                      Quitar propiedad
-                                    </button>
-                                  )
-                                )
-                              }
-                            </div>
-                          </div>
-                        )
+                        return <h1 key={index}>test</h1>
                       })}
                   </div>
                   <button
@@ -229,11 +146,12 @@ const AddProperties = ({ goBack, goNext, data, final }) => {
           />
         )}
       </Formik>
-    </Layout>
+    </div>
   )
 }
 
-const MakePayment = ({ goBack, goNext, data, final }) => (
+// @ts-ignore: Unreachable code error
+const MakePayment = ({ goNext, data, final }) => (
   <Formik
     initialValues={{ ...data }}
     validationSchema={makePayment}
@@ -264,34 +182,28 @@ const MakePayment = ({ goBack, goNext, data, final }) => (
   </Formik>
 )
 
-export default function () {
+const SignUp = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [currentStep, setStep] = useState(0)
 
   const [data, setData] = useState({})
 
   const goBack = () => {
-    console.log("go back")
     if (currentStep >= 1) {
       setStep(currentStep - 1)
     }
   }
 
+  // @ts-ignore: Unreachable code error
   const goNext = (props) => {
-    console.log("go next")
     setStep(currentStep + 1)
     setData({ ...data, ...props })
   }
 
   const steps = [
+    // @ts-ignore: Unreachable code error
     <CreateUser key={1} goNext={goNext} goBack={goBack} data={data} />,
-    <AddProperties
-      key={2}
-      goNext={goNext}
-      goBack={goBack}
-      data={data}
-      final={true}
-    />,
+    <AddProperties key={2} goNext={goNext} data={data} final={true} />,
   ]
 
   return (
@@ -299,8 +211,9 @@ export default function () {
       <p>
         Paso {currentStep + 1} de {steps.length}
       </p>
-
-      {steps[currentStep]}
+      <>{steps[currentStep]}</>
     </div>
   )
 }
+
+export default SignUp

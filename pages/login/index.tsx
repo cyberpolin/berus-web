@@ -4,7 +4,7 @@ import * as yup from "yup"
 import Field from "@/components/Field"
 import { LOG_IN, IS_LOGGED } from "./queries.gql"
 import { useMutation } from "@apollo/client"
-import Layout from "./Layout"
+import Layout from "../../components/layout/login"
 
 const schema = yup.object().shape({
   password: yup.number().required().positive().integer(),

@@ -3,8 +3,8 @@ import { useRouter } from "next/router"
 import React from "react"
 import styled from "styled-components"
 
-
-export default (props: any) => {
+//@ts-ignore
+const Layout = (props) => {
   const router = useRouter()
   const { user } = UseAuth()
 
@@ -17,14 +17,21 @@ export default (props: any) => {
     ? [...props.children]
     : [props.children]
 
+  if (router.isFallback) {
+    return <h1>Data is loading</h1>
+  }
+
   return (
-    <Layout>
+    <LayoutComponent>
       {childAry.map((child, i) => React.cloneElement(child, { ...props }))}
-    </Layout>
+      {/* {props.children} */}
+    </LayoutComponent>
   )
 }
 
-const Layout = styled.div`
+export default Layout
+
+const LayoutComponent = styled.div`
   margin: 100px 0;
   background-color: red;
 `
