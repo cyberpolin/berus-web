@@ -10,6 +10,7 @@ export default function () {
         src="/square-logo.png"
         width={250}
         height={250}
+        alt="Cumbre Siete, Altozano Tabasco"
         style={{
           alignSelf: "center",
         }}
