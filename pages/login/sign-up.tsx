@@ -221,3 +221,91 @@ const SignUp = () => {
 }
 
 export default SignUp
+
+
+// <>
+// <div className="twelve columns flex-end" key={index}>
+// <div className="four columns">
+//   <Field
+//   {/* // @ts-ignore: Unreachable code error */}
+//   as="select"
+//   name={`properties[${index}].square`}
+//   label="Manzana"
+//   >
+//     <option value="">0</option>
+//     <option value="1">1</option>
+//     <option value="2">2</option>
+//     <option value="3">3</option>
+//     <option value="4">4</option>
+//     <option value="5">5</option>
+//     <option value="6">6</option>
+//     <option value="7">7</option>
+//     <option value="8">8</option>
+//     <option value="9">9</option>
+//   </Field>
+//   {/* @ts-ignore: Unreachable code error */}
+//   {errors?.[index]?.square && (
+//     // @ts-ignore: Unreachable code error
+//     <p className="error">{errors[index].square}</p>
+//     )}
+// </div>
+// <div className="four columns">
+//   <Field
+//     {/* // @ts-ignore: Unreachable code error */}
+//     as="select"
+//     name={`properties[${index}].lot`}
+//     label="Lote"
+//     >
+//     {
+//       // @ts-ignore: Unreachable code error
+//       [...Array(20).keys()].map((i) => (
+//         <option key={i} value={i ? i : ""}>
+//           {i}
+//         </option>
+//       ))
+//     }
+//   </Field>
+//   {
+//     // @ts-ignore: Unreachable code error
+//     errors?.[index]?.lot && (
+//       <p className="error">
+//         {
+//           // @ts-ignore: Unreachable code error
+//           errors[index].lot
+//         }
+//       </p>
+//     )
+//   }
+// </div>
+
+// <div className="two columns">
+//   {
+//     // @ts-ignore: Unreachable code error
+//     formik.values.properties.length - 1 === index && !arrayProps.form.errors.properties?.[index] ? (
+//       <button
+//         className="button-primary"
+//         value="Agregar propiedad"
+//         onClick={() =>
+//           arrayProps.push({ lot: "", square: "" })
+//         }
+//       >
+//         Agregar propiedad
+//       </button>
+//     ) : (
+//       index !== 0 &&
+//       index ===
+//         formik.values.properties.length - 1 && (
+//         <button
+//           className="button-primary"
+//           value="Agregar propiedad"
+//           onClick={() => arrayProps.pop()}
+//         >
+//           Quitar propiedad
+//         </button>
+//       )
+//     )
+//   }
+// </div>
+// </div>
+
+// </>
