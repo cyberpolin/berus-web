@@ -3,7 +3,13 @@ query IS_LOGGED {
     ... on User {
       id
     }
-  }
+  },options: {
+      context: {
+        headers: {
+          "x-custom-header": "pancakes", // this header will reach the server
+        },
+      },
+    },
 }
 
 mutation LOG_IN($email: String!, $password: String!) {
