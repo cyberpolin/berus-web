@@ -19,14 +19,6 @@ const initialValues = {
 export default function () {
   const [loginMutation, { data, loading, error }] = useMutation(LOG_IN, {
     refetchQueries: [IS_LOGGED],
-
-    options: {
-      context: {
-        headers: {
-          "x-custom-header": "pancakes", // this header will reach the server
-        },
-      },
-    },
   })
   const isLoading = loading
 
