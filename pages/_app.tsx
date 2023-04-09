@@ -1,17 +1,16 @@
-import "@/styles/normalize.css"
-import "@/styles/skeleton.css"
 import "@/styles/root.sass"
 import type { AppProps } from "next/app"
+import { Raleway } from "next/font/google"
 
 import client from "../lib/apollo-client"
- import { ApolloProvider } from "@apollo/client"
+import { ApolloProvider } from "@apollo/client"
 
- function MyApp({ Component, pageProps }: AppProps) {
-   return (
-     <ApolloProvider client={client}>
-       <Component {...pageProps} />
-     </ApolloProvider>
-   )
- }
+function MyApp({ Component, pageProps }: AppProps) {
+  return (
+    <ApolloProvider client={client}>
+      <Component {...pageProps} />
+    </ApolloProvider>
+  )
+}
 
 export default MyApp

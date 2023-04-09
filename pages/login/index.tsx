@@ -5,6 +5,7 @@ import Field from "@/components/Field"
 import { LOG_IN, IS_LOGGED } from "./queries.gql"
 import { useMutation } from "@apollo/client"
 import Layout from "../../components/layout/login"
+import Button from "@/components/Button"
 
 const schema = yup.object().shape({
   password: yup.number().required().positive().integer(),
@@ -25,19 +26,19 @@ export default function () {
   return (
     // @ts-ignore: Unreachable code error
     <Layout>
-      <div className="row">
+      <div>
+        <h1 className="mb-2 text-2xl">Bienvenido!</h1>
+        <p className="mb-2">
+          A traves de este sitio podras llevar el control de tus pagos y
+          aportaciones.
+        </p>
         <Formik
           initialValues={initialValues}
           validationSchema={schema}
           onSubmit={(variables) => loginMutation({ variables })}
         >
           {(formik) => (
-            <Form>
-              <h3>Bienvenido!</h3>
-              <p>
-                A traves de este sitio podras llevar el control de tus pagos y
-                aportaciones.
-              </p>
+            <Form className="mb-8 mt-8 flex flex-col">
               <Field
                 label="Correo electronico"
                 name="email"
@@ -58,21 +59,25 @@ export default function () {
                 &nbsp;Recuerdame
               </label>
 
-              <button
-                className={`button-primary ${isLoading && "loading"}`}
-                type="submit"
-                value="Ingresar"
-              >
-                Ingresar
-              </button>
+              <Button title="Ingresar" />
             </Form>
           )}
         </Formik>
         <div className="row">
-          <Link href="/login/sign-up">Aun no tengo usuario...</Link>
+          <Link
+            className="mb-2 pb-2 font-semibold text-lime-950 underline"
+            href="/login/sign-up"
+          >
+            Aun no tengo usuario...
+          </Link>
         </div>
         <div className="row">
-          <Link href="/login/recovery">No recuerdo mi contraseña</Link>
+          <Link
+            className="mb-2 pb-2 font-semibold text-lime-950 underline"
+            href="/login/recovery"
+          >
+            No recuerdo mi contraseña
+          </Link>
         </div>
       </div>
     </Layout>

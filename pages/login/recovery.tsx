@@ -22,7 +22,7 @@ const submit = (props, setIsLoading) => {
 export default function () {
   const [isLoading, setIsLoading] = useState(false)
   return (
-    <div className="row">
+    <div>
       <Formik
         initialValues={initialValues}
         validationSchema={schema}

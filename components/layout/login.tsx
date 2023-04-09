@@ -21,13 +21,13 @@ const Layout = (props) => {
     return <h1>Data is loading</h1>
   }
 
+  console.log(">>> ", childAry)
   return (
-    (
-      <LayoutComponent>
+    <div className="flex flex-wrap">
+      <div className="mb-4 w-full">
         {childAry.map((child, i) => React.cloneElement(child, { ...props }))}
-        {/* {props.children} */}
-      </LayoutComponent>
-    ) || null
+      </div>
+    </div>
   )
 }
 

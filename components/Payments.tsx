@@ -35,6 +35,10 @@ const Payments = ({ user }: UserType) => {
   const { data, loading, error } = useQuery(GET_PAYMENTS, {
     variables: { id: user.id },
   })
+  const {
+    user: { properties },
+  } = data
+
   if (error) {
     return <p>Opps something isn&apos;t right...</p>
   }
@@ -43,9 +47,12 @@ const Payments = ({ user }: UserType) => {
     return <p>Looking for payments...</p>
   }
 
-  const {
-    user: { properties },
-  } = data
+  if (!properties || properties.lenght === 0) {
+    return <p> Aun no tienes ninguna propiedad, por favor agrega una.</p>
+  }
+
+  console.log("data", data)
+
 
   // @ts-ignore: Unreachable code error
   return properties.map((p, i) => {

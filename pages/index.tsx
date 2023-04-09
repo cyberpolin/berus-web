@@ -4,27 +4,36 @@ import styled from "styled-components"
 
 export default function () {
   return (
-    <Wrapper>
-      <h1>Bienvenido!</h1>
-      <Image
-        src="/square-logo.png"
-        width={250}
-        height={250}
-        alt="Cumbre Siete, Altozano Tabasco"
-        style={{
-          alignSelf: "center",
-        }}
-      />
-      <p>Si eres propietario de Cumbre Siete, en este sitio podrás:</p>
-      <List>
-        <Item>Controlar tus pagos</Item>
-        <Item>Apartar areas comunes</Item>
-        <Item>Hacer sugerencias o levantar alguna queja</Item>
-      </List>
-      <Button href="/login" className="button-Primary">
-        Ingresar
-      </Button>
-    </Wrapper>
+    <>
+      <div className="flex flex-col text-center  md:flex-row ">
+        <div className="flex-1">
+          <h1>Bienvenido!</h1>
+          <Image
+            src="/square-logo.png"
+            width={250}
+            height={250}
+            alt="Cumbre Siete, Altozano Tabasco"
+            style={{
+              alignSelf: "center",
+              display: "inline",
+            }}
+          />
+          <p>Si eres propietario de Cumbre Siete, en este sitio podrás:</p>
+        </div>
+        <div className="flex-1 text-center">
+          <List>
+            <Item>Controlar tus pagos</Item>
+            <Item>Apartar areas comunes</Item>
+            <Item>Hacer sugerencias o levantar alguna queja</Item>
+          </List>
+        </div>
+      </div>
+      <div className="text-center ">
+        <Button href="/login" className="">
+          Ingresar
+        </Button>
+      </div>
+    </>
   )
 }
 

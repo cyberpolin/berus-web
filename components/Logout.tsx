@@ -6,14 +6,17 @@ export default () => {
     refetchQueries: [IS_LOGGED],
   })
   return (
-    <a
-      href="#"
-      onClick={(e) => {
-        e.preventDefault()
-        logout()
-      }}
-    >
-      Salir
-    </a>
+    <div className="text-sm ">
+      <a
+        href="#"
+        className="mr-4 mt-4 block hover:text-gray-800 md:mt-0 md:inline-block"
+        onClick={(e) => {
+          e.preventDefault()
+          logout()
+        }}
+      >
+        Salir
+      </a>
+    </div>
   )
 }

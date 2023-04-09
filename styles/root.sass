@@ -1,6 +1,10 @@
 $bg : #748170
 $secondary : #FCF8E8
 $secondary50 : #FCF8E850
+
+@tailwind base
+@tailwind components
+@tailwind utilities
   
 @mixin KF($animation-name)
   @keyframes #{$animation-name}
@@ -18,6 +22,11 @@ $secondary50 : #FCF8E850
 
 :root
   background: $bg
+  font-family: 'Raleway', sans-serif
+
+:root>body
+  margin: 10px 20px
+  margin-top: 0px
   
 li
   list-style: none 
