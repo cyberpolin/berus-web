@@ -1,6 +1,5 @@
 import "@/styles/root.sass"
 import type { AppProps } from "next/app"
-import { Raleway } from "next/font/google"
 
 import client from "../lib/apollo-client"
 import { ApolloProvider } from "@apollo/client"
