@@ -1,0 +1,35 @@
+query GET_PAYMENTS($initialDate: DateTime!, $finalDate: DateTime!) {
+  payments(
+    where: {
+      AND: [{ dueAt: { lte: $finalDate } }, { dueAt: { gte: $initialDate } }]
+    }
+  ) {
+    property {
+      owner {
+        name
+        phone
+        email
+        id
+      }
+      square
+      lot
+    }
+    id
+    createdAt
+    dueAt
+    status
+  }
+}
+
+query PAYMENT_BY_USER($id: ID!) {
+  user(where: { id: $id }) {
+    properties {
+      id
+      payments {
+        id
+        status
+        dueAmount
+      }
+    }
+  }
+}

@@ -3,9 +3,17 @@ import { Formik, Form, FieldArray } from "formik"
 
 import { useState } from "react"
 import { useMutation } from "@apollo/client"
-import { CREATE_USER, LOG_IN, IS_LOGGED } from "./queries.gql"
+import {
+  CREATE_USER,
+  LOG_IN,
+  IS_LOGGED,
+  GENERATE_PAYMENTS,
+} from "./queries.gql"
 
 import { createUser, addProperties, makePayment } from "../schema"
+import Button from "@/components/Button"
+import Layout from "@/components/layout/login"
+
 // @ts-ignore: Unreachable code error
 const CreateUser = ({ goNext, goBack, data, final }) => (
   <Formik
@@ -67,14 +75,7 @@ const CreateUser = ({ goNext, goBack, data, final }) => (
           type="text"
           errors={formik.errors}
         />
-
-        <button
-          className={`button-primary ${false && "loading"}`}
-          type="submit"
-          value="Ingresar"
-        >
-          Crear usuario
-        </button>
+        <Button title="Crear Usuario" />
       </Form>
     )}
   </Formik>
@@ -84,7 +85,7 @@ const CreateUser = ({ goNext, goBack, data, final }) => (
 const AddProperties = ({ goNext, data, final }) => {
   const [signUpMutation, signUpMutationData] = useMutation(CREATE_USER)
   const [loginMutation, loginMutationData] = useMutation(LOG_IN, {
-    refetchQueries: [{ query: IS_LOGGED }],
+    refetchQueries: [{ query: IS_LOGGED }, { query: GENERATE_PAYMENTS }],
   })
 
   return (
@@ -119,113 +120,101 @@ const AddProperties = ({ goNext, data, final }) => {
             initialErrors={true}
             render={(arrayProps) => (
               <Form>
-                <div className="row">
-                  <div className="twelve columns">
-                    <h4>2. Agrege sus propiedades</h4>
+                <div className="w-full text-center">
+                  <h4>2. Agrege sus propiedades</h4>
 
-                    {formik?.values.properties.length > 0 &&
-                      // @ts-ignore: Unreachable code error
-                      formik?.values.properties.map((property, index) => {
-                        const {
-                          errors: { properties: errors },
-                        } = arrayProps.form
-                        console.log("arrayProps ", errors)
-                        return (
-                          <div className="twelve columns flex-end" key={index}>
-                            <div className="four columns">
-                              {/*  @ts-ignore */}
-                              <Field
-                                as="select"
-                                name={`properties[${index}].square`}
-                                label="Manzana"
-                              >
-                                <option value="">0</option>
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="4">4</option>
-                                <option value="5">5</option>
-                                <option value="6">6</option>
-                                <option value="7">7</option>
-                                <option value="8">8</option>
-                                <option value="9">9</option>
-                              </Field>
-                              {/* @ts-ignore: Unreachable code error */}
-                              {errors?.[index]?.square && (
+                  {formik?.values.properties.length > 0 &&
+                    // @ts-ignore: Unreachable code error
+                    formik?.values.properties.map((property, index) => {
+                      const {
+                        errors: { properties: errors },
+                      } = arrayProps.form
+                      return (
+                        <div key={index} className="m-4 mb-8">
+                          {/*  @ts-ignore */}
+                          <Field
+                            as="select"
+                            name={`properties[${index}].square`}
+                            label="Manzana"
+                          >
+                            <option value="">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                            <option value="9">9</option>
+                          </Field>
+                          {/* @ts-ignore: Unreachable code error */}
+                          {errors?.[index]?.square && (
+                            // @ts-ignore: Unreachable code error
+                            <p className="error table-cell">
+                              {
                                 // @ts-ignore: Unreachable code error
-                                <p className="error">{errors[index].square}</p>
-                              )}
-                            </div>
-                            <div className="four columns">
-                              {/*  @ts-ignore */}
-                              <Field
-                                as="select"
-                                name={`properties[${index}].lot`}
-                                label="Lote"
-                              >
+                                errors[index].square
+                              }
+                            </p>
+                          )}
+
+                          {/*  @ts-ignore */}
+                          <Field
+                            as="select"
+                            name={`properties[${index}].lot`}
+                            label="Lote"
+                          >
+                            {
+                              // @ts-ignore: Unreachable code error
+                              [...Array(25).keys()].map((i) => (
+                                <option key={i} value={i ? i : ""}>
+                                  {i}
+                                </option>
+                              ))
+                            }
+                          </Field>
+                          {
+                            // @ts-ignore: Unreachable code error
+                            errors?.[index]?.lot && (
+                              <p className="error table-cell">
                                 {
                                   // @ts-ignore: Unreachable code error
-                                  [...Array(20).keys()].map((i) => (
-                                    <option key={i} value={i ? i : ""}>
-                                      {i}
-                                    </option>
-                                  ))
+                                  errors[index].lot
                                 }
-                              </Field>
-                              {
-                                // @ts-ignore: Unreachable code error
-                                errors?.[index]?.lot && (
-                                  <p className="error">
-                                    {
-                                      // @ts-ignore: Unreachable code error
-                                      errors[index].lot
-                                    }
-                                  </p>
-                                )
-                              }
-                            </div>
+                              </p>
+                            )
+                          }
 
-                            <div className="two columns">
-                              {
-                                // @ts-ignore: Unreachable code error
-                                formik.values.properties.length - 1 === index &&
-                                // @ts-ignore: Unreachable code error
-                                !arrayProps.form.errors.properties?.[index] ? (
-                                  <button
-                                    className="button-primary"
-                                    value="Agregar propiedad"
-                                    onClick={() =>
-                                      arrayProps.push({ lot: "", square: "" })
-                                    }
-                                  >
-                                    Agregar propiedad
-                                  </button>
-                                ) : (
-                                  index !== 0 &&
-                                  index ===
-                                    formik.values.properties.length - 1 && (
-                                    <button
-                                      className="button-primary"
-                                      value="Agregar propiedad"
-                                      onClick={() => arrayProps.pop()}
-                                    >
-                                      Quitar propiedad
-                                    </button>
-                                  )
+                          <div>
+                            {
+                              // @ts-ignore: Unreachable code error
+                              formik.values.properties.length - 1 === index &&
+                              // @ts-ignore: Unreachable code error
+                              !arrayProps.form.errors.properties?.[index] ? (
+                                <Button
+                                  onClick={() =>
+                                    arrayProps.push({ lot: "", square: "" })
+                                  }
+                                  title="Agregar propiedad"
+                                />
+                              ) : (
+                                index !== 0 &&
+                                index ===
+                                  formik.values.properties.length - 1 && (
+                                  <Button
+                                    title="Quitar propiedad"
+                                    onClick={() => arrayProps.pop()}
+                                  />
                                 )
-                              }
-                            </div>
+                              )
+                            }
                           </div>
-                        )
-                      })}
-                  </div>
-                  <button
-                    className="button-primary"
-                    type="submit"
-                    value="Agregar propiedad"
-                  >
-                    Hacer el primer pago
-                  </button>
+                        </div>
+                      )
+                    })}
+
+                  <Button title="Hacer el primer pago" />
                 </div>
               </Form>
             )}
@@ -259,9 +248,7 @@ const MakePayment = ({ goNext, data, final }) => (
             pago...
           </p>
 
-          <button className={`button-primary ${false && "loading"}`}>
-            Hacer mi primer pagos
-          </button>
+          <Button title="Hacer mi primer pagos" />
         </div>
       </Form>
     )}
@@ -270,7 +257,7 @@ const MakePayment = ({ goNext, data, final }) => (
 
 const SignUp = () => {
   const [isLoading, setIsLoading] = useState(false)
-  const [currentStep, setStep] = useState(1)
+  const [currentStep, setStep] = useState(0)
 
   const [data, setData] = useState({})
 
@@ -293,12 +280,15 @@ const SignUp = () => {
   ]
 
   return (
-    <div className="row">
-      <p>
-        Paso {currentStep + 1} de {steps.length}
-      </p>
-      <>{steps[currentStep]}</>
-    </div>
+    // @ts-ignore: Unreachable code error
+    <Layout>
+      <div className="row">
+        <p>
+          Paso {currentStep + 1} de {steps.length}
+        </p>
+        <>{steps[currentStep]}</>
+      </div>
+    </Layout>
   )
 }
 

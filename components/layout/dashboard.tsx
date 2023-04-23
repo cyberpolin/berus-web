@@ -8,7 +8,6 @@ import React, { useEffect, useState } from "react"
 export default function Layout(props: any) {
   const router = useRouter()
   const { user } = UseAuth()
-
   const [hidden, setHidden] = useState("")
 
   const toggleHidden = () => {
@@ -17,7 +16,7 @@ export default function Layout(props: any) {
   }
 
   const childAry = Array.isArray(props.children)
-    ? [...props.children]
+    ? [...props.children.filter((x: any) => x)]
     : [props.children]
 
   useEffect(() => {
@@ -59,6 +58,18 @@ export default function Layout(props: any) {
         <div
           className={`block w-full flex-grow transition md:flex md:w-auto md:items-center ${hidden}`}
         >
+          {user.isAdmin && (
+            <>
+              <div className="text-sm ">
+                <Link
+                  className="mr-4 mt-4 block hover:text-gray-800 md:mt-0 md:inline-block"
+                  href="/admin/"
+                >
+                  Admin
+                </Link>
+              </div>
+            </>
+          )}
           <div className="text-sm ">
             <Link
               className="mr-4 mt-4 block hover:text-gray-800 md:mt-0 md:inline-block"
@@ -73,8 +84,7 @@ export default function Layout(props: any) {
 
       <div className="mb-4 flex">
         <div className="w-full">
-          {/* {childAry.map((child) => React.cloneElement(child, { user }))} */}
-          {props.children}
+          {childAry.map((child) => React.cloneElement(child, { user }))}
         </div>
       </div>
     </div>

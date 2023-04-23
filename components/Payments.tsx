@@ -6,6 +6,7 @@ import { GET_PAYMENTS } from "../pages/login/queries.gql"
 import PayForm from "../pages/dashboard/pagar-cuota"
 import { useState } from "react"
 import { UserType } from "@/lib/types"
+import Button from "./Button"
 
 const Status = ({ value }: { value: string }) => (
   <span className={`status-${value}`}>{value} </span>
@@ -13,31 +14,21 @@ const Status = ({ value }: { value: string }) => (
 
 const Action = ({ status, show }: { status: any; show: () => void }) => {
   const options = {
-    due: (
-      <button title="Pagar" onClick={show}>
-        Pagar
-      </button>
-    ),
+    due: <Button title="Pagar" onClick={show} />,
+    onTime: <Button title="Pagar" onClick={show} />,
     payed: null,
-    pending: (
-      <button title="Pagar" onClick={show}>
-        Cambiar comprobante
-      </button>
-    ),
+    pending: <Button title="Cambiar comprobante" onClick={show} />,
   }
   // @ts-ignore: Unreachable code error
   return options[status] || null
 }
 
-const Payments = ({ user }: UserType) => {
+const Payments = ({ user }: any) => {
   const [form, setForm] = useState(null)
 
   const { data, loading, error } = useQuery(GET_PAYMENTS, {
     variables: { id: user.id },
   })
-  const {
-    user: { properties },
-  } = data
 
   if (error) {
     return <p>Opps something isn&apos;t right...</p>
@@ -47,20 +38,20 @@ const Payments = ({ user }: UserType) => {
     return <p>Looking for payments...</p>
   }
 
+  const {
+    user: { properties },
+  } = data
   if (!properties || properties.lenght === 0) {
     return <p> Aun no tienes ninguna propiedad, por favor agrega una.</p>
   }
-
-  console.log("data", data)
-
 
   // @ts-ignore: Unreachable code error
   return properties.map((p, i) => {
     // @ts-ignore: Unreachable code error
     const payments = p.payments.map((payment, i) => (
-      <li key={i}>
-        {`Fecha: ${dayjs(payment.dueAt).format(
-          "DD-MMM-YYYY"
+      <li key={i} className="border-b-2 p-2">
+        {`Vence: ${dayjs(payment.dueAt).format(
+          "DD-MMM"
         )} - Cantidad: ${currency(payment.dueAmount).format()} - Estatus: `}
         <Status value={payment.status} />
         <Action status={payment.status} show={() => setForm(payment.id)} />
@@ -74,9 +65,9 @@ const Payments = ({ user }: UserType) => {
     ))
     return (
       (
-        <li key={i}>
-          <h4>{`Manzana ${p.square} Lote ${p.lot}`}</h4>
-          <ul>{payments}</ul>
+        <li key={i} className="m-2 w-full rounded border ">
+          <h4 className="mb-2 block rounded bg-black bg-opacity-60 p-2 text-white">{`Manzana ${p.square} Lote ${p.lot}`}</h4>
+          <ul className="m-4 border-t-2">{payments}</ul>
         </li>
       ) || null
     )

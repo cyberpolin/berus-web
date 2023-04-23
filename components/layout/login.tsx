@@ -21,7 +21,6 @@ const Layout = (props) => {
     return <h1>Data is loading</h1>
   }
 
-  console.log(">>> ", childAry)
   return (
     <div className="flex flex-wrap">
       <div className="mb-4 w-full">

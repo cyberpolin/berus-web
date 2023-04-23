@@ -1,10 +1,11 @@
 import Payments from "@/components/Payments"
-import { UserType } from "@/lib/types"
+import UseAuth from "@/lib/UseAuth"
 import { useRouter } from "next/router"
 import Layout from "../../components/layout/dashboard"
 
-const Cuotas = ({ user }: UserType) => {
+const Cuotas = () => {
   const router = useRouter()
+  const user = UseAuth()
 
   if (router.isFallback) {
     return <h1>Data is loading</h1>
@@ -12,8 +13,7 @@ const Cuotas = ({ user }: UserType) => {
 
   return (
     <Layout>
-      <h2>sd</h2>
-      {user && <Payments user={user} />}
+      <Payments user={user} />
     </Layout>
   )
 }

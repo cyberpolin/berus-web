@@ -57,7 +57,7 @@ export default function ({
   const isPdf = images?.[0]?.type === "application/pdf"
 
   return (
-    <div {...getRootProps()} className="input">
+    <div {...getRootProps()} className="input m-4 min-h-full ">
       <input className="u-full-width " {...getInputProps()} />
       {isDragActive ? (
         <p>Drop the files here ...</p>
@@ -71,7 +71,7 @@ export default function ({
                   <p>{`Se han actualizando tus cambios, cerrando en ${countDown}...`}</p>
                 )} */}
                 <img
-                    // @ts-ignore: Unreachable code error
+                  // @ts-ignore: Unreachable code error
                   src={isPdf ? "/pdfIcon.png" : images[0].preview}
                   className={loading ? "preview" : "previewDone"}
                 />

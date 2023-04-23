@@ -16,3 +16,15 @@ export type PaymentType = {
   dueAt: string
   id: string
 }
+
+export type DateRange = {
+  initialDate: string
+  finalDate: string
+}
+
+export type LoaderType = {
+  error: any
+  loading: boolean
+  errorTitle?: string
+  errorMessage?: string
+}

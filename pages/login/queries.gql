@@ -2,7 +2,14 @@ query IS_LOGGED {
   authenticatedItem {
     ... on User {
       id
+      isAdmin
     }
+  }
+}
+
+query GENERATE_PAYMENTS {
+  generatePayments {
+    id
   }
 }
 
