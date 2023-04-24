@@ -28,3 +28,14 @@ export type LoaderType = {
   errorTitle?: string
   errorMessage?: string
 }
+
+export type Payments = {
+  id: string
+  image: any
+  dueAmount: number
+  status: string
+  aprovedAt: string
+  createdAt: string
+  submittedAt: string
+  dueAt: string
+}

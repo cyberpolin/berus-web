@@ -18,6 +18,9 @@ query GET_PAYMENTS($initialDate: DateTime!, $finalDate: DateTime!) {
     createdAt
     dueAt
     status
+    image {
+      publicUrl
+    }
   }
 }
 
@@ -31,5 +34,12 @@ query PAYMENT_BY_USER($id: ID!) {
         dueAmount
       }
     }
+  }
+}
+
+mutation APROVE_PAYMENT($id: ID) {
+  updatePayment(where: { id: $id }, data: { status: payed }) {
+    status
+    id
   }
 }

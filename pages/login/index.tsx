@@ -7,6 +7,7 @@ import { useMutation } from "@apollo/client"
 import Layout from "../../components/layout/login"
 import Button from "@/components/Button"
 
+import Image from "next/image"
 const schema = yup.object().shape({
   password: yup.number().required().positive().integer(),
   email: yup.string().email().required(),
@@ -26,12 +27,21 @@ export default function () {
   return (
     // @ts-ignore: Unreachable code error
     <Layout>
-      <div>
-        <h1 className="mb-2 text-2xl">Bienvenido!</h1>
-        <p className="mb-2">
+      <div className="flex flex-col text-center ">
+        <p className="m-10">
           A traves de este sitio podras llevar el control de tus pagos y
           aportaciones.
         </p>
+        <Image
+          src="/square-logo.png"
+          width={250}
+          height={250}
+          alt="Cumbre Siete, Altozano Tabasco"
+          style={{
+            alignSelf: "center",
+            display: "inline",
+          }}
+        />
         <Formik
           initialValues={initialValues}
           validationSchema={schema}

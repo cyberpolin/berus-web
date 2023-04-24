@@ -1,3 +1,4 @@
+import Button from "@/components/Button"
 import Image from "next/image"
 import Link from "next/link"
 import styled from "styled-components"
@@ -5,9 +6,8 @@ import styled from "styled-components"
 export default function () {
   return (
     <>
-      <div className="flex flex-col text-center  md:flex-row ">
+      <div className="flex flex-col text-center  ">
         <div className="flex-1">
-          <h1>Bienvenido!</h1>
           <Image
             src="/square-logo.png"
             width={250}
@@ -22,16 +22,19 @@ export default function () {
         </div>
         <div className="flex-1 text-center">
           <List>
-            <Item>Controlar tus pagos</Item>
+            <Item
+              //@ts-ignore
+              checked
+            >
+              Controlar tus pagos
+            </Item>
             <Item>Apartar areas comunes</Item>
             <Item>Hacer sugerencias o levantar alguna queja</Item>
           </List>
         </div>
       </div>
       <div className="text-center ">
-        <Button href="/login" className="">
-          Ingresar
-        </Button>
+        <Button href="/login" title="Ingresar" />
       </div>
     </>
   )
@@ -53,20 +56,14 @@ const List = styled.ul`
 `
 
 const Item = styled.li`
-  margin: 0;
-  padding: 10px 0 10px 30px;
+  margin: 20px;
+  padding: 5px 0 10px 50px;
   list-style: none;
   background-image: url("./checked.png");
   background-repeat: no-repeat;
-  background-position: left center;
-  background-size: 20px;
-`
-
-const Button = styled(Link)`
-  background-color: #234432;
-  border-radius: 5px;
-  padding: 10px 20px;
-  color: white;
-  text-decoration: none;
-  margin: 0 auto;
+  background-position: ${(props) =>
+    //@ts-ignore
+    !props.checked ? "0px 0px" : "0px -30px"};
+  background-size: 30px;
+  height: 30px;
 `
