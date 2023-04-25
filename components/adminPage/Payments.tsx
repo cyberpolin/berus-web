@@ -188,9 +188,9 @@ const Payments = ({ initialDate, finalDate }: DateRange) => {
                       </p>
                     </th>
                     <td className="px-6 py-4">
-                      <p>{owner.name}</p>
-                      <p>{owner.phone}</p>
-                      <p>{owner.email}</p>
+                      <p>{owner?.name || ""}</p>
+                      <p>{owner?.phone || ""}</p>
+                      <p>{owner?.email || ""}</p>
                     </td>
                     <td className="px-6 py-4">
                       <p>Adeudo: {currency(thisMonth).format()}</p>
