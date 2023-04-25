@@ -172,6 +172,7 @@ const Payments = ({ initialDate, finalDate }: DateRange) => {
             {orderedPayments.map(
               ({ id, square, lot, status, owner, image }) => {
                 const thisMonth = status !== "payed" ? 1220 : 0
+                console.log("id", id)
                 return (
                   <tr
                     key={id}
