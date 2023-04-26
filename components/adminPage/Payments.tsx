@@ -51,14 +51,14 @@ const Image = ({ image }: { image: any }) => {
 
   if (isPdf) {
     return (
-      <a target="_blank" href={image?.publicUrl}>
+      <a target="_blank" rel="noreferrer" href={image?.publicUrl}>
         <img src="/pdfIcon.png" alt="pago" width={80} />
       </a>
     )
   }
 
   return (
-    <a target="_blank" href={image?.publicUrl}>
+    <a target="_blank" rel="noreferrer" href={image?.publicUrl}>
       <img src={image?.publicUrl} alt="pago" width={80} />
     </a>
   )
