@@ -9,7 +9,7 @@ const Layout = (props) => {
   const { user } = UseAuth()
 
   if (user.id) {
-    router.push("/dashboard")
+    router.push("/dashboard/cuotas")
     return
   }
 

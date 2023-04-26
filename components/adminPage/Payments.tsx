@@ -44,6 +44,26 @@ const Status = ({ status }: { status: string }) => {
   return <span>{status}</span>
 }
 
+const Image = ({ image }: { image: any }) => {
+  const isPdf = image?.publicUrl.includes(".pdf")
+
+  if (!image) return <></>
+
+  if (isPdf) {
+    return (
+      <a target="_blank" href={image?.publicUrl}>
+        <img src="/pdfIcon.png" alt="pago" width={80} />
+      </a>
+    )
+  }
+
+  return (
+    <a target="_blank" href={image?.publicUrl}>
+      <img src={image?.publicUrl} alt="pago" width={80} />
+    </a>
+  )
+}
+
 const Alert = ({
   payment,
   close,
@@ -197,9 +217,8 @@ const Payments = ({ initialDate, finalDate }: DateRange) => {
                     </td>
                     <td className="px-6 py-4">
                       <Status status={status} />
-                      {image && (
-                        <img src={image?.publicUrl} alt="pago" width={80} />
-                      )}
+
+                      <Image image={image} />
 
                       {image && status !== "payed" && (
                         <span

@@ -3,6 +3,12 @@ query IS_LOGGED {
     ... on User {
       id
       isAdmin
+      needsBill
+      name
+      needsBill
+      rfc {
+        publicUrl
+      }
     }
   }
 }

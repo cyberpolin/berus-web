@@ -43,3 +43,12 @@ mutation APROVE_PAYMENT($id: ID) {
     id
   }
 }
+
+mutation UPDATE_USER($id: ID!, $image: Upload) {
+  updateUser(where: { id: $id }, data: { rfc: $image }) {
+    rfc {
+      publicUrl
+    }
+    needsBill
+  }
+}
