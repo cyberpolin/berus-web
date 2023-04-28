@@ -11,7 +11,6 @@ const Button = ({
   type?: string
   href?: string
 }) => {
-  console.log("href", href)
   if (href) {
     return (
       <Link

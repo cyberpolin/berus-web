@@ -89,6 +89,7 @@ export default function Layout(props: any) {
   const { user } = UseAuth()
   const [hidden, setHidden] = useState("")
   const [showInfo, setShowInfo] = useState(false)
+  const [force, setForce] = useState(false)
 
   const toggleInfo = () => {
     setShowInfo(!showInfo)
@@ -100,23 +101,32 @@ export default function Layout(props: any) {
   )
 
   //@ts-ignore
-  const onDrop = useCallback((acceptedFiles, i) => {
-    // Do something with the files
+  const onDrop = useCallback(
     //@ts-ignore
-    const image = acceptedFiles.map((file) =>
-      Object.assign(file, {
-        preview: URL.createObjectURL(file),
-      })
-    )[0]
+    async (acceptedFiles, i) => {
+      // Do something with the files
+      //@ts-ignore
+      const image = acceptedFiles.map((file) =>
+        Object.assign(file, {
+          preview: URL.createObjectURL(file),
+        })
+      )[0]
 
-    updateUser({
-      variables: {
-        id: user.id,
-        // @ts-ignore: Unreachable code error
-        image,
-      },
-    })
-  }, [])
+      await updateUser({
+        variables: {
+          id: user.id,
+          // @ts-ignore: Unreachable code error
+          image,
+        },
+      })
+
+      if (called && !error) {
+        setForce(false)
+        toggleInfo()
+      }
+    },
+    [force]
+  )
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     accept: {
@@ -154,10 +164,16 @@ export default function Layout(props: any) {
         <div className="p-3">
           <div className="mb-2 flex items-center justify-between">
             <p className="text-base font-semibold leading-none text-gray-900 dark:text-white">
-              Hola <a href="#">{user.name}</a>
+              Hola{" "}
+              <a
+                className="font-medium text-blue-600 hover:underline dark:text-blue-500"
+                href="#"
+              >
+                {user.name}
+              </a>
             </p>
           </div>
-          {user.rfc?.publicUrl && (
+          {user.rfc?.publicUrl && !force && (
             <>
               <p className="mb-4 text-sm">
                 Recibiras tus facturas los dias 15 y 30 de cada mes
@@ -166,15 +182,43 @@ export default function Layout(props: any) {
                 Si deseas cambiar tu documento de situación fiscal, pide al
                 administrador ayuda
               </p>
+              <p>
+                <a
+                  className="font-medium text-blue-600 hover:underline dark:text-blue-500"
+                  href={user.rfc?.publicUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  onClick={() => setForce(true)}
+                >
+                  Ver constancia actual
+                </a>
+              </p>
+              <p>o</p>
+              <p>
+                <a
+                  className="font-medium text-blue-600 hover:underline dark:text-blue-500"
+                  href="#"
+                  onClick={() => setForce(true)}
+                >
+                  Actualizar constancia
+                </a>
+              </p>
             </>
           )}
 
-          {!user.rfc?.publicUrl && (
+          {(!user.rfc?.publicUrl || force) && (
             <>
-              <p className="mb-4 text-sm">
-                Si deseas que te facturemos tus cuotas por favor sube tu
-                documento de <b>situación fiscal</b>. .
-              </p>
+              {force ? (
+                <p className="mb-4 text-sm">
+                  Solo necesitas subir un documento nuevo de{" "}
+                  <b>situación fiscal</b> y listo!
+                </p>
+              ) : (
+                <p className="mb-4 text-sm">
+                  Si deseas que te facturemos tus cuotas por favor sube tu
+                  documento de <b>situación fiscal</b>. .
+                </p>
+              )}
               <Drop dz={{ getInputProps, getRootProps, loading }} />
             </>
           )}
