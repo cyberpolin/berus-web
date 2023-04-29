@@ -156,9 +156,68 @@ export default function Layout(props: any) {
 
   return (
     <div className="relative">
+      <nav className=" border-gray-200 bg-white dark:border-gray-600 dark:bg-gray-800">
+        <div className="mx-auto flex max-w-screen-xl flex-wrap items-center justify-between p-4">
+          <Image
+            src="/c7logo.png"
+            width={240}
+            height={50}
+            alt="Altozano Tabasco"
+          />
+          <button
+            data-collapse-toggle="mega-menu-full"
+            type="button"
+            className="ml-1 inline-flex items-center rounded-lg p-2 text-sm text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600 md:hidden"
+            aria-controls="mega-menu-full"
+            aria-expanded="false"
+            onClick={toggleHidden}
+          >
+            <span className="sr-only">Open main menu</span>
+
+            <svg
+              className="h-6 w-6"
+              aria-hidden="true"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+                clip-rule="evenodd"
+              ></path>
+            </svg>
+          </button>
+          <div
+            id="mega-menu-full"
+            className={`${hidden} w-full items-center justify-between md:order-1 md:flex md:w-auto`}
+          >
+            <ul className="mt-4 flex flex-col font-medium md:mt-0 md:flex-row md:space-x-8">
+              {user.isAdmin && <MenuItem title="Admin" link="/admin" />}
+              <MenuItem title="Cuotas" link="/dashboard/cuotas" />
+              <MenuItem title="Salir" link="/logout" />
+
+              <li className="flex flex-col" onClick={toggleInfo}>
+                <img
+                  data-popover-target="popover-user-profile"
+                  className="m-auto rounded-full p-1 ring-2 ring-gray-300 dark:ring-gray-500"
+                  src="/avatar.png"
+                  alt="Bordered avatar"
+                  width="30"
+                />
+                <span className="mx-auto mt-2 text-xs">{user.name}</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div
+          id="mega-menu-full-dropdown"
+          className="mt-1 border-y border-gray-200 bg-white shadow-sm dark:border-gray-600 dark:bg-gray-800"
+        ></div>
+      </nav>
       <div
-        className={`absolute right-0 top-20 z-10 inline-block w-64 rounded-lg border border-gray-200 bg-white text-sm text-gray-500  shadow-sm transition-opacity duration-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 ${
-          showInfo ? "opacity-100" : "opacity-0"
+        className={`top-100 absolute right-0 z-10  inline-block w-64 rounded-lg border border-gray-200 bg-white text-sm text-gray-500  shadow-sm transition-opacity duration-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 ${
+          showInfo ? "opacity-100" : "hidden opacity-0"
         }`}
       >
         <div className="p-3">
@@ -224,64 +283,6 @@ export default function Layout(props: any) {
           )}
         </div>
       </div>
-      <nav className=" border-gray-200 bg-white dark:border-gray-600 dark:bg-gray-800">
-        <div className="mx-auto flex max-w-screen-xl flex-wrap items-center justify-between p-4">
-          <Image
-            src="/c7logo.png"
-            width={240}
-            height={50}
-            alt="Altozano Tabasco"
-          />
-          <button
-            data-collapse-toggle="mega-menu-full"
-            type="button"
-            className="ml-1 inline-flex items-center rounded-lg p-2 text-sm text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600 md:hidden"
-            aria-controls="mega-menu-full"
-            aria-expanded="false"
-          >
-            <span className="sr-only">Open main menu</span>
-
-            <svg
-              className="h-6 w-6"
-              aria-hidden="true"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                fill-rule="evenodd"
-                d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
-                clip-rule="evenodd"
-              ></path>
-            </svg>
-          </button>
-          <div
-            id="mega-menu-full"
-            className="hidden w-full items-center justify-between md:order-1 md:flex md:w-auto"
-          >
-            <ul className="mt-4 flex flex-col font-medium md:mt-0 md:flex-row md:space-x-8">
-              {user.isAdmin && <MenuItem title="Admin" link="/admin" />}
-              <MenuItem title="Cuotas" link="/dashboard/cuotas" />
-              <MenuItem title="Salir" link="/logout" />
-
-              <li className="flex flex-col" onClick={toggleInfo}>
-                <img
-                  data-popover-target="popover-user-profile"
-                  className="m-auto rounded-full p-1 ring-2 ring-gray-300 dark:ring-gray-500"
-                  src="/avatar.png"
-                  alt="Bordered avatar"
-                  width="30"
-                />
-                <span className="mx-auto mt-2 text-xs">{user.name}</span>
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div
-          id="mega-menu-full-dropdown"
-          className="mt-1 border-y border-gray-200 bg-white shadow-sm dark:border-gray-600 dark:bg-gray-800"
-        ></div>
-      </nav>
 
       <div className="mb-4 flex">
         <div className="w-full">
