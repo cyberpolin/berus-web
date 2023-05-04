@@ -311,12 +311,6 @@ const SignUp = () => {
 
   const [userExists, { error, data, loading, called }] =
     useLazyQuery(USER_EXISTS)
-  console.log(">>> ", {
-    error,
-    data,
-    loading,
-    called,
-  })
 
   const goBack = () => {
     if (currentStep >= 1) {
