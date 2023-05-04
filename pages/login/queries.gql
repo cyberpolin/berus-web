@@ -1,3 +1,20 @@
+query GET_POST($id: ID!) {
+  post(where: { id: $id }) {
+    content {
+      document
+    }
+    title
+  }
+}
+
+query USER_EXISTS($email: String!, $phone: String!) {
+  userExists(email: $email, phone: $phone)
+}
+
+query VERIFY_PHONE($code: String!) {
+  verifyPhone(code: $code)
+}
+
 query IS_LOGGED {
   authenticatedItem {
     ... on User {
@@ -5,7 +22,7 @@ query IS_LOGGED {
       isAdmin
       needsBill
       name
-      needsBill
+      isVerified
       rfc {
         publicUrl
       }

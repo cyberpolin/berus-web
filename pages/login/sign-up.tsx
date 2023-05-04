@@ -1,85 +1,132 @@
 import Field from "@/components/Field"
 import { Formik, Form, FieldArray } from "formik"
 
-import { useState } from "react"
-import { useMutation } from "@apollo/client"
+import { useEffect, useState } from "react"
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client"
 import {
   CREATE_USER,
   LOG_IN,
   IS_LOGGED,
   GENERATE_PAYMENTS,
+  USER_EXISTS,
 } from "./queries.gql"
 
 import { createUser, addProperties, makePayment } from "../schema"
 import Button from "@/components/Button"
 import Layout from "@/components/layout/login"
+import Link from "next/link"
 
 // @ts-ignore: Unreachable code error
-const CreateUser = ({ goNext, goBack, data, final }) => (
-  <Formik
-    initialValues={{ ...data }}
-    validationSchema={createUser}
-    onSubmit={(props) => {
-      if (!final) {
-        goNext(props)
-      }
-    }}
-  >
-    {(formik) => (
-      <Form>
-        <h3>Hola!</h3>
-        <p>
-          Si eres residente de Cumbres 7 en Altozano Tabasco, llegaste al lugar
-          indicado para llevar un seguimiento de tus pagos y un historial de los
-          mismos.
-        </p>
-        <p>
-          Manten tus aportaciones al día y sigue recibiendo todos los servicios
-        </p>
+const CreateUser = ({ goNext, goBack, data, final, haveUser }) => {
+  return (
+    <Formik
+      initialValues={{ ...data }}
+      validationSchema={createUser}
+      onSubmit={(props) => {
+        if (!final) {
+          goNext(props)
+        }
+      }}
+    >
+      {(formik) => (
+        <Form>
+          <h3>Hola!</h3>
+          <p>
+            Si eres residente de Cumbres 7 en Altozano Tabasco, llegaste al
+            lugar indicado para llevar un seguimiento de tus pagos y un
+            historial de los mismos.
+          </p>
+          <p>
+            Manten tus aportaciones al día y sigue recibiendo todos los
+            servicios
+          </p>
 
-        <h4>1. Crear un usuario</h4>
-        <p>
-          Para poder relacionar tus propiedades crea un usuario, por favor usa
-          el celular que tienes en whats app.
-        </p>
+          <h4>1. Crear un usuario</h4>
+          <p>
+            Para poder relacionar tus propiedades crea un usuario, por favor usa
+            el celular que tienes en whats app.
+          </p>
 
-        <Field
-          label="Nombre completo"
-          // @ts-ignore: Unreachable code error
-          placeholder="Roberto Jirafales"
-          name="name"
-          type="text"
-          errors={formik.errors}
-        />
-        <Field
-          label="Correo electronico"
-          // @ts-ignore: Unreachable code error
-          placeholder="roberto@gmail.com"
-          name="email"
-          type="text"
-          errors={formik.errors}
-        />
-        <Field
-          label="Telefono celular (usar el mismo que en el chat)"
-          // @ts-ignore: Unreachable code error
-          placeholder="9931000000"
-          name="phone"
-          type="text"
-          errors={formik.errors}
-        />
-        <Field
-          label="Pin (4 digitos)"
-          // @ts-ignore: Unreachable code error
-          placeholder="0000"
-          name="password"
-          type="text"
-          errors={formik.errors}
-        />
-        <Button title="Crear Usuario" />
-      </Form>
-    )}
-  </Formik>
-)
+          <Field
+            label="Nombre completo"
+            // @ts-ignore: Unreachable code error
+            placeholder="Roberto Jirafales"
+            name="name"
+            type="text"
+            errors={formik.errors}
+          />
+          <Field
+            label="Correo electronico"
+            // @ts-ignore: Unreachable code error
+            placeholder="roberto@gmail.com"
+            name="email"
+            type="text"
+            errors={
+              haveUser
+                ? {
+                    email: "Es posible que que éste correo ya haya sido usado.",
+                  }
+                : { ...formik.errors }
+            }
+          />
+          <Field
+            label="Telefono celular (usar el mismo que en el chat)"
+            // @ts-ignore: Unreachable code error
+            placeholder="9931000000"
+            name="phone"
+            type="text"
+            errors={
+              haveUser
+                ? {
+                    phone:
+                      "Es posible que que éste telefono ya haya sido usado.",
+                  }
+                : { ...formik.errors }
+            }
+          />
+          <Field
+            label="Pin (4 digitos)"
+            // @ts-ignore: Unreachable code error
+            placeholder="0000"
+            name="password"
+            type="text"
+            errors={formik.errors}
+          />
+          {haveUser ? (
+            <>
+              <p>
+                {" "}
+                Al parecer este usuario ya existe, por favor{" "}
+                <Link
+                  className="font-medium text-teal-700 hover:text-teal-800 hover:underline"
+                  href="/login"
+                >
+                  ingrese con su usuario y contraseña
+                </Link>{" "}
+                o si olvido su contraseña{" "}
+                <Link
+                  className="font-medium text-teal-700 hover:text-teal-800 hover:underline"
+                  href="/login/recovery"
+                >
+                  recuperela aqui.
+                </Link>
+              </p>
+              <p>
+                {" "}
+                Si piensa que hay un error, contacte al administrador por favor
+              </p>
+
+              <p>O simplemente intente con otro correo y/o celular...</p>
+              <Button title="Intentar de nuevo" />
+            </>
+          ) : (
+            <Button title="Crear Usuario" />
+          )}
+        </Form>
+      )}
+    </Formik>
+  )
+}
 
 // @ts-ignore: Unreachable code error
 const AddProperties = ({ goNext, data, final }) => {
@@ -258,36 +305,131 @@ const MakePayment = ({ goNext, data, final }) => (
 const SignUp = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [currentStep, setStep] = useState(0)
+  const [userExist, setUserExist] = useState(false)
 
-  const [data, setData] = useState({})
+  const [form, setData] = useState({})
+
+  const [userExists, { error, data, loading, called }] =
+    useLazyQuery(USER_EXISTS)
+  console.log(">>> ", {
+    error,
+    data,
+    loading,
+    called,
+  })
 
   const goBack = () => {
     if (currentStep >= 1) {
       setStep(currentStep - 1)
     }
   }
-
+  var haveUser = null
   // @ts-ignore: Unreachable code error
-  const goNext = (props) => {
-    setStep(currentStep + 1)
-    setData({ ...data, ...props })
+  const goNext = async (props) => {
+    const { email, phone } = props
+    haveUser = await userExists({
+      variables: {
+        email,
+        phone,
+      },
+    })
+
+    setUserExist(haveUser.data?.userExists)
+    if (haveUser.data?.userExists === false) {
+      setData({ ...form, ...props })
+      setStep(currentStep + 1)
+      return
+    }
   }
 
   const steps = [
     // @ts-ignore: Unreachable code error
-    <CreateUser key={1} goNext={goNext} goBack={goBack} data={data} />,
-    <AddProperties key={2} goNext={goNext} data={data} final={true} />,
+    <CreateUser
+      key={1}
+      goNext={goNext}
+      goBack={goBack}
+      data={form}
+      haveUser={userExist}
+    />,
+    <AddProperties key={2} goNext={goNext} data={form} final={true} />,
   ]
+
+  const SVG = ({
+    currentStep,
+    thisStep,
+  }: {
+    currentStep: number
+    thisStep: number
+  }) => {
+    if (currentStep >= thisStep) {
+      return (
+        <div className="z-10 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-teal-900 ring-0 ring-white dark:bg-blue-900 dark:ring-gray-900 sm:ring-8">
+          <svg
+            aria-hidden="true"
+            className="h-4 w-4 text-blue-100 dark:text-blue-300"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+              clip-rule="evenodd"
+            ></path>
+          </svg>
+        </div>
+      )
+    }
+    return (
+      <div className="z-10 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-gray-200 ring-0 ring-white dark:bg-gray-700 dark:ring-gray-900 sm:ring-8">
+        <svg
+          aria-hidden="true"
+          className="h-3 w-3 text-gray-800 dark:text-gray-300"
+          fill="currentColor"
+          viewBox="0 0 20 20"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+            clip-rule="evenodd"
+          ></path>
+        </svg>
+      </div>
+    )
+  }
 
   return (
     // @ts-ignore: Unreachable code error
     <Layout>
-      <div className="row">
-        <p>
-          Paso {currentStep + 1} de {steps.length}
-        </p>
+      <>
+        <ol className="mt-10 flex items-center">
+          <li key={1} className="relative mb-6 w-full">
+            <div className="flex items-center">
+              <SVG currentStep={currentStep + 1} thisStep={1} />
+              <div className="flex h-0.5 w-full bg-gray-200 dark:bg-gray-700"></div>
+            </div>
+            <div className="mt-3">
+              <h3 className="font-medium text-gray-900 dark:text-white">
+                Paso 1
+              </h3>
+            </div>
+          </li>
+
+          <li key={2} className="relative mb-6 w-full">
+            <div className="flex items-center">
+              <SVG currentStep={currentStep + 1} thisStep={2} />
+            </div>
+            <div className="mt-3">
+              <h3 className="font-medium text-gray-900 dark:text-white">
+                Paso 2
+              </h3>
+            </div>
+          </li>
+        </ol>
+
         <>{steps[currentStep]}</>
-      </div>
+      </>
     </Layout>
   )
 }

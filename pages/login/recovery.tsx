@@ -3,19 +3,19 @@ import { Formik, Form } from "formik"
 import * as yup from "yup"
 import Link from "next/link"
 import { useState } from "react"
+import Button from "@/components/Button"
 
 const schema = yup.object().shape({
-  password: yup.number().required().positive().integer(),
   email: yup.string().email().required(),
 })
 
 const initialValues = {
   email: "",
-  password: "",
 }
 
 // @ts-ignore: Unreachable code error
 const submit = (props, setIsLoading) => {
+  console.log("props >> ", props)
   setIsLoading(true)
 }
 
@@ -26,7 +26,10 @@ export default function () {
       <Formik
         initialValues={initialValues}
         validationSchema={schema}
-        onSubmit={(props) => submit(props, setIsLoading)}
+        onSubmit={(props) => {
+          console.log("pprops >> ", props)
+          submit(props, setIsLoading)
+        }}
       >
         {(formik) => (
           // @ts-ignore: Unreachable code error
@@ -44,18 +47,22 @@ export default function () {
               type="text"
               errors={formik.errors}
             />
-            <button
-              className={`button-primary ${isLoading && "loading"}`}
-              type="submit"
-              value="Recuperar mi contraseña"
-            >
-              Recuperar mi contraseña
-            </button>
+            <Button title="Recuperar mi contraseña" className="mx-auto my-2" />
             <p>
               Si aun no tienes una cuenta, por favor{" "}
-              <Link href="/login/sign-up">crea una</Link>, si ya la tienes y
-              estas aqui por error,{" "}
-              <Link href="/login">regresa a la pantalla de acceso.</Link>
+              <Link
+                className="font-medium  text-teal-700 text-teal-800 hover:underline"
+                href="/login/sign-up"
+              >
+                crea una
+              </Link>
+              , si ya la tienes y estas aqui por error,{" "}
+              <Link
+                className="font-medium  text-teal-700 text-teal-800 hover:underline"
+                href="/login"
+              >
+                regresa a la pantalla de acceso.
+              </Link>
             </p>
           </Form>
         )}

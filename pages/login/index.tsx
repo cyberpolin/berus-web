@@ -28,10 +28,6 @@ export default function () {
     // @ts-ignore: Unreachable code error
     <Layout>
       <div className="flex flex-col text-center ">
-        <p className="m-10">
-          A traves de este sitio podras llevar el control de tus pagos y
-          aportaciones.
-        </p>
         <Image
           src="/square-logo.png"
           width={250}
@@ -75,7 +71,7 @@ export default function () {
         </Formik>
         <div className="row">
           <Link
-            className="mb-2 pb-2 font-semibold text-lime-950 underline"
+            className="font-medium  text-teal-700 text-teal-800 hover:underline"
             href="/login/sign-up"
           >
             Aun no tengo usuario...
@@ -83,7 +79,7 @@ export default function () {
         </div>
         <div className="row">
           <Link
-            className="mb-2 pb-2 font-semibold text-lime-950 underline"
+            className="font-medium  text-teal-700 text-teal-800 hover:underline"
             href="/login/recovery"
           >
             No recuerdo mi contraseña
