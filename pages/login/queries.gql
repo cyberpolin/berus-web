@@ -15,6 +15,10 @@ query VERIFY_PHONE($code: String!) {
   verifyPhone(code: $code)
 }
 
+query PHONE_VERIFIED {
+  phoneVerified
+}
+
 query IS_LOGGED {
   authenticatedItem {
     ... on User {

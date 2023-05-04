@@ -1,10 +1,10 @@
 import Layout from "@/components/layout/dashboard"
-import { useLazyQuery } from "@apollo/client"
+import { useLazyQuery, useQuery } from "@apollo/client"
 import { useEffect, useRef, useState } from "react"
-import { VERIFY_PHONE, IS_LOGGED } from "../login/queries.gql"
+import { VERIFY_PHONE, PHONE_VERIFIED } from "../login/queries.gql"
 
 const Verify = () => {
-  const [isLogged, _] = useLazyQuery(IS_LOGGED)
+  const [isLogged, _] = useQuery(PHONE_VERIFIED)
   const [veryfyPhone, { data, error, loading, called }] = useLazyQuery(
     VERIFY_PHONE,
     {
