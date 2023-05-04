@@ -32,6 +32,9 @@ query PAYMENT_BY_USER($id: ID!) {
         id
         status
         dueAmount
+        image {
+          publicUrl
+        }
       }
     }
   }

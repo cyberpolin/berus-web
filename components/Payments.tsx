@@ -8,16 +8,48 @@ import { useState } from "react"
 import { UserType } from "@/lib/types"
 import Button from "./Button"
 
-const Status = ({ value }: { value: string }) => (
-  <span className={`status-${value}`}>{value} </span>
-)
+const Status = ({ value }: { value: string }) => {
+  const statusOption = {
+    pending: "En revisión",
+    due: "Vencido",
+    onTime: "A tiempo",
+    payed: "Pagado",
+  }
+
+  const colors = {
+    onTime:
+      "bg-blue-100 px-2.5 py-0.5 text-sm font-medium text-blue-800 dark:bg-blue-900 dark:text-blue-300",
+    due: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300",
+    pending:
+      "bg-blue-100 px-2.5 py-0.5 text-sm font-medium text-blue-800 dark:bg-blue-900 dark:text-blue-300",
+    payed:
+      "bg-green-100 text-green-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300",
+  }
+  return (
+    <span
+      //@ts-ignore
+      className={`mr-2 rounded ${colors[value]} `}
+    >
+      {
+        //@ts-ignore
+        statusOption[value]
+      }
+    </span>
+  )
+}
 
 const Action = ({ status, show }: { status: any; show: () => void }) => {
   const options = {
     due: <Button title="Pagar" onClick={show} />,
     onTime: <Button title="Pagar" onClick={show} />,
     payed: null,
-    pending: <Button title="Cambiar comprobante" onClick={show} />,
+    pending: (
+      <Button
+        className="bg-transparent underline"
+        title="Cambiar comprobante"
+        onClick={show}
+      />
+    ),
   }
   // @ts-ignore: Unreachable code error
   return options[status] || null
@@ -54,13 +86,24 @@ const Payments = ({ user }: any) => {
           "DD-MMM"
         )} - Cantidad: ${currency(payment.dueAmount).format()} - Estatus: `}
         <Status value={payment.status} />
-        <Action status={payment.status} show={() => setForm(payment.id)} />
+        {payment.image?.publicUrl && (
+          <img
+            height={200}
+            className="center m-4 w-32"
+            src={
+              payment?.image?.mimetype === "application/pdf"
+                ? "/pdfIcon.png"
+                : payment?.image?.publicUrl
+            }
+          />
+        )}
 
         {
           /* If isn't payed display Form */
           // @ts-ignore: Unreachable code error
           form === payment.id && <PayForm payment={payment} />
         }
+        <Action status={payment.status} show={() => setForm(payment.id)} />
       </li>
     ))
     return (

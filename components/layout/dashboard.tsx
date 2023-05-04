@@ -87,7 +87,7 @@ const MenuItem = ({ title, link }: { title: string; link: string }) => (
 export default function Layout(props: any) {
   const router = useRouter()
   const { user } = UseAuth()
-  const [hidden, setHidden] = useState("")
+  const [hidden, setHidden] = useState("hidden")
   const [showInfo, setShowInfo] = useState(false)
   const [force, setForce] = useState(false)
 

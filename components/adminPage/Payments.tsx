@@ -71,7 +71,7 @@ const Alert = ({
   payment: string | null
   close: () => void
 }) => {
-  const [aprovePayment, { error, loading, data }] = useMutation(
+  const [aprovePayment, { error, loading, data, reset }] = useMutation(
     APROVE_PAYMENT,
     { refetchQueries: [GET_PAYMENTS] }
   )
@@ -79,6 +79,7 @@ const Alert = ({
   //THIS WILL CLOSE THE ALERT...
   if (!error && !loading && data) {
     close()
+    reset()
   }
 
   if (payment) {
@@ -159,6 +160,10 @@ const Payments = ({ initialDate, finalDate }: DateRange) => {
   const [selectedPayment, setSelectedPayment] = useState(null)
   const { data, loading, error } = useQuery(GET_PAYMENTS, {
     variables: { initialDate, finalDate },
+  })
+
+  console.log("selected >> ", {
+    selectedPayment,
   })
 
   if (error || loading) {

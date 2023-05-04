@@ -95,6 +95,10 @@ query GET_PAYMENTS($id: ID!) {
         dueAt
         status
         dueAmount
+        image {
+          publicUrl
+          mimetype
+        }
       }
     }
   }
