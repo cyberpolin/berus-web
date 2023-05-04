@@ -20,7 +20,7 @@ const PrivacyPolicy = () => {
     return (
       <>
         <h1>{data?.post?.title}</h1>
-        {
+        {/* {
           //@ts-ignore
           data.post.content.map((x) => (
             <div
@@ -29,7 +29,7 @@ const PrivacyPolicy = () => {
               }}
             ></div>
           ))
-        }
+        } */}
       </>
     )
   }
