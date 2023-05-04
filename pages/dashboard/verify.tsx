@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react"
 import { VERIFY_PHONE, PHONE_VERIFIED } from "../login/queries.gql"
 
 const Verify = () => {
-  const [isLogged, _] = useQuery(PHONE_VERIFIED)
+  const isVerified = useQuery(PHONE_VERIFIED)
   const [veryfyPhone, { data, error, loading, called }] = useLazyQuery(
     VERIFY_PHONE,
     {
