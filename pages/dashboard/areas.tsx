@@ -1,22 +1,26 @@
 import Button from "@/components/Button"
 import Field from "@/components/Field"
 import Layout from "@/components/layout/NLayout"
+// @ts-ignore
 import { Form, Formik } from "formik"
+// @ts-ignore
 import * as yup from "yup"
 import { GET_AREAS, ADD_AREA, UPDATE_AREA } from "../admin/adminQueries.gql"
 
+// @ts-ignore
 import { useMutation, useQuery } from "@apollo/client"
+// @ts-ignore
 import { useRouter } from "next/router"
 import { useContext, useState } from "react"
 import { uiCTX } from "../_app"
 
-import Paper from "@mui/material/Paper"
-import { ViewState } from "@devexpress/dx-react-scheduler"
-import {
-  Scheduler,
-  Appointments,
-  MonthView,
-} from "@devexpress/dx-react-scheduler-material-ui"
+// import Paper from "@mui/material/Paper"
+// import { ViewState } from "@devexpress/dx-react-scheduler"
+// import {
+//   Scheduler,
+//   Appointments,
+//   MonthView,
+// } from "@devexpress/dx-react-scheduler-material-ui"
 // @ts-ignore
 import DatePicker from "react-datepicker"
 
@@ -84,6 +88,7 @@ const Areas = (props) => {
               enableReinitialize={true}
               validationSchema={schema}
               initialValues={{ ...selectedArea }}
+              //@ts-ignore
               onSubmit={async (variables, { resetForm }) => {
                 if (query.edit) {
                   const editVariables = { ...variables, id: query.edit }
@@ -101,68 +106,71 @@ const Areas = (props) => {
                   }
                   return
                 }
-                
+
                 try {
                   const { data } = await createArea({ variables })
-                  
+
                   //@ts-ignore
                   if (data) resetForm(initialValues)
                 } catch {}
               }}
             >
-              {(formik) => (
-                <Form className="mb-8 mt-8 flex flex-col">
-                  <DatePicker
-                    selected={startDate}
-                    // @ts-ignore
-                    onChange={(date) => setStartDate(date)}
-                  />
-                  <Field
-                    label="Nombre del area"
-                    name="name"
-                    id="name"
-                    type="text"
-                    errors={formik.errors}
-                  />
-                  <Field
-                  // @ts-ignore
-                    as="textarea"
-                    label="Descripción o reglas"
-                    name="description"
-                    id="description"
-                    type="multiline"
-                    errors={formik.errors}
-                  />
+              {
+                //@ts-ignore
+                (formik) => (
+                  <Form className="mb-8 mt-8 flex flex-col">
+                    <DatePicker
+                      selected={startDate}
+                      // @ts-ignore
+                      onChange={(date) => setStartDate(date)}
+                    />
+                    <Field
+                      label="Nombre del area"
+                      name="name"
+                      id="name"
+                      type="text"
+                      errors={formik.errors}
+                    />
+                    <Field
+                      // @ts-ignore
+                      as="textarea"
+                      label="Descripción o reglas"
+                      name="description"
+                      id="description"
+                      type="multiline"
+                      errors={formik.errors}
+                    />
 
-                  <Field
-                    name="reserve"
-                    id="reserve"
-                    label="Se puede apartar?"
-                    type="checkbox"
-                    errors={formik.errors}
-                  />
-                  <Field
-                    name="needsAproval"
-                    id="needsAproval"
-                    label="Necesita aprovacion?"
-                    type="checkbox"
-                    errors={formik.errors}
-                  />
+                    <Field
+                      name="reserve"
+                      id="reserve"
+                      label="Se puede apartar?"
+                      type="checkbox"
+                      errors={formik.errors}
+                    />
+                    <Field
+                      name="needsAproval"
+                      id="needsAproval"
+                      label="Necesita aprovacion?"
+                      type="checkbox"
+                      errors={formik.errors}
+                    />
 
-                  <Button title={query.edit ? "Editar" : "Agregar"} />
-                </Form>
-              )}
+                    <Button title={query.edit ? "Editar" : "Agregar"} />
+                  </Form>
+                )
+              }
             </Formik>
           </div>
         </div>
         <div className="w-4/6 p-2">
           <div className="text-sm font-semibold uppercase tracking-wide text-indigo-500">
-            <Paper>
+            {/* <Paper>
               <Scheduler data={schedulerData}>
                 <ViewState currentDate={currentDate} />
                 <MonthView /> <Appointments />
               </Scheduler>
-            </Paper>
+            </Paper> */}
           </div>
         </div>
       </>
