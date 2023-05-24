@@ -1,3 +1,64 @@
+query CREATE_PAYMENT_IF_DONT_EXIST($id: ID!) {
+  createPayment(id: $id)
+}
+
+query GET_POST($id: ID!) {
+  post(where: { id: $id }) {
+    content {
+      document
+    }
+    title
+  }
+}
+
+query GET_AREAS {
+  areas(where: {}) {
+    id
+    name
+    description
+    reserved
+    needsAproval
+  }
+}
+
+mutation ADD_AREA(
+  $name: String!
+  $description: String!
+  $reserved: Boolean
+  $needsAproval: Boolean
+) {
+  createArea(
+    data: {
+      name: $name
+      description: $description
+      reserved: $reserved
+      needsAproval: $needsAproval
+    }
+  ) {
+    id
+  }
+}
+
+mutation UPDATE_AREA(
+  $id: ID!
+  $name: String!
+  $description: String!
+  $reserved: Boolean
+  $needsAproval: Boolean
+) {
+  updateArea(
+    where: { id: $id }
+    data: {
+      name: $name
+      description: $description
+      reserved: $reserved
+      needsAproval: $needsAproval
+    }
+  ) {
+    id
+  }
+}
+
 query GET_PAYMENTS($initialDate: DateTime!, $finalDate: DateTime!) {
   payments(
     where: {

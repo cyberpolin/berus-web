@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { months } from "../../lib/utils/date"
 
-import Layout from "../../components/layout/dashboard"
+import Layout from "../../components/layout/NLayout"
 import Payments from "@/components/adminPage/Payments"
 
 const getTextMonth = (month: any) =>
@@ -15,8 +15,7 @@ export default function () {
   const [selectedMonth, setSelectedMonth] = useState(getTextMonth(month))
   return (
     <Layout>
-      <h2>Admin</h2>
-      <div>
+      <div className="m-4 w-full">
         <select
           onChange={(e) => {
             const value = parseInt(e.target.value)
@@ -32,12 +31,12 @@ export default function () {
             </option>
           ))}
         </select>
-      </div>
 
-      <Payments
-        initialDate={`2023-${selectedMonth}-05T00:00:00Z`}
-        finalDate={`2023-${selectedMonth}-05T23:59:59Z`}
-      />
+        <Payments
+          initialDate={`2023-${selectedMonth}-05T00:00:00Z`}
+          finalDate={`2023-${selectedMonth}-05T23:59:59Z`}
+        />
+      </div>
     </Layout>
   )
 }

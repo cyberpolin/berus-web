@@ -1,20 +1,22 @@
-import Logout from "@/components/Logout"
 import UseAuth from "@/lib/UseAuth"
 import { useMutation } from "@apollo/client"
 import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/router"
 import React, { useCallback, useEffect, useState } from "react"
-import Dropzone, { useDropzone } from "react-dropzone"
+import { useDropzone } from "react-dropzone"
 import { UPDATE_USER } from "../../pages/admin/adminQueries.gql"
 import { IS_LOGGED } from "../../pages/login/queries.gql"
+
+const hide = "-z-10 opacity-0"
+const show = "z-10 opacity-1"
 
 const Drop = ({
   dz: { getInputProps, getRootProps, loading },
 }: {
   dz: any
 }) => (
-  <div className="flex w-full items-center justify-center">
+  <div className="z flex w-full items-center justify-center">
     <label
       {...getRootProps}
       className="dark:hover:bg-bray-800 flex h-64 w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-600"
@@ -70,13 +72,21 @@ const Drop = ({
   </div>
 )
 
-
-const MenuItem = ({ title, link }: { title: string; link: string }) => (
+const MenuItem = ({
+  title,
+  link,
+  toggle,
+}: {
+  title: string
+  link: string
+  toggle?: () => void
+}) => (
   <li>
     <div className="text-sm">
       <Link
         className="block p-5 hover:text-gray-800 dark:text-amber-50 md:mt-0 md:inline-block"
         href={link}
+        onClick={toggle}
       >
         {title}
       </Link>
@@ -90,6 +100,11 @@ export default function Layout(props: any) {
   const [hidden, setHidden] = useState("hidden")
   const [showInfo, setShowInfo] = useState(false)
   const [force, setForce] = useState(false)
+  const [subMenuShow, setSubMenuShow] = useState(true)
+
+  const setSubmenuToggle = () => {
+    setSubMenuShow(!subMenuShow)
+  }
 
   const toggleInfo = () => {
     setShowInfo(!showInfo)
@@ -156,7 +171,7 @@ export default function Layout(props: any) {
 
   return (
     <div className="relative">
-      <nav className=" border-gray-200 bg-white dark:border-gray-600 dark:bg-gray-800">
+      <nav className="h-24 border-gray-200 bg-white dark:border-gray-600 dark:bg-gray-800">
         <div className="mx-auto flex max-w-screen-xl flex-wrap items-center justify-between p-4">
           <Image
             src="/c7logo.png"
@@ -193,14 +208,18 @@ export default function Layout(props: any) {
             className={`${hidden} w-full items-center justify-between md:order-1 md:flex md:w-auto`}
           >
             <ul className="mt-4 flex flex-col font-medium md:mt-0 md:flex-row md:space-x-8">
-              {user.isAdmin && <MenuItem title="Admin" link="/admin" />}
+              {user.isAdmin && (
+                <>
+                  <MenuItem title="Admin" link="/admin" />
+                </>
+              )}
               <MenuItem title="Cuotas" link="/dashboard/cuotas" />
               <MenuItem title="Salir" link="/logout" />
 
               <li className="flex flex-col" onClick={toggleInfo}>
                 <img
                   data-popover-target="popover-user-profile"
-                  className="m-auto rounded-full p-1 ring-2 ring-gray-300 dark:ring-gray-500"
+                  className="inline-block rounded-full p-1 ring-2 ring-gray-300 dark:ring-gray-500"
                   src="/avatar.png"
                   alt="Bordered avatar"
                   width="30"
@@ -208,8 +227,49 @@ export default function Layout(props: any) {
                 <span className="mx-auto mt-2 text-xs">{user.name}</span>
               </li>
             </ul>
+            <button onClick={setSubmenuToggle}>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="h-6 w-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z"
+                />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                />
+              </svg>
+            </button>
+            <div
+              id="submenu"
+              className={`absolute right-2 top-20 block w-40  overflow-hidden rounded-md border-2 bg-white transition-opacity ${
+                subMenuShow ? show : hide
+              }`}
+            >
+              <Link href="#" className="block p-2 text-xs hover:bg-slate-200">
+                ...
+              </Link>
+              <Link
+                href="/admin/comon-areas"
+                className="block p-2 text-xs hover:bg-slate-200"
+              >
+                Areas Comunes
+              </Link>
+              <Link href="#" className="block p-2 text-xs hover:bg-slate-200">
+                ...
+              </Link>
+            </div>
           </div>
         </div>
+
         <div
           id="mega-menu-full-dropdown"
           className="mt-1 border-y border-gray-200 bg-white shadow-sm dark:border-gray-600 dark:bg-gray-800"
@@ -285,11 +345,10 @@ export default function Layout(props: any) {
       </div>
 
       <div className="mb-4 flex">
-        <div className="w-full">
+        <div className="flex w-full flex-1">
           {childAry.map((child) => React.cloneElement(child, { user }))}
         </div>
       </div>
     </div>
   )
 }
-

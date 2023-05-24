@@ -1,4 +1,4 @@
-import Layout from "@/components/layout/dashboard"
+import Layout from "@/components/layout/NLayout"
 import { useLazyQuery, useQuery } from "@apollo/client"
 import { useEffect, useRef, useState } from "react"
 import { VERIFY_PHONE, PHONE_VERIFIED } from "../login/queries.gql"
@@ -39,8 +39,6 @@ const Verify = () => {
       }, 1000)
     }
   }, [called])
-
-  console.log("ref > ", form)
 
   const clean = (index: number) => {
     const nextValues = [...values]

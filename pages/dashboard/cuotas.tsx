@@ -1,7 +1,7 @@
 import Payments from "@/components/Payments"
 import UseAuth from "@/lib/UseAuth"
 import { useRouter } from "next/router"
-import Layout from "../../components/layout/dashboard"
+import Layout from "../../components/layout/NLayout"
 
 const Cuotas = () => {
   const router = useRouter()

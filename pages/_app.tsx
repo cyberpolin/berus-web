@@ -3,12 +3,20 @@ import type { AppProps } from "next/app"
 
 import client from "../lib/apollo-client"
 import { ApolloProvider } from "@apollo/client"
+import { createContext } from "react"
+import useUI from "@/lib/hooks/useUI"
+export const uiCTX = createContext({
+  ui: {}
+})
 
 function MyApp({ Component, pageProps }: AppProps) {
+  const ui = useUI()
   return (
-    <ApolloProvider client={client}>
-      <Component {...pageProps} />
-    </ApolloProvider>
+    <uiCTX.Provider value={{ ui }}>
+      <ApolloProvider client={client}>
+        <Component {...pageProps} />
+      </ApolloProvider>
+    </uiCTX.Provider>
   )
 }
 
