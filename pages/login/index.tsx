@@ -72,6 +72,7 @@ export default function () {
                 name="password"
                 id="password"
                 type="password"
+                //@ts-ignore
                 maxLength={4}
                 errors={formik.errors}
               />
