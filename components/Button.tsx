@@ -34,7 +34,7 @@ const Button = ({
   type?: string
   href?: string
   className?: any
-  loading: boolean
+  loading?: boolean
 }) => {
   if (href) {
     return (

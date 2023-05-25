@@ -106,12 +106,12 @@ const Payments = ({ user }: any) => {
     return (
       <div>
         <div
-          class="mb-4 flex rounded-lg border border-blue-300 bg-blue-50 p-4 text-sm text-blue-800 dark:border-blue-800 dark:bg-gray-800 dark:text-blue-400"
+          className="mb-4 flex rounded-lg border border-blue-300 bg-blue-50 p-4 text-sm text-blue-800 dark:border-blue-800 dark:bg-gray-800 dark:text-blue-400"
           role="alert"
         >
           <svg
             aria-hidden="true"
-            class="mr-3 inline h-5 w-5 flex-shrink-0"
+            className="mr-3 inline h-5 w-5 flex-shrink-0"
             fill="currentColor"
             viewBox="0 0 20 20"
             xmlns="http://www.w3.org/2000/svg"
@@ -122,11 +122,11 @@ const Payments = ({ user }: any) => {
               clip-rule="evenodd"
             ></path>
           </svg>
-          <span class="sr-only">Info</span>
+          <span className="sr-only">Info</span>
           <div>
-            <span class="font-medium">Cambios en plataforma...</span> Estamos
-            haciendo algunos cambios, para darte mas y mejores opciones en la
-            plataforma, por favor confirma tu propiedad...
+            <span className="font-medium">Cambios en plataforma...</span>{" "}
+            Estamos haciendo algunos cambios, para darte mas y mejores opciones
+            en la plataforma, por favor confirma tu propiedad...
           </div>
         </div>
         <select
@@ -138,26 +138,27 @@ const Payments = ({ user }: any) => {
           }
         >
           <option></option>
-          {freeProperties?.data?.properties.map((p) => (
-            <option value={p.id}>{p.name}</option>
+          {freeProperties?.data?.properties.map((p: any) => (
+            <option key={p.id} value={p.id}>
+              {p.name}
+            </option>
           ))}
         </select>
       </div>
     )
   }
 
-  console.log(">> ", user)
   //Dumb developer
   if (user?.user?.name === "Predefinido") {
     return (
       <div>
         <div
-          class="mb-4 flex rounded-lg border border-blue-300 bg-blue-50 p-4 text-sm text-blue-800 dark:border-blue-800 dark:bg-gray-800 dark:text-blue-400"
+          className="mb-4 flex rounded-lg border border-blue-300 bg-blue-50 p-4 text-sm text-blue-800 dark:border-blue-800 dark:bg-gray-800 dark:text-blue-400"
           role="alert"
         >
           <svg
             aria-hidden="true"
-            class="mr-3 inline h-5 w-5 flex-shrink-0"
+            className="mr-3 inline h-5 w-5 flex-shrink-0"
             fill="currentColor"
             viewBox="0 0 20 20"
             xmlns="http://www.w3.org/2000/svg"
@@ -168,11 +169,11 @@ const Payments = ({ user }: any) => {
               clip-rule="evenodd"
             ></path>
           </svg>
-          <span class="sr-only">Info</span>
+          <span className="sr-only">Info</span>
           <div>
-            <span class="font-medium">Cambios en plataforma...</span> Estamos
-            haciendo algunos cambios, para darte mas y mejores opciones en la
-            plataforma, nos puedes confirmar tu nombre completo por favor?
+            <span className="font-medium">Cambios en plataforma...</span>{" "}
+            Estamos haciendo algunos cambios, para darte mas y mejores opciones
+            en la plataforma, nos puedes confirmar tu nombre completo por favor?
           </div>
         </div>
         <input
@@ -200,6 +201,7 @@ const Payments = ({ user }: any) => {
           {payment.image?.publicUrl && (
             <img
               height={200}
+              alt={"payment"}
               className="center m-4 w-32"
               src={
                 payment?.image?.mimetype === "application/pdf"
