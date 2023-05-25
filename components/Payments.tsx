@@ -1,7 +1,12 @@
-import { useQuery } from "@apollo/client"
+import { useMutation, useQuery } from "@apollo/client"
 import currency from "currency.js"
 import dayjs from "dayjs"
-import { GET_PAYMENTS } from "../pages/login/queries.gql"
+import {
+  GET_PAYMENTS,
+  GET_FREE_PROPERTY,
+  ASSIGN_OWNER,
+  IS_LOGGED,
+} from "../pages/login/queries.gql"
 import { CREATE_PAYMENT_IF_DONT_EXIST } from "../pages/admin/adminQueries.gql"
 import Image from "next/image"
 import Link from "next/link"
@@ -75,6 +80,11 @@ const Payments = ({ user }: any) => {
     refetchQueries: [GET_PAYMENTS],
   })
 
+  const freeProperties = useQuery(GET_FREE_PROPERTY)
+  const [assignOwner, aod] = useMutation(ASSIGN_OWNER, {
+    refetchQueries: [GET_PAYMENTS],
+  })
+
   const { data, loading, error } = useQuery(GET_PAYMENTS, {
     variables: { id },
   })
@@ -90,8 +100,91 @@ const Payments = ({ user }: any) => {
   const {
     user: { properties },
   } = data
-  if (!properties || properties.lenght === 0) {
-    return <p> Aun no tienes ninguna propiedad, por favor agrega una.</p>
+
+  //Dumb developer
+  if (!properties || properties.length === 0 || false) {
+    return (
+      <div>
+        <div
+          class="mb-4 flex rounded-lg border border-blue-300 bg-blue-50 p-4 text-sm text-blue-800 dark:border-blue-800 dark:bg-gray-800 dark:text-blue-400"
+          role="alert"
+        >
+          <svg
+            aria-hidden="true"
+            class="mr-3 inline h-5 w-5 flex-shrink-0"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+              clip-rule="evenodd"
+            ></path>
+          </svg>
+          <span class="sr-only">Info</span>
+          <div>
+            <span class="font-medium">Cambios en plataforma...</span> Estamos
+            haciendo algunos cambios, para darte mas y mejores opciones en la
+            plataforma, por favor confirma tu propiedad...
+          </div>
+        </div>
+        <select
+          className="block w-full rounded-md border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+          onChange={(id) =>
+            assignOwner({
+              variables: { pId: id.target.value, ownerId: user.user.id },
+            })
+          }
+        >
+          <option></option>
+          {freeProperties?.data?.properties.map((p) => (
+            <option value={p.id}>{p.name}</option>
+          ))}
+        </select>
+      </div>
+    )
+  }
+
+  console.log(">> ", user)
+  //Dumb developer
+  if (user?.user?.name === "Predefinido") {
+    return (
+      <div>
+        <div
+          class="mb-4 flex rounded-lg border border-blue-300 bg-blue-50 p-4 text-sm text-blue-800 dark:border-blue-800 dark:bg-gray-800 dark:text-blue-400"
+          role="alert"
+        >
+          <svg
+            aria-hidden="true"
+            class="mr-3 inline h-5 w-5 flex-shrink-0"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+              clip-rule="evenodd"
+            ></path>
+          </svg>
+          <span class="sr-only">Info</span>
+          <div>
+            <span class="font-medium">Cambios en plataforma...</span> Estamos
+            haciendo algunos cambios, para darte mas y mejores opciones en la
+            plataforma, nos puedes confirmar tu nombre completo por favor?
+          </div>
+        </div>
+        <input
+          className="block w-full rounded-md border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+          onChange={(id) =>
+            assignOwner({
+              variables: { pId: id.target.value, ownerId: user.user.id },
+            })
+          }
+        />
+      </div>
+    )
   }
 
   // @ts-ignore: Unreachable code error
@@ -131,10 +224,10 @@ const Payments = ({ user }: any) => {
           <Link
             // href={`./visits?property=${p.id}`}
             href={`#`}
-            onClick={() => alert('Proximamente...')}
+            onClick={() => alert("Proximamente...")}
             className="absolute right-2 top-2 m-2 rounded-full bg-slate-400 p-2 shadow-lg hover:bg-slate-500 "
           >
-            <Image width={30} height={30} src="/qr.png" alt='Mandar Qr' />
+            <Image width={30} height={30} src="/qr.png" alt="Mandar Qr" />
           </Link>
           <h4 className="mb-2 block rounded bg-black bg-opacity-60 p-2 text-white">{`Manzana ${p.square} Lote ${p.lot}`}</h4>
           <ul className="m-4 border-t-2">{payments}</ul>

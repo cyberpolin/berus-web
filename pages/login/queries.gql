@@ -2,6 +2,25 @@ query USER_EXISTS($email: String!, $phone: String!) {
   userExists(email: $email, phone: $phone)
 }
 
+query GET_FREE_PROPERTY {
+  properties(where: { owner: null }) {
+    id
+    name
+    owner {
+      email
+    }
+  }
+}
+
+mutation ASSIGN_OWNER($ownerId: ID!, $pId: ID!) {
+  updateProperty(
+    where: { id: $pId }
+    data: { owner: { connect: { id: $ownerId } } }
+  ) {
+    id
+  }
+}
+
 query VERIFY_PHONE($code: String!) {
   verifyPhone(code: $code)
 }
@@ -55,6 +74,19 @@ mutation UPDATE_PAYMENT($pId: ID!, $image: Upload) {
   }
 }
 
+mutation TEMP_CREATE_USER($email: String!, $password: String!) {
+  createUser(
+    data: {
+      email: $email
+      password: $password
+      name: "Predefinido"
+      phone: "0000000000"
+      isVerified: true
+    }
+  ) {
+    name
+  }
+}
 mutation CREATE_USER(
   $name: String!
   $phone: String!
