@@ -176,7 +176,10 @@ const Payments = ({ initialDate, finalDate }: DateRange) => {
       ...x,
       ...x.property?.[0],
     }))
-    const orderedPayments = orderBy(payments, ["square", "lot"])
+    const orderedPayments = orderBy(payments, ["square", "lot"]).filter(
+      (x) => !!x.property
+    )
+    console.log(">> ", orderedPayments)
 
     return (
       <div className="relative mt-8 overflow-x-auto shadow-md sm:rounded-lg">
@@ -199,8 +202,9 @@ const Payments = ({ initialDate, finalDate }: DateRange) => {
           </thead>
           <tbody>
             {orderedPayments.map(
-              ({ id, square, lot, status, owner, image }) => {
+              ({ id, property: { lot, square, owner }, status, image }) => {
                 const thisMonth = status !== "payed" ? 1220 : 0
+
                 return (
                   <tr
                     key={id}

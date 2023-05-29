@@ -2,15 +2,17 @@ import { Form, Formik } from "formik"
 import Link from "next/link"
 import * as yup from "yup"
 import Field from "@/components/Field"
-import { LOG_IN, IS_LOGGED, TEMP_CREATE_USER } from "./queries.gql"
-import { useMutation } from "@apollo/client"
+import { LOG_IN, IS_LOGGED, TEMP_CREATE_USER, IS_USER } from "./queries.gql"
+import { useLazyQuery, useMutation } from "@apollo/client"
 import Layout from "../../components/layout/login"
 import Button from "@/components/Button"
 
 import Image from "next/image"
-import { useEffect } from "react"
+import { useRef } from "react"
+
 const schema = yup.object().shape({
   password: yup.number().required().positive().integer().min(4),
+  phone: yup.number().positive().min(10),
   email: yup.string().email().required(),
 })
 
@@ -26,6 +28,10 @@ export default function () {
   const [signUpMutation, signUpMutationData] = useMutation(TEMP_CREATE_USER, {
     refetchQueries: [IS_LOGGED],
   })
+
+  const [isUser, { data: haveUser }] = useLazyQuery(IS_USER)
+
+  const delay = useRef()
 
   return (
     // @ts-ignore: Unreachable code error
@@ -46,45 +52,75 @@ export default function () {
           validationSchema={schema}
           onSubmit={async (variables) => {
             const { data } = await loginMutation({ variables })
-            console.log("this is data", data)
             if (
               data?.authenticateUserWithPassword?.message ===
               "Authentication failed."
             ) {
-              console.log("if comp")
               await signUpMutation({ variables })
               await loginMutation({ variables })
               // reset()
             }
           }}
         >
-          {(formik) => (
-            <Form className="mb-8 mt-8 flex flex-col">
-              <Field
-                label="Correo electronico"
-                name="email"
-                id="email"
-                type="text"
-                errors={formik.errors}
-              />
-              <Field
-                label="Password"
-                name="password"
-                id="password"
-                type="password"
-                //@ts-ignore
-                maxLength={4}
-                errors={formik.errors}
-              />
+          {(formik) => {
+            //formik.handleChange((e) => console.log(e))
+            return (
+              <Form className="mb-8 mt-8 flex flex-col">
+                <Field
+                  //remove this later
+                  //@ts-ignore
+                  onChange={async (e) => {
+                    formik.handleChange(e)
+                    if (!formik.errors.email && e.target.value.length > 3) {
+                      if (delay.current) {
+                        clearTimeout(delay.current)
+                      }
+                      //@ts-ignore
+                      delay.current = setTimeout(async () => {
+                        const user = await isUser({
+                          variables: { email: e.target.value },
+                        })
+                      }, 1000)
+                    }
+                  }}
+                  label="Correo electronico"
+                  name="email"
+                  id="email"
+                  type="text"
+                  errors={formik.errors}
+                />
 
-              <label htmlFor="remindme">
-                <input id="remindme" name="remindme" type="checkbox" />
-                &nbsp;Recuerdame
-              </label>
+                <Field
+                  label="Password"
+                  name="password"
+                  id="password"
+                  type="password"
+                  //@ts-ignore
+                  maxLength={4}
+                  errors={formik.errors}
+                />
+                {haveUser?.isUser === false && (
+                  <Field
+                    label="Confirma tu celular por favor"
+                    name="phone"
+                    id="phone"
+                    type="text"
+                    //@ts-ignore
+                    placeholder="9931888888"
+                    //@ts-ignore
+                    maxLength={10}
+                    errors={formik.errors}
+                  />
+                )}
+                <label htmlFor="remindme">
+                  <input id="remindme" name="remindme" type="checkbox" />
+                  &nbsp;Recuerdame
+                </label>
 
-              <Button title="Ingresar" loading={loading} />
-            </Form>
-          )}
+                <Button title="Ingresar" loading={loading} />
+              </Form>
+            )
+          }}
         </Formik>
         <div className="row">
           <Link

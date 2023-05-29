@@ -12,11 +12,8 @@ query GET_FREE_PROPERTY {
   }
 }
 
-mutation ASSIGN_OWNER($ownerId: ID!, $pId: ID!) {
-  updateProperty(
-    where: { id: $pId }
-    data: { owner: { connect: { id: $ownerId } } }
-  ) {
+mutation ASSIGN_OWNER($pId: ID!, $data: PropertyUpdateInput!) {
+  updateProperty(where: { id: $pId }, data: $data) {
     id
   }
 }
@@ -67,6 +64,10 @@ mutation LOG_IN($email: String!, $password: String!) {
   }
 }
 
+query IS_USER($email: String!) {
+  isUser(email: $email)
+}
+
 mutation UPDATE_PAYMENT($pId: ID!, $image: Upload) {
   updatePayment(where: { id: $pId }, data: { status: pending, image: $image }) {
     id
@@ -74,13 +75,13 @@ mutation UPDATE_PAYMENT($pId: ID!, $image: Upload) {
   }
 }
 
-mutation TEMP_CREATE_USER($email: String!, $password: String!) {
+mutation TEMP_CREATE_USER($email: String!, $password: String!, $phone: String) {
   createUser(
     data: {
       email: $email
       password: $password
       name: "Predefinido"
-      phone: "0000000000"
+      phone: $phone
       isVerified: true
     }
   ) {
