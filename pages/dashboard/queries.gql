@@ -1,3 +1,13 @@
+query GET_RESERVATION($date: DateTime!) {
+  getReservationByDate(date: $date) {
+    startsAt
+    endsAt
+    property {
+      name
+    }
+  }
+}
+
 query CREATE_PAYMENT_IF_DONT_EXIST($id: ID!) {
   createPayment(id: $id)
 }

@@ -1,13 +1,3 @@
-// type DataTableType : {
-//     headers: [string],
-//     data: [{
-//         name: string
-//         description: string
-//         reserve: boolean
-//         needsAproval: boolean
-//     }]
-// }
-
 import Link from "next/link"
 
 const DataTable = ({ headers, data }) => {

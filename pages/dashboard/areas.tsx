@@ -13,6 +13,10 @@ import { useMutation, useQuery } from "@apollo/client"
 import { useRouter } from "next/router"
 import { useContext, useState } from "react"
 import { uiCTX } from "../_app"
+import Calendar from "rsuite/Calendar"
+import Date from "@/components/Calendar/Date"
+import { DatePicker, Stack } from "rsuite"
+import "rsuite/dist/rsuite.min.css"
 
 // import Paper from "@mui/material/Paper"
 // import { ViewState } from "@devexpress/dx-react-scheduler"
@@ -22,7 +26,6 @@ import { uiCTX } from "../_app"
 //   MonthView,
 // } from "@devexpress/dx-react-scheduler-material-ui"
 // @ts-ignore
-import DatePicker from "react-datepicker"
 
 import "react-datepicker/dist/react-datepicker.css"
 
@@ -63,14 +66,14 @@ const initialValues = {
 // @ts-ignore
 const Areas = (props) => {
   const ui = useContext(uiCTX)
-  const [startDate, setStartDate] = useState(new Date())
+  const [startDate, setStartDate] = useState("")
   const { query, push } = useRouter()
   const { error, data, loading, called } = useQuery(GET_AREAS)
 
   const selectedArea =
     query.edit && data?.areas?.length > 0
-    // @ts-ignore
-      ? data.areas.find((i) => i.id === query.edit)
+      ? // @ts-ignore
+        data.areas.find((i) => i.id === query.edit)
       : initialValues
 
   const [createArea, createAreaCTX] = useMutation(ADD_AREA, {
@@ -120,9 +123,14 @@ const Areas = (props) => {
                 (formik) => (
                   <Form className="mb-8 mt-8 flex flex-col">
                     <DatePicker
-                      selected={startDate}
-                      // @ts-ignore
-                      onChange={(date) => setStartDate(date)}
+                      format="HH:mm"
+                      ranges={[]}
+                      hideMinutes={(min) => {
+                        if (min % 15) {
+                          return true
+                        }
+                        return false
+                      }}
                     />
                     <Field
                       label="Nombre del area"
@@ -165,12 +173,7 @@ const Areas = (props) => {
         </div>
         <div className="w-4/6 p-2">
           <div className="text-sm font-semibold uppercase tracking-wide text-indigo-500">
-            {/* <Paper>
-              <Scheduler data={schedulerData}>
-                <ViewState currentDate={currentDate} />
-                <MonthView /> <Appointments />
-              </Scheduler>
-            </Paper> */}
+            <Calendar bordered renderCell={(date) => <Date date={date} />} />
           </div>
         </div>
       </>

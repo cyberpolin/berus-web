@@ -1,7 +1,7 @@
 import Link from "next/link"
 
 
-const Loader = () => (
+export const Loader = () => (
   <svg
     aria-hidden="true"
     role="status"

@@ -25,6 +25,7 @@ export default function () {
   const [loginMutation, { data, loading, error }] = useMutation(LOG_IN, {
     refetchQueries: [IS_LOGGED],
   })
+  console.log("error", error)
   const [signUpMutation, signUpMutationData] = useMutation(TEMP_CREATE_USER, {
     refetchQueries: [IS_LOGGED],
   })
@@ -52,10 +53,14 @@ export default function () {
           validationSchema={schema}
           onSubmit={async (variables) => {
             const { data } = await loginMutation({ variables })
+            console.log("error" > error)
             if (
               data?.authenticateUserWithPassword?.message ===
               "Authentication failed."
             ) {
+              await isUser({
+                variables: { email: variables.email },
+              })
               await signUpMutation({ variables })
               await loginMutation({ variables })
               // reset()
@@ -71,6 +76,7 @@ export default function () {
                   //@ts-ignore
                   onChange={async (e) => {
                     formik.handleChange(e)
+                    console.log("changed")
                     if (!formik.errors.email && e.target.value.length > 3) {
                       if (delay.current) {
                         clearTimeout(delay.current)
