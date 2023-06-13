@@ -53,7 +53,6 @@ export default function () {
           validationSchema={schema}
           onSubmit={async (variables) => {
             const { data } = await loginMutation({ variables })
-            console.log("error" > error)
             if (
               data?.authenticateUserWithPassword?.message ===
               "Authentication failed."
