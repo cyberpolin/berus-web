@@ -52,16 +52,20 @@ export default function () {
           initialValues={initialValues}
           validationSchema={schema}
           onSubmit={async (variables) => {
-            const { data } = await loginMutation({ variables })
+            const cleanVars = {
+              ...variables,
+              email: variables.email.replace(" ", ""),
+            }
+            const { data } = await loginMutation({ variables: cleanVars })
             if (
               data?.authenticateUserWithPassword?.message ===
               "Authentication failed."
             ) {
               await isUser({
-                variables: { email: variables.email },
+                variables: { email: cleanVars.email },
               })
-              await signUpMutation({ variables })
-              await loginMutation({ variables })
+              await signUpMutation({ variables: cleanVars })
+              await loginMutation({ variables: cleanVars })
               // reset()
             }
           }}
@@ -75,6 +79,10 @@ export default function () {
                   //@ts-ignore
                   onChange={async (e) => {
                     formik.handleChange(e)
+                    formik.setFieldValue(
+                      "email",
+                      e.target.value.replace(" ", "")
+                    )
                     console.log("changed")
                     if (!formik.errors.email && e.target.value.length > 3) {
                       if (delay.current) {
@@ -83,7 +91,7 @@ export default function () {
                       //@ts-ignore
                       delay.current = setTimeout(async () => {
                         const user = await isUser({
-                          variables: { email: e.target.value },
+                          variables: { email: e.target.value.replace(" ", "") },
                         })
                       }, 1000)
                     }
@@ -93,6 +101,7 @@ export default function () {
                   id="email"
                   type="text"
                   errors={formik.errors}
+                  value={formik.values.email || ""}
                 />
 
                 <Field
