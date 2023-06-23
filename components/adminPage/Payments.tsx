@@ -1,15 +1,15 @@
-import { get, orderBy } from "lodash"
-import { useMutation, useQuery } from "@apollo/client"
+import _, { get, orderBy } from "lodash";
+import { useMutation, useQuery } from "@apollo/client";
 import {
   GET_PAYMENTS,
   APROVE_PAYMENT,
-} from "../../pages/admin/adminQueries.gql"
-import Loader from "../General/Loader"
-import Debt from "./Debt"
-import currency from "currency.js"
-import { DateRange, LoaderType } from "@/lib/types"
-import { useState } from "react"
-import Link from "next/link"
+} from "../../pages/admin/adminQueries.gql";
+import Loader from "../General/Loader";
+import Debt from "./Debt";
+import currency from "currency.js";
+import { DateRange, LoaderType } from "@/lib/types";
+import { useState } from "react";
+import Link from "next/link";
 
 const Status = ({ status }: { status: string }) => {
   if (status === "onTime") {
@@ -17,7 +17,7 @@ const Status = ({ status }: { status: string }) => {
       <span className="mr-2 rounded bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800 dark:bg-blue-900 dark:text-blue-300">
         A tiempo
       </span>
-    )
+    );
   }
 
   if (status === "pending") {
@@ -25,62 +25,62 @@ const Status = ({ status }: { status: string }) => {
       <span className="mr-2 rounded bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300">
         Pendiente
       </span>
-    )
+    );
   }
   if (status === "payed") {
     return (
       <span className="mr-2 rounded bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800 dark:bg-green-900 dark:text-green-300">
         {status}
       </span>
-    )
+    );
   }
   if (status === "pending") {
     return (
       <span className="mr-2 rounded bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300">
         {status}
       </span>
-    )
+    );
   }
 
-  return <span>{status}</span>
-}
+  return <span>{status}</span>;
+};
 
 const Image = ({ image }: { image: any }) => {
-  const isPdf = image?.publicUrl.includes(".pdf")
+  const isPdf = image?.publicUrl.includes(".pdf");
 
-  if (!image) return <></>
+  if (!image) return <></>;
 
   if (isPdf) {
     return (
       <a target="_blank" rel="noreferrer" href={image?.publicUrl}>
         <img src="/pdfIcon.png" alt="pago" width={80} />
       </a>
-    )
+    );
   }
 
   return (
     <a target="_blank" rel="noreferrer" href={image?.publicUrl}>
       <img src={image?.publicUrl} alt="pago" width={80} />
     </a>
-  )
-}
+  );
+};
 
 const Alert = ({
   payment,
   close,
 }: {
-  payment: string | null
-  close: () => void
+  payment: string | null;
+  close: () => void;
 }) => {
   const [aprovePayment, { error, loading, data, reset }] = useMutation(
     APROVE_PAYMENT,
     { refetchQueries: [GET_PAYMENTS] }
-  )
+  );
 
   //THIS WILL CLOSE THE ALERT...
   if (!error && !loading && data) {
-    close()
-    reset()
+    close();
+    reset();
   }
 
   if (payment) {
@@ -151,36 +151,40 @@ const Alert = ({
           </button>
         </div>
       </div>
-    )
+    );
   } else {
-    return <></>
+    return <></>;
   }
-}
+};
 
-const Payments = ({ initialDate, finalDate }: DateRange) => {
-  const [selectedPayment, setSelectedPayment] = useState(null)
+const Payments = ({ initialDate, finalDate, searchTerm }: DateRange) => {
+  const [selectedPayment, setSelectedPayment] = useState(null);
   const { data, loading, error } = useQuery(GET_PAYMENTS, {
     variables: { initialDate, finalDate },
-  })
-
-  console.log("selected >> ", {
-    selectedPayment,
-  })
+  });
 
   if (error || loading) {
-    return <Loader error={error} loading={loading} />
+    return <Loader error={error} loading={loading} />;
   }
 
   if (data) {
     const payments = data.payments.map((x: any) => ({
       ...x,
       ...x.property?.[0],
-    }))
+    }));
     const orderedPayments = orderBy(payments, ["square", "lot"]).filter(
       (x) => !!x.property
-    )
-    console.log(">> ", orderedPayments)
-
+    );
+    const filteredPayments =
+      searchTerm !== ""
+        ? orderedPayments.filter((x) => {
+            const until = searchTerm?.length;
+            return (
+              x.property.name.toLowerCase().slice(0, until) ==
+              searchTerm?.toLowerCase()
+            );
+          })
+        : orderedPayments;
     return (
       <div className="relative mt-8 overflow-x-auto shadow-md sm:rounded-lg">
         <table className="w-full text-left text-sm text-gray-500 dark:text-gray-400">
@@ -201,9 +205,14 @@ const Payments = ({ initialDate, finalDate }: DateRange) => {
             </tr>
           </thead>
           <tbody>
-            {orderedPayments.map(
-              ({ id, property: { lot, square, owner }, status, image }) => {
-                const thisMonth = status !== "payed" ? 1220 : 0
+            {filteredPayments.map(
+              ({
+                id,
+                property: { lot, square, owner, name },
+                status,
+                image,
+              }) => {
+                const thisMonth = status !== "payed" ? 1220 : 0;
 
                 return (
                   <tr
@@ -253,7 +262,7 @@ const Payments = ({ initialDate, finalDate }: DateRange) => {
                         <span
                           data-drawer-target="drawer-aprove"
                           onClick={() => {
-                            setSelectedPayment(id)
+                            setSelectedPayment(id);
                           }}
                           className="mr-2 rounded border border-green-400 bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800 dark:bg-gray-700 dark:text-green-400"
                         >
@@ -262,7 +271,7 @@ const Payments = ({ initialDate, finalDate }: DateRange) => {
                       )}
                     </td>
                   </tr>
-                )
+                );
               }
             )}
           </tbody>
@@ -272,10 +281,10 @@ const Payments = ({ initialDate, finalDate }: DateRange) => {
           close={() => setSelectedPayment(null)}
         />
       </div>
-    )
+    );
   }
 
-  return <></>
-}
+  return <></>;
+};
 
-export default Payments
+export default Payments;

@@ -1,38 +1,38 @@
-import { Form, Formik } from "formik"
-import Link from "next/link"
-import * as yup from "yup"
-import Field from "@/components/Field"
-import { LOG_IN, IS_LOGGED, TEMP_CREATE_USER, IS_USER } from "./queries.gql"
-import { useLazyQuery, useMutation } from "@apollo/client"
-import Layout from "../../components/layout/login"
-import Button from "@/components/Button"
+import { Form, Formik } from "formik";
+import Link from "next/link";
+import * as yup from "yup";
+import Field from "@/components/Field";
+import { LOG_IN, IS_LOGGED, TEMP_CREATE_USER, IS_USER } from "./queries.gql";
+import { useLazyQuery, useMutation } from "@apollo/client";
+import Layout from "../../components/layout/login";
+import Button from "@/components/Button";
 
-import Image from "next/image"
-import { useRef } from "react"
+import Image from "next/image";
+import { useRef } from "react";
 
 const schema = yup.object().shape({
   password: yup.number().required().positive().integer().min(4),
   phone: yup.number().positive().min(10),
   email: yup.string().email().required(),
-})
+});
 
 const initialValues = {
   email: "",
   password: "",
-}
+};
 
 export default function () {
   const [loginMutation, { data, loading, error }] = useMutation(LOG_IN, {
     refetchQueries: [IS_LOGGED],
-  })
-  console.log("error", error)
+  });
+  console.log("error", error);
   const [signUpMutation, signUpMutationData] = useMutation(TEMP_CREATE_USER, {
     refetchQueries: [IS_LOGGED],
-  })
+  });
 
-  const [isUser, { data: haveUser }] = useLazyQuery(IS_USER)
+  const [isUser, { data: haveUser }] = useLazyQuery(IS_USER);
 
-  const delay = useRef()
+  const delay = useRef();
 
   return (
     // @ts-ignore: Unreachable code error
@@ -55,17 +55,17 @@ export default function () {
             const cleanVars = {
               ...variables,
               email: variables.email.replace(" ", ""),
-            }
-            const { data } = await loginMutation({ variables: cleanVars })
+            };
+            const { data } = await loginMutation({ variables: cleanVars });
             if (
               data?.authenticateUserWithPassword?.message ===
               "Authentication failed."
             ) {
               await isUser({
                 variables: { email: cleanVars.email },
-              })
-              await signUpMutation({ variables: cleanVars })
-              await loginMutation({ variables: cleanVars })
+              });
+              await signUpMutation({ variables: cleanVars });
+              await loginMutation({ variables: cleanVars });
               // reset()
             }
           }}
@@ -78,22 +78,22 @@ export default function () {
                   //remove this later
                   //@ts-ignore
                   onChange={async (e) => {
-                    formik.handleChange(e)
+                    formik.handleChange(e);
                     formik.setFieldValue(
                       "email",
                       e.target.value.replace(" ", "")
-                    )
-                    console.log("changed")
+                    );
+                    console.log("changed");
                     if (!formik.errors.email && e.target.value.length > 3) {
                       if (delay.current) {
-                        clearTimeout(delay.current)
+                        clearTimeout(delay.current);
                       }
                       //@ts-ignore
                       delay.current = setTimeout(async () => {
                         const user = await isUser({
                           variables: { email: e.target.value.replace(" ", "") },
-                        })
-                      }, 1000)
+                        });
+                      }, 1000);
                     }
                   }}
                   label="Correo electronico"
@@ -133,7 +133,7 @@ export default function () {
 
                 <Button title="Ingresar" loading={loading} />
               </Form>
-            )
+            );
           }}
         </Formik>
         <div className="row">
@@ -154,5 +154,5 @@ export default function () {
         </div>
       </div>
     </Layout>
-  )
+  );
 }

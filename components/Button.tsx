@@ -1,5 +1,4 @@
-import Link from "next/link"
-
+import Link from "next/link";
 
 export const Loader = () => (
   <svg
@@ -19,7 +18,7 @@ export const Loader = () => (
       fill="currentColor"
     />
   </svg>
-)
+);
 
 const Button = ({
   title,
@@ -29,12 +28,12 @@ const Button = ({
   className,
   loading,
 }: {
-  title: string
-  onClick?: () => void
-  type?: string
-  href?: string
-  className?: any
-  loading?: boolean
+  title: string;
+  onClick?: () => void;
+  type?: string;
+  href?: string;
+  className?: any;
+  loading?: boolean;
 }) => {
   if (href) {
     return (
@@ -44,7 +43,7 @@ const Button = ({
       >
         {title} {loading && <Loader />}
       </Link>
-    )
+    );
   }
   return (
     <button
@@ -55,7 +54,7 @@ const Button = ({
     >
       {title} {loading && <Loader />}
     </button>
-  )
-}
+  );
+};
 
-export default Button
+export default Button;

@@ -1,22 +1,22 @@
-import Button from "@/components/Button"
-import Field from "@/components/Field"
-import Layout from "@/components/layout/NLayout"
+import Button from "@/components/Button";
+import Field from "@/components/Field";
+import Layout from "@/components/layout/NLayout";
 // @ts-ignore
-import { Form, Formik } from "formik"
+import { Form, Formik } from "formik";
 // @ts-ignore
-import * as yup from "yup"
-import { GET_AREAS, ADD_AREA, UPDATE_AREA } from "../admin/adminQueries.gql"
+import * as yup from "yup";
+import { GET_AREAS, ADD_AREA, UPDATE_AREA } from "../admin/adminQueries.gql";
 
 // @ts-ignore
-import { useMutation, useQuery } from "@apollo/client"
+import { useMutation, useQuery } from "@apollo/client";
 // @ts-ignore
-import { useRouter } from "next/router"
-import { useContext, useState } from "react"
-import { uiCTX } from "../_app"
-import Calendar from "rsuite/Calendar"
-import Date from "@/components/Calendar/Date"
-import { DatePicker, Stack } from "rsuite"
-import "rsuite/dist/rsuite.min.css"
+import { useRouter } from "next/router";
+import { useContext, useState } from "react";
+import { uiCTX } from "../_app";
+import Calendar from "rsuite/Calendar";
+import Date from "@/components/Calendar/Date";
+import { DatePicker, Stack } from "rsuite";
+import "rsuite/dist/rsuite.min.css";
 
 // import Paper from "@mui/material/Paper"
 // import { ViewState } from "@devexpress/dx-react-scheduler"
@@ -27,9 +27,9 @@ import "rsuite/dist/rsuite.min.css"
 // } from "@devexpress/dx-react-scheduler-material-ui"
 // @ts-ignore
 
-import "react-datepicker/dist/react-datepicker.css"
+import "react-datepicker/dist/react-datepicker.css";
 
-const currentDate = "2018-11-01"
+const currentDate = "2018-11-01";
 const schedulerData = [
   {
     startDate: "2018-11-01T09:45",
@@ -41,7 +41,7 @@ const schedulerData = [
     endDate: "2018-11-01T13:30",
     title: "Go to a gym",
   },
-]
+];
 
 const headers = [
   "Nombre",
@@ -49,39 +49,39 @@ const headers = [
   "Puede aprtarse",
   "Necesita aprovación",
   "Acciones",
-]
+];
 
 const schema = yup.object().shape({
   name: yup.string().required(),
   description: yup.string().required(),
-})
+});
 
 const initialValues = {
   name: "",
   description: "",
   reserve: false,
   needsAproval: false,
-}
+};
 
 // @ts-ignore
 const Areas = (props) => {
-  const ui = useContext(uiCTX)
-  const [startDate, setStartDate] = useState("")
-  const { query, push } = useRouter()
-  const { error, data, loading, called } = useQuery(GET_AREAS)
+  const ui = useContext(uiCTX);
+  const [startDate, setStartDate] = useState("");
+  const { query, push } = useRouter();
+  const { error, data, loading, called } = useQuery(GET_AREAS);
 
   const selectedArea =
     query.edit && data?.areas?.length > 0
       ? // @ts-ignore
         data.areas.find((i) => i.id === query.edit)
-      : initialValues
+      : initialValues;
 
   const [createArea, createAreaCTX] = useMutation(ADD_AREA, {
     refetchQueries: [GET_AREAS],
-  })
+  });
   const [updateArea, updateAreaCTX] = useMutation(UPDATE_AREA, {
     refetchQueries: [GET_AREAS],
-  })
+  });
   return (
     <Layout>
       <>
@@ -94,27 +94,27 @@ const Areas = (props) => {
               //@ts-ignore
               onSubmit={async (variables, { resetForm }) => {
                 if (query.edit) {
-                  const editVariables = { ...variables, id: query.edit }
+                  const editVariables = { ...variables, id: query.edit };
                   try {
                     const { data } = await updateArea({
                       variables: editVariables,
-                    })
+                    });
                   } catch (error) {
-                    console.log("error >> ", error)
+                    console.log("error >> ", error);
                   }
                   if (data) {
-                    push("./comon-areas")
+                    push("./comon-areas");
                     //@ts-ignore
-                    resetForm(initialValues)
+                    resetForm(initialValues);
                   }
-                  return
+                  return;
                 }
 
                 try {
-                  const { data } = await createArea({ variables })
+                  const { data } = await createArea({ variables });
 
                   //@ts-ignore
-                  if (data) resetForm(initialValues)
+                  if (data) resetForm(initialValues);
                 } catch {}
               }}
             >
@@ -127,9 +127,9 @@ const Areas = (props) => {
                       ranges={[]}
                       hideMinutes={(min) => {
                         if (min % 15) {
-                          return true
+                          return true;
                         }
-                        return false
+                        return false;
                       }}
                     />
                     <Field
@@ -178,7 +178,7 @@ const Areas = (props) => {
         </div>
       </>
     </Layout>
-  )
-}
+  );
+};
 
-export default Areas
+export default Areas;

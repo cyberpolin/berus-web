@@ -1,25 +1,31 @@
-import { useState } from "react"
-import { months } from "../../lib/utils/date"
+import { useState } from "react";
+import { months } from "../../lib/utils/date";
 
-import Layout from "../../components/layout/NLayout"
-import Payments from "@/components/adminPage/Payments"
+import Layout from "../../components/layout/NLayout";
+import Payments from "@/components/adminPage/Payments";
 
 const getTextMonth = (month: any) =>
-  parseInt(month) < 9 ? `0${parseInt(month) + 1}` : `${parseInt(month) + 1}`
+  parseInt(month) < 9 ? `0${parseInt(month) + 1}` : `${parseInt(month) + 1}`;
 
 export default function () {
-  const today = new Date()
-  const month = today.getMonth()
-  const year = today.getFullYear
+  const today = new Date();
+  const month = today.getMonth();
+  const year = today.getFullYear;
 
-  const [selectedMonth, setSelectedMonth] = useState(getTextMonth(month))
+  const [selectedMonth, setSelectedMonth] = useState(getTextMonth(month));
+  const [searchTerm, setSearchTerm] = useState("");
   return (
     <Layout>
       <div className="m-4 w-full">
+        <input
+          onChange={(e) => setSearchTerm(e.target.value)}
+          placeholder="busqueda"
+          className="block w-1/2 rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+        />
         <select
           onChange={(e) => {
-            const value = parseInt(e.target.value)
-            setSelectedMonth(getTextMonth(value))
+            const value = parseInt(e.target.value);
+            setSelectedMonth(getTextMonth(value));
             // setSelectedMonth(getTextMonth(parseInt(e.target.value) + 1))
           }}
           id="countries"
@@ -33,10 +39,11 @@ export default function () {
         </select>
 
         <Payments
+          searchTerm={searchTerm}
           initialDate={`2023-${selectedMonth}-05T00:00:00Z`}
           finalDate={`2023-${selectedMonth}-05T23:59:59Z`}
         />
       </div>
     </Layout>
-  )
+  );
 }

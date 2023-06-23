@@ -1,20 +1,20 @@
-import Logout from "@/components/Logout"
-import UseAuth from "@/lib/UseAuth"
-import { useMutation } from "@apollo/client"
-import Image from "next/image"
-import Link from "next/link"
-import { useRouter } from "next/router"
-import React, { useCallback, useEffect, useState } from "react"
-import Dropzone, { useDropzone } from "react-dropzone"
-import { UPDATE_USER } from "../../pages/admin/adminQueries.gql"
-import { IS_LOGGED } from "../../pages/login/queries.gql"
-import SubMenu from "../../components/Menu/SubMenu"
-import useUI from "@/lib/hooks/useUI"
+import Logout from "@/components/Logout";
+import UseAuth from "@/lib/UseAuth";
+import { useMutation } from "@apollo/client";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import React, { useCallback, useEffect, useState } from "react";
+import Dropzone, { useDropzone } from "react-dropzone";
+import { UPDATE_USER } from "../../pages/admin/adminQueries.gql";
+import { IS_LOGGED } from "../../pages/login/queries.gql";
+import SubMenu from "../../components/Menu/SubMenu";
+import useUI from "@/lib/hooks/useUI";
 
 const Drop = ({
   dz: { getInputProps, getRootProps, loading },
 }: {
-  dz: any
+  dz: any;
 }) => (
   <div className="z flex w-full items-center justify-center">
     <label
@@ -70,17 +70,22 @@ const Drop = ({
       <input id="dropzone-file" type="file" className="hidden" />
     </label>
   </div>
-)
+);
 
 //@ts-ignore
 const ProfileMenu = ({ user, show }) => {
-  const ui = useUI()
-  const [force, setForce] = useState(false)
+  const ui = useUI();
+  const router = useRouter();
+  const [force, setForce] = useState(false);
+  console.log("user ", user);
+
+  const id =
+    user.isAdmin && router?.query.pretend ? router?.query.pretend : user.id;
 
   const [updateUser, { loading, data, error, called }] = useMutation(
     UPDATE_USER,
     { refetchQueries: [IS_LOGGED] }
-  )
+  );
 
   //@ts-ignore
   const onDrop = useCallback(
@@ -92,28 +97,28 @@ const ProfileMenu = ({ user, show }) => {
         Object.assign(file, {
           preview: URL.createObjectURL(file),
         })
-      )[0]
+      )[0];
 
       await updateUser({
         variables: {
-          id: user.id,
+          id,
           // @ts-ignore: Unreachable code error
           image,
         },
-      })
+      });
 
       if (called && !error) {
-        setForce(false)
+        setForce(false);
       }
     },
     [force]
-  )
+  );
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     accept: {
       "image/png": [".png", ".pdf", ".jpeg", ".jpg"],
     },
     onDrop,
-  })
+  });
 
   return (
     <div
@@ -184,7 +189,7 @@ const ProfileMenu = ({ user, show }) => {
         )}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default ProfileMenu
+export default ProfileMenu;

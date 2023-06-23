@@ -1,25 +1,25 @@
-import UseAuth from "@/lib/UseAuth"
-import Link from "next/link"
-import Image from "next/image"
-import React, { useEffect } from "react"
-import useUI from "@/lib/hooks/useUI"
-import ProfileMenu from "./ProfileMenu"
-import { useRouter } from "next/router"
+import UseAuth from "@/lib/UseAuth";
+import Link from "next/link";
+import Image from "next/image";
+import React, { useEffect } from "react";
+import useUI from "@/lib/hooks/useUI";
+import ProfileMenu from "./ProfileMenu";
+import { useRouter } from "next/router";
 
 const NLayout = (props: any) => {
-  const { user } = UseAuth()
-  const router = useRouter()
-  const ui = useUI()
+  const { user } = UseAuth();
+  const router = useRouter();
+  const ui = useUI();
 
   useEffect(() => {
     if (!user) {
-      router?.push("/login")
+      router?.push("/login");
     }
-  }, [])
+  }, []);
 
-  const showSettings = ui.settings ? "" : "hidden -z-10"
-  const showProfile = ui.profile ? "" : "hidden -z-10"
-  const showMobile = ui.mobile ? "sm:inline-block" : "hidden sm:inline-block"
+  const showSettings = ui.settings ? "" : "hidden -z-10";
+  const showProfile = ui.profile ? "" : "hidden -z-10";
+  const showMobile = ui.mobile ? "sm:inline-block" : "hidden sm:inline-block";
 
   return (
     <div>
@@ -95,6 +95,12 @@ const NLayout = (props: any) => {
             </Link>
             <Link
               className="block p-5 text-center text-sm hover:text-gray-800 hover:underline dark:text-amber-50 md:mt-0 md:inline-block"
+              href="/dashboard/card"
+            >
+              Card
+            </Link>
+            <Link
+              className="block p-5 text-center text-sm hover:text-gray-800 hover:underline dark:text-amber-50 md:mt-0 md:inline-block"
               href="/logout"
             >
               Salir
@@ -140,7 +146,7 @@ const NLayout = (props: any) => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default NLayout
+export default NLayout;

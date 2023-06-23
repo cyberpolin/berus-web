@@ -104,6 +104,7 @@ query GET_PAYMENTS($id: ID!) {
       id
       square
       lot
+      name
       payments {
         id
         dueAt

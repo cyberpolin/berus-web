@@ -1,20 +1,20 @@
-import { useMutation, useQuery } from "@apollo/client"
-import currency from "currency.js"
-import dayjs from "dayjs"
+import { useMutation, useQuery } from "@apollo/client";
+import currency from "currency.js";
+import dayjs from "dayjs";
 import {
   GET_PAYMENTS,
   GET_FREE_PROPERTY,
   ASSIGN_OWNER,
   IS_LOGGED,
-} from "../pages/login/queries.gql"
-import { CREATE_PAYMENT_IF_DONT_EXIST } from "../pages/admin/adminQueries.gql"
-import Image from "next/image"
-import Link from "next/link"
-import PayForm from "../pages/dashboard/pagar-cuota"
-import { useState } from "react"
-import Button from "./Button"
-import { useRouter } from "next/router"
-import { orderBy } from "lodash"
+} from "../pages/login/queries.gql";
+import { CREATE_PAYMENT_IF_DONT_EXIST } from "../pages/admin/adminQueries.gql";
+import Image from "next/image";
+import Link from "next/link";
+import PayForm from "../pages/dashboard/pagar-cuota";
+import { useState } from "react";
+import Button from "./Button";
+import { useRouter } from "next/router";
+import { orderBy } from "lodash";
 
 const Status = ({ value }: { value: string }) => {
   const statusOption = {
@@ -22,7 +22,7 @@ const Status = ({ value }: { value: string }) => {
     due: "Vencido",
     onTime: "A tiempo",
     payed: "Pagado",
-  }
+  };
 
   const colors = {
     onTime:
@@ -32,7 +32,7 @@ const Status = ({ value }: { value: string }) => {
       "bg-blue-100 px-2.5 py-0.5 text-sm font-medium text-blue-800 dark:bg-blue-900 dark:text-blue-300",
     payed:
       "bg-green-100 text-green-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300",
-  }
+  };
   return (
     <span
       //@ts-ignore
@@ -43,8 +43,8 @@ const Status = ({ value }: { value: string }) => {
         statusOption[value]
       }
     </span>
-  )
-}
+  );
+};
 
 const Action = ({ status, show }: { status: any; show: () => void }) => {
   const options = {
@@ -58,20 +58,20 @@ const Action = ({ status, show }: { status: any; show: () => void }) => {
         onClick={show}
       />
     ),
-  }
+  };
   // @ts-ignore: Unreachable code error
-  return options[status] || null
-}
+  return options[status] || null;
+};
 
 const Payments = ({ user }: any) => {
-  const router = useRouter()
-  const [form, setForm] = useState({})
-  const formKeys = Object.keys(form).length > 0 ? Object.keys(form) : [""]
+  const router = useRouter();
+  const [form, setForm] = useState({});
+  const formKeys = Object.keys(form).length > 0 ? Object.keys(form) : [""];
 
   const id =
     user.user.isAdmin && router?.query.pretend
       ? router?.query.pretend
-      : user.user.id
+      : user.user.id;
 
   const createPayment = useQuery(CREATE_PAYMENT_IF_DONT_EXIST, {
     variables: {
@@ -79,28 +79,28 @@ const Payments = ({ user }: any) => {
     },
     //@ts-ignore
     refetchQueries: [GET_PAYMENTS],
-  })
+  });
 
-  const freeProperties = useQuery(GET_FREE_PROPERTY)
+  const freeProperties = useQuery(GET_FREE_PROPERTY);
   const [assignOwner, aod] = useMutation(ASSIGN_OWNER, {
     refetchQueries: [GET_PAYMENTS],
-  })
+  });
 
   const { data, loading, error } = useQuery(GET_PAYMENTS, {
     variables: { id },
-  })
+  });
 
   if (error) {
-    return <p>Opps something isn&apos;t right...</p>
+    return <p>Opps something isn&apos;t right...</p>;
   }
 
   if (loading) {
-    return <p>Looking for payments...</p>
+    return <p>Looking for payments...</p>;
   }
 
   const {
     user: { properties },
-  } = data
+  } = data;
 
   //Dumb developer
   if (!properties || properties.length === 0 || false) {
@@ -135,12 +135,12 @@ const Payments = ({ user }: any) => {
             <select
               className="m-2 block w-full rounded-md border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
               onChange={({ target }) => {
-                const newProp = { ...form }
+                const newProp = { ...form };
                 //@ts-ignore
-                newProp[target.value] = ["", ""]
+                newProp[target.value] = ["", ""];
                 //@ts-ignore
-                delete newProp[""]
-                setForm({ ...newProp })
+                delete newProp[""];
+                setForm({ ...newProp });
                 // assignOwner({
                 //   variables: { pId: id.target.value, ownerId: user.user.id },
                 // })
@@ -166,12 +166,12 @@ const Payments = ({ user }: any) => {
                       value={t}
                       onChange={({ target }) => {
                         //@ts-ignore
-                        const newTags = [...form[p]]
-                        newTags.splice(i, 1, target.value)
-                        const nextO = {}
+                        const newTags = [...form[p]];
+                        newTags.splice(i, 1, target.value);
+                        const nextO = {};
                         //@ts-ignore
-                        nextO[p] = newTags
-                        setForm({ ...form, ...nextO })
+                        nextO[p] = newTags;
+                        setForm({ ...form, ...nextO });
                       }}
                     />
                     {
@@ -181,11 +181,11 @@ const Payments = ({ user }: any) => {
                           href="#"
                           onClick={() => {
                             //@ts-ignore
-                            const newTags = [...form[p], ""]
-                            const nextO = {}
+                            const newTags = [...form[p], ""];
+                            const nextO = {};
                             //@ts-ignore
-                            nextO[p] = newTags
-                            setForm({ ...form, ...nextO })
+                            nextO[p] = newTags;
+                            setForm({ ...form, ...nextO });
                           }}
                         >
                           Agregar otro Tag
@@ -201,10 +201,10 @@ const Payments = ({ user }: any) => {
         <a
           className=""
           onClick={() => {
-            const newProp = {}
+            const newProp = {};
             //@ts-ignore
-            newProp[""] = ["", ""]
-            setForm({ ...form, ...newProp })
+            newProp[""] = ["", ""];
+            setForm({ ...form, ...newProp });
           }}
         >
           Agregar otra Propiedad
@@ -220,16 +220,16 @@ const Payments = ({ user }: any) => {
                   //@ts-ignore
                   create: form[key].map((t) => ({ isActive: true, tagId: t })),
                 },
-              }
+              };
 
               await assignOwner({
                 variables: { pId: key, data },
-              })
-            })
+              });
+            });
           }}
         />
       </div>
-    )
+    );
   }
 
   // //Dumb developer
@@ -303,7 +303,7 @@ const Payments = ({ user }: any) => {
           <Action status={payment.status} show={() => setForm(payment.id)} />
         </li>
       )
-    )
+    );
     return (
       (
         <li key={i} className="relative m-2 w-full rounded border">
@@ -319,8 +319,8 @@ const Payments = ({ user }: any) => {
           <ul className="m-4 border-t-2">{payments}</ul>
         </li>
       ) || null
-    )
-  })
-}
+    );
+  });
+};
 
-export default Payments
+export default Payments;

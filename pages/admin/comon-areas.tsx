@@ -1,17 +1,17 @@
-import Button from "@/components/Button"
-import Field from "@/components/Field"
-import Layout from "@/components/layout/NLayout"
-import { Form, Formik, useFormikContext } from "formik"
-import * as yup from "yup"
-import { GET_AREAS, ADD_AREA, UPDATE_AREA } from "../admin/adminQueries.gql"
+import Button from "@/components/Button";
+import Field from "@/components/Field";
+import Layout from "@/components/layout/NLayout";
+import { Form, Formik, useFormikContext } from "formik";
+import * as yup from "yup";
+import { GET_AREAS, ADD_AREA, UPDATE_AREA } from "../admin/adminQueries.gql";
 
-import DataTable from "../../components/DataTable"
-import { useMutation, useQuery } from "@apollo/client"
-import Loading from "@/components/Loading"
-import { useRouter } from "next/router"
-import { useContext } from "react"
-import { uiCTX } from "../_app"
-import { StringIterator } from "lodash"
+import DataTable from "../../components/DataTable";
+import { useMutation, useQuery } from "@apollo/client";
+import Loading from "@/components/Loading";
+import { useRouter } from "next/router";
+import { useContext } from "react";
+import { uiCTX } from "../_app";
+import { StringIterator } from "lodash";
 
 const headers = [
   "Nombre",
@@ -19,43 +19,43 @@ const headers = [
   "Puede aprtarse",
   "Necesita aprovación",
   "Acciones",
-]
+];
 
 const schema = yup.object().shape({
   name: yup.string().required(),
   description: yup.string().required(),
-})
+});
 type areasType = {
-  id: String
-  name: string
-  description?: string
-  reserve: boolean
-  needsAproval: boolean
-}
+  id: String;
+  name: string;
+  description?: string;
+  reserve: boolean;
+  needsAproval: boolean;
+};
 const initialValues = {
   name: "",
   description: "",
   reserve: false,
   needsAproval: false,
-}
+};
 
 // @ts-ignore
 const CommonAreas = (props) => {
-  const ui = useContext(uiCTX)
-  const { query, push } = useRouter()
-  const { error, data, loading, called } = useQuery(GET_AREAS)
+  const ui = useContext(uiCTX);
+  const { query, push } = useRouter();
+  const { error, data, loading, called } = useQuery(GET_AREAS);
 
   const selectedArea =
     query.edit && data?.areas?.length > 0
-      ? data.areas.find((i:areasType) => i.id === query.edit)
-      : initialValues
+      ? data.areas.find((i: areasType) => i.id === query.edit)
+      : initialValues;
 
   const [createArea, createAreaCTX] = useMutation(ADD_AREA, {
     refetchQueries: [GET_AREAS],
-  })
+  });
   const [updateArea, updateAreaCTX] = useMutation(UPDATE_AREA, {
     refetchQueries: [GET_AREAS],
-  })
+  });
   return (
     <Layout>
       <>
@@ -67,26 +67,26 @@ const CommonAreas = (props) => {
               initialValues={{ ...selectedArea }}
               onSubmit={async (variables, { resetForm }) => {
                 if (query.edit) {
-                  const editVariables = { ...variables, id: query.edit }
+                  const editVariables = { ...variables, id: query.edit };
                   try {
                     const { data } = await updateArea({
                       variables: editVariables,
-                    })
+                    });
                   } catch (error) {
-                    console.log("error >> ", error)
+                    console.log("error >> ", error);
                   }
                   if (data) {
-                    push("./comon-areas")
+                    push("./comon-areas");
                     //@ts-ignore
-                    resetForm(initialValues)
+                    resetForm(initialValues);
                   }
-                  return
+                  return;
                 }
 
                 try {
-                  const { data } = await createArea({ variables })
-//@ts-ignore
-                  if (data) resetForm(initialValues)
+                  const { data } = await createArea({ variables });
+                  //@ts-ignore
+                  if (data) resetForm(initialValues);
                 } catch {}
               }}
             >
@@ -100,7 +100,7 @@ const CommonAreas = (props) => {
                     errors={formik.errors}
                   />
                   <Field
-                  //@ts-ignore
+                    //@ts-ignore
                     as="textarea"
                     label="Descripción o reglas"
                     name="description"
@@ -140,7 +140,7 @@ const CommonAreas = (props) => {
         </div>
       </>
     </Layout>
-  )
-}
+  );
+};
 
-export default CommonAreas
+export default CommonAreas;

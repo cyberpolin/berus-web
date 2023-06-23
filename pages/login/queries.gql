@@ -2,6 +2,14 @@ query USER_EXISTS($email: String!, $phone: String!) {
   userExists(email: $email, phone: $phone)
 }
 
+query RECOVERY_PASSWORD($email: String!) {
+  getRecoveryEmail(email: $email)
+}
+
+query UPDATE_PASSWORD($recoveryId: String!, $password: String!) {
+  updatePassword(recoveryId: $recoveryId, password: $password)
+}
+
 query GET_FREE_PROPERTY {
   properties(where: { owner: null }) {
     id
@@ -114,6 +122,7 @@ query GET_PAYMENTS($id: ID!) {
       id
       square
       lot
+      name
       payments {
         id
         dueAt

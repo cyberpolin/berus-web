@@ -1,10 +1,10 @@
-import Layout from "@/components/layout/NLayout"
-import { useLazyQuery, useQuery } from "@apollo/client"
-import { useEffect, useRef, useState } from "react"
-import { VERIFY_PHONE, PHONE_VERIFIED } from "../login/queries.gql"
+import Layout from "@/components/layout/NLayout";
+import { useLazyQuery, useQuery } from "@apollo/client";
+import { useEffect, useRef, useState } from "react";
+import { VERIFY_PHONE, PHONE_VERIFIED } from "../login/queries.gql";
 
 const Verify = () => {
-  const isVerified = useQuery(PHONE_VERIFIED)
+  const isVerified = useQuery(PHONE_VERIFIED);
   const [veryfyPhone, { data, error, loading, called }] = useLazyQuery(
     VERIFY_PHONE,
     {
@@ -13,47 +13,47 @@ const Verify = () => {
           ? setTimeout(() => window?.location?.reload(), 10000)
           : null,
     }
-  )
-  const [values, setValues] = useState(["", "", "", "", "", ""])
-  const [focused, setFocus] = useState(0)
-  const form = useRef(null)
+  );
+  const [values, setValues] = useState(["", "", "", "", "", ""]);
+  const [focused, setFocus] = useState(0);
+  const form = useRef(null);
 
   useEffect(() => {
     //@ts-ignore
-    form.current[focused]?.focus()
+    form.current[focused]?.focus();
     //@ts-ignore
     if (values.reduce((a, b) => parseInt(a) + parseInt(b), 0) > 0) {
       veryfyPhone({
         variables: {
           code: values.join(""),
         },
-      })
+      });
     }
-  }, [values])
+  }, [values]);
 
   useEffect(() => {
     if (called && !data?.isVerified) {
       setTimeout(() => {
-        setValues(["", "", "", "", "", ""])
-        setFocus(0)
-      }, 1000)
+        setValues(["", "", "", "", "", ""]);
+        setFocus(0);
+      }, 1000);
     }
-  }, [called])
+  }, [called]);
 
   const clean = (index: number) => {
-    const nextValues = [...values]
-    nextValues[index] = ""
-    setValues(nextValues)
-    setFocus(index)
-  }
+    const nextValues = [...values];
+    nextValues[index] = "";
+    setValues(nextValues);
+    setFocus(index);
+  };
 
   const setValue = (index: number, value: string) => {
-    const nextValues = [...values]
-    nextValues[index] = value
+    const nextValues = [...values];
+    nextValues[index] = value;
 
-    setValues(nextValues)
-    setFocus(index + 1)
-  }
+    setValues(nextValues);
+    setFocus(index + 1);
+  };
 
   return (
     <Layout>
@@ -93,7 +93,7 @@ const Verify = () => {
         )}
       </div>
     </Layout>
-  )
-}
+  );
+};
 
-export default Verify
+export default Verify;
