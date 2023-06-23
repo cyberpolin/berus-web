@@ -257,12 +257,12 @@ export default function Layout(props: any) {
               <Link href="#" className="block p-2 text-xs hover:bg-slate-200">
                 ...
               </Link>
-              <Link
+              {/* <Link
                 href="/admin/comon-areas"
                 className="block p-2 text-xs hover:bg-slate-200"
               >
                 Areas Comunes
-              </Link>
+              </Link> */}
               <Link href="#" className="block p-2 text-xs hover:bg-slate-200">
                 ...
               </Link>
@@ -350,5 +350,5 @@ export default function Layout(props: any) {
         </div>
       </div>
     </div>
-  );
+  )
 }

@@ -1,25 +1,25 @@
-import Field from "@/components/Field";
-import { Formik, Form } from "formik";
-import * as yup from "yup";
-import Link from "next/link";
-import { useState } from "react";
-import Button from "@/components/Button";
-import { useRouter } from "next/router";
-import { useLazyQuery } from "@apollo/client";
-import { UPDATE_PASSWORD, RECOVERY_PASSWORD } from "./queries.gql";
+import Field from "@/components/Field"
+import { Formik, Form } from "formik"
+import * as yup from "yup"
+import Link from "next/link"
+import { useState } from "react"
+import Button from "@/components/Button"
+import { useRouter } from "next/router"
+import { useLazyQuery } from "@apollo/client"
+import { UPDATE_PASSWORD, RECOVERY_PASSWORD } from "./queries.gql"
 
 const schema = yup.object().shape({
   email: yup.string().email().required(),
-});
+})
 
 const initialValues = {
   email: "",
-};
+}
 
 const recoveryValues = {
   password: "",
   recoveryPassword: "",
-};
+}
 const recoverySchema = yup.object().shape({
   password: yup
     .string()
@@ -29,33 +29,29 @@ const recoverySchema = yup.object().shape({
   repeatPassword: yup
     .string()
     .oneOf([yup.ref("password"), null], "Passwords must match"),
-});
+})
 
 // @ts-ignore: Unreachable code error
 const submit = (props, setIsLoading) => {
-  setIsLoading(true);
-};
+  setIsLoading(true)
+}
 
 export default function () {
-  const [isLoading, setIsLoading] = useState(false);
-  const [password, setPassword] = useState(null);
-  const router = useRouter();
-  const recoveryId = router?.query.recoveryId;
+  const [isLoading, setIsLoading] = useState(false)
+  const [password, setPassword] = useState(null)
+  const router = useRouter()
+  const recoveryId = router?.query.recoveryId
 
   const [updatePassword, updatePasswordQuery] = useLazyQuery(UPDATE_PASSWORD, {
     onCompleted: (data) =>
       data?.updatePassword
-        ? setTimeout(
-            () =>
-              window.location.replace("https://c7.altozanotabasco.com/login"),
-            5000
-          )
+        ? setTimeout(() => window.location.replace("/login"), 5000)
         : null,
-  });
+  })
   const [recoverPassword, recoveryPasswordQuery] =
-    useLazyQuery(RECOVERY_PASSWORD);
+    useLazyQuery(RECOVERY_PASSWORD)
 
-  console.log("recoveryPasswordQuery", recoveryPasswordQuery);
+  console.log("recoveryPasswordQuery", recoveryPasswordQuery)
 
   if (updatePasswordQuery.called && updatePasswordQuery.data?.updatePassword) {
     return (
@@ -65,7 +61,7 @@ export default function () {
           segundos...
         </p>
       </div>
-    );
+    )
   }
 
   if (
@@ -79,7 +75,7 @@ export default function () {
         </p>
         <p>Por favor revisa tu SPAM en caso que no lo encuentres...</p>
       </div>
-    );
+    )
   }
 
   return (
@@ -94,7 +90,7 @@ export default function () {
                 recoveryId,
                 password,
               },
-            });
+            })
           }}
         >
           {(formik) => (
@@ -108,11 +104,13 @@ export default function () {
                 label="password"
                 name="password"
                 type="text"
+                //@ts-ignore
                 maxlength="4"
                 errors={formik.errors}
               />
               <p></p>
               <Field
+                //@ts-ignore
                 maxlength="4"
                 label="Repite tu password"
                 name="repeatPassword"
@@ -139,7 +137,7 @@ export default function () {
               variables: {
                 email,
               },
-            });
+            })
           }}
         >
           {(formik) => (
@@ -184,5 +182,5 @@ export default function () {
         </Formik>
       )}
     </div>
-  );
+  )
 }
