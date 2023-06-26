@@ -9,22 +9,23 @@ import {
   IS_LOGGED,
   GENERATE_PAYMENTS,
   USER_EXISTS,
-} from "./queries.gql";
+  IS_USER,
+} from "./queries.gql"
 
-import { createUser, addProperties, makePayment } from "../schema";
-import Button from "@/components/Button";
-import Layout from "@/components/layout/login";
-import Link from "next/link";
+import { createUser, addProperties, makePayment } from "../schema"
+import Button from "@/components/Button"
+import Layout from "@/components/layout/login"
+import Link from "next/link"
 
 // @ts-ignore: Unreachable code error
-const CreateUser = ({ goNext, goBack, data, final, haveUser }) => {
+const CreateUser = ({ goNext, goBack, data, final, haveUser, loading }) => {
   return (
     <Formik
       initialValues={{ ...data }}
       validationSchema={createUser}
       onSubmit={(props) => {
         if (!final) {
-          goNext(props);
+          goNext(props)
         }
       }}
     >
@@ -117,23 +118,23 @@ const CreateUser = ({ goNext, goBack, data, final, haveUser }) => {
               </p>
 
               <p>O simplemente intente con otro correo y/o celular...</p>
-              <Button title="Intentar de nuevo" />
+              <Button loading={loading} title="Intentar de nuevo" />
             </>
           ) : (
-            <Button title="Crear Usuario" />
+            <Button loading={loading} title="Crear Usuario" />
           )}
         </Form>
       )}
     </Formik>
-  );
-};
+  )
+}
 
 // @ts-ignore: Unreachable code error
 const AddProperties = ({ goNext, data, final }) => {
-  const [signUpMutation, signUpMutationData] = useMutation(CREATE_USER);
+  const [signUpMutation, signUpMutationData] = useMutation(CREATE_USER)
   const [loginMutation, loginMutationData] = useMutation(LOG_IN, {
     refetchQueries: [{ query: IS_LOGGED }, { query: GENERATE_PAYMENTS }],
-  });
+  })
 
   return (
     <div>
@@ -145,18 +146,18 @@ const AddProperties = ({ goNext, data, final }) => {
         validationSchema={addProperties}
         onSubmit={async (props) => {
           if (!final) {
-            goNext(props);
+            goNext(props)
           }
           try {
-            const creation = await signUpMutation({ variables: props });
+            const creation = await signUpMutation({ variables: props })
 
             if (creation.data.createUser) {
               loginMutation({
                 variables: { email: props.email, password: props.password },
-              });
+              })
             }
           } catch (error) {
-            console.log("error ", error);
+            console.log("error ", error)
           }
         }}
       >
@@ -175,7 +176,7 @@ const AddProperties = ({ goNext, data, final }) => {
                     formik?.values.properties.map((property, index) => {
                       const {
                         errors: { properties: errors },
-                      } = arrayProps.form;
+                      } = arrayProps.form
                       return (
                         <div key={index} className="m-4 mb-8">
                           {/*  @ts-ignore */}
@@ -258,7 +259,7 @@ const AddProperties = ({ goNext, data, final }) => {
                             }
                           </div>
                         </div>
-                      );
+                      )
                     })}
 
                   <Button title="Hacer el primer pago" />
@@ -269,8 +270,8 @@ const AddProperties = ({ goNext, data, final }) => {
         )}
       </Formik>
     </div>
-  );
-};
+  )
+}
 
 // @ts-ignore: Unreachable code error
 const MakePayment = ({ goNext, data, final }) => (
@@ -279,9 +280,9 @@ const MakePayment = ({ goNext, data, final }) => (
     validationSchema={makePayment}
     onSubmit={(props) => {
       if (!final) {
-        goNext(props);
+        goNext(props)
       } else {
-        console.log("submit", data);
+        console.log("submit", data)
       }
     }}
   >
@@ -300,45 +301,45 @@ const MakePayment = ({ goNext, data, final }) => (
       </Form>
     )}
   </Formik>
-);
+)
 
 const SignUp = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [currentStep, setStep] = useState(0);
-  const [userExist, setUserExist] = useState(false);
+  const [isLoading, setIsLoading] = useState(false)
+  const [currentStep, setStep] = useState(0)
+  const [userExist, setUserExist] = useState(false)
 
-  const [form, setData] = useState({});
+  const [form, setData] = useState({})
 
-  const [userExists, { error, data, loading, called }] =
-    useLazyQuery(USER_EXISTS);
+  const [userExists, { error, data, loading, called }] = useLazyQuery(IS_USER)
 
   const goBack = () => {
     if (currentStep >= 1) {
-      setStep(currentStep - 1);
+      setStep(currentStep - 1)
     }
-  };
-  var haveUser = null;
+  }
+  var haveUser = null
   // @ts-ignore: Unreachable code error
   const goNext = async (props) => {
-    const { email, phone } = props;
+    const { email, phone } = props
     haveUser = await userExists({
       variables: {
         email,
         phone,
       },
-    });
+    })
 
-    setUserExist(haveUser.data?.userExists);
-    if (haveUser.data?.userExists === false) {
-      setData({ ...form, ...props });
-      setStep(currentStep + 1);
-      return;
+    setUserExist(haveUser.data?.isUser)
+    if (haveUser.data?.isUser === false) {
+      setData({ ...form, ...props })
+      setStep(currentStep + 1)
+      return
     }
-  };
+  }
 
   const steps = [
     // @ts-ignore: Unreachable code error
     <CreateUser
+      loading={loading}
       key={1}
       goNext={goNext}
       goBack={goBack}
@@ -346,14 +347,14 @@ const SignUp = () => {
       haveUser={userExist}
     />,
     <AddProperties key={2} goNext={goNext} data={form} final={true} />,
-  ];
+  ]
 
   const SVG = ({
     currentStep,
     thisStep,
   }: {
-    currentStep: number;
-    thisStep: number;
+    currentStep: number
+    thisStep: number
   }) => {
     if (currentStep >= thisStep) {
       return (
@@ -372,7 +373,7 @@ const SignUp = () => {
             ></path>
           </svg>
         </div>
-      );
+      )
     }
     return (
       <div className="z-10 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-gray-200 ring-0 ring-white dark:bg-gray-700 dark:ring-gray-900 sm:ring-8">
@@ -390,8 +391,8 @@ const SignUp = () => {
           ></path>
         </svg>
       </div>
-    );
-  };
+    )
+  }
 
   return (
     // @ts-ignore: Unreachable code error
@@ -425,7 +426,7 @@ const SignUp = () => {
         <>{steps[currentStep]}</>
       </>
     </Layout>
-  );
-};
+  )
+}
 
 export default SignUp;

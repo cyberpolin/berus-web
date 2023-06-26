@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@apollo/client": "^3.7.9",
+    "@apollo/client": "^3.7.16",
     "@mercadopago/sdk-js": "^0.0.2",
     "@mercadopago/sdk-react": "^0.0.11",
     "@next/font": "13.1.5",

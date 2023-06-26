@@ -24,20 +24,20 @@ const initialValues = {
 export default function () {
   const [loginMutation, { data, loading, error }] = useMutation(LOG_IN, {
     refetchQueries: [IS_LOGGED],
-  });
-  console.log("error", error);
+  })
   const [signUpMutation, signUpMutationData] = useMutation(TEMP_CREATE_USER, {
     refetchQueries: [IS_LOGGED],
-  });
+  })
 
-  const [isUser, { data: haveUser }] = useLazyQuery(IS_USER);
+  const [isUser, { data: haveUser }] = useLazyQuery(IS_USER)
 
-  const delay = useRef();
+  console.log("haveUser", haveUser)
+  const delay = useRef()
 
   return (
     // @ts-ignore: Unreachable code error
     <Layout>
-      <div className="flex flex-col text-center ">
+      <div className="m-1 flex flex-col text-center md:m-4">
         <Image
           src="/square-logo.png"
           width={250}
@@ -55,45 +55,47 @@ export default function () {
             const cleanVars = {
               ...variables,
               email: variables.email.replace(" ", ""),
-            };
-            const { data } = await loginMutation({ variables: cleanVars });
+            }
+            const { data } = await loginMutation({ variables: cleanVars })
+            console.log("data", data)
             if (
               data?.authenticateUserWithPassword?.message ===
               "Authentication failed."
             ) {
               await isUser({
-                variables: { email: cleanVars.email },
-              });
-              await signUpMutation({ variables: cleanVars });
-              await loginMutation({ variables: cleanVars });
+                variables: { email: cleanVars.email, phone: "0000000000" },
+              })
+              await signUpMutation({ variables: cleanVars })
+              await loginMutation({ variables: cleanVars })
               // reset()
             }
           }}
         >
           {(formik) => {
-            //formik.handleChange((e) => console.log(e))
             return (
               <Form className="mb-8 mt-8 flex flex-col">
                 <Field
                   //remove this later
                   //@ts-ignore
                   onChange={async (e) => {
-                    formik.handleChange(e);
+                    formik.handleChange(e)
                     formik.setFieldValue(
                       "email",
                       e.target.value.replace(" ", "")
-                    );
-                    console.log("changed");
+                    )
                     if (!formik.errors.email && e.target.value.length > 3) {
                       if (delay.current) {
-                        clearTimeout(delay.current);
+                        clearTimeout(delay.current)
                       }
                       //@ts-ignore
                       delay.current = setTimeout(async () => {
                         const user = await isUser({
-                          variables: { email: e.target.value.replace(" ", "") },
-                        });
-                      }, 1000);
+                          variables: {
+                            email: e.target.value.replace(" ", ""),
+                            phone: "0000000000",
+                          },
+                        })
+                      }, 1000)
                     }
                   }}
                   label="Correo electronico"
@@ -131,9 +133,23 @@ export default function () {
                   &nbsp;Recuerdame
                 </label>
 
+                {data?.authenticateUserWithPassword.message &&
+                  data?.authenticateUserWithPassword.message ===
+                    "Authentication failed." && (
+                    <span className="mb-2 ml-1 inline-block text-left text-sm text-red-800">
+                      El usuario o contraseña son incorrectors, intenta{" "}
+                      <Link
+                        className="font-medium  text-teal-700 text-teal-800 hover:underline"
+                        href="/login/recovery"
+                      >
+                        cambiando la contraseña
+                      </Link>
+                    </span>
+                  )}
+
                 <Button title="Ingresar" loading={loading} />
               </Form>
-            );
+            )
           }}
         </Formik>
         <div className="row">
@@ -154,5 +170,5 @@ export default function () {
         </div>
       </div>
     </Layout>
-  );
+  )
 }

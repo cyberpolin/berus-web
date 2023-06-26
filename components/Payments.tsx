@@ -11,7 +11,7 @@ import { CREATE_PAYMENT_IF_DONT_EXIST } from "../pages/admin/adminQueries.gql";
 import Image from "next/image";
 import Link from "next/link";
 import PayForm from "../pages/dashboard/pagar-cuota";
-import { useState } from "react";
+import { useEffect, useState } from "react"
 import Button from "./Button";
 import { useRouter } from "next/router";
 import { orderBy } from "lodash";
@@ -86,9 +86,17 @@ const Payments = ({ user }: any) => {
     refetchQueries: [GET_PAYMENTS],
   });
 
-  const { data, loading, error } = useQuery(GET_PAYMENTS, {
-    variables: { id },
-  });
+  const { data, loading, error, startPolling, stopPolling } = useQuery(
+    GET_PAYMENTS,
+    {
+      pollInterval: 1000,
+      variables: { id },
+    }
+  )
+
+  useEffect(() => {
+    return stopPolling
+  }, [])
 
   if (error) {
     return <p>Opps something isn&apos;t right...</p>;

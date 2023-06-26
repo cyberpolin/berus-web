@@ -72,8 +72,8 @@ mutation LOG_IN($email: String!, $password: String!) {
   }
 }
 
-query IS_USER($email: String!) {
-  isUser(email: $email)
+query IS_USER($email: String!, $phone: String) {
+  isUser(email: $email, phone: $phone)
 }
 
 mutation UPDATE_PAYMENT($pId: ID!, $image: Upload) {
