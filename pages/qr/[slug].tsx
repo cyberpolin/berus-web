@@ -32,6 +32,7 @@ export default function () {
             fgColor="#000000"
             level="Q"
             className="center mx-auto my-8 w-1/2"
+            //@ts-ignore
             value={slug}
           />
           <p>
