@@ -10,12 +10,14 @@ const Reports = () => {
   }
 
   if (data) {
-    return data.reports.map(({ fecha, reporteUrl }) => (
-      <p>
-        {" "}
-        <a href={reporteUrl}>{dayjs(fecha).format("MMM")}</a>
-      </p>
-    ))
+    return data.reports.map(
+      ({ fecha, reporteUrl }: { fecha: string; reporteUrl: string }) => (
+        <p key={reporteUrl}>
+          {" "}
+          <a href={reporteUrl}>{dayjs(fecha).format("MMM")}</a>
+        </p>
+      )
+    )
   }
 }
 
