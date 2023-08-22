@@ -93,6 +93,12 @@ const NLayout = (props: any) => {
             >
               Cuotas
             </Link>
+            <Link
+              className="block p-5 text-center text-sm hover:text-gray-800 hover:underline dark:text-amber-50 md:mt-0 md:inline-block"
+              href="/dashboard/descargables"
+            >
+              Descargables
+            </Link>
             {/* <Link
               className="block p-5 text-center text-sm hover:text-gray-800 hover:underline dark:text-amber-50 md:mt-0 md:inline-block"
               href="/dashboard/areas"
