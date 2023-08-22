@@ -37,6 +37,12 @@ const NLayout = (props: any) => {
         >
           Areas Comunes
         </Link>
+        <Link
+          href="/admin/tags"
+          className="block p-2 text-xs hover:bg-slate-200"
+        >
+          Add Tags
+        </Link>
         <Link href="#" className="block p-2 text-xs hover:bg-slate-200">
           ...
         </Link>

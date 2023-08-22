@@ -59,6 +59,14 @@ mutation UPDATE_AREA(
   }
 }
 
+
+mutation CREATE_TAG_IDS($data: [TagIdCreateInput!]!) {
+  createTagIds(data: $data) {
+    tagId
+  }
+}
+
+
 query GET_PAYMENTS($initialDate: DateTime!, $finalDate: DateTime!) {
   payments(
     where: {

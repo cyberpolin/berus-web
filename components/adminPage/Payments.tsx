@@ -46,41 +46,41 @@ const Status = ({ status }: { status: string }) => {
 };
 
 const Image = ({ image }: { image: any }) => {
-  const isPdf = image?.publicUrl.includes(".pdf");
+  const isPdf = image?.publicUrl?.includes(".pdf")
 
-  if (!image) return <></>;
+  if (!image) return <></>
 
   if (isPdf) {
     return (
       <a target="_blank" rel="noreferrer" href={image?.publicUrl}>
         <img src="/pdfIcon.png" alt="pago" width={80} />
       </a>
-    );
+    )
   }
 
   return (
     <a target="_blank" rel="noreferrer" href={image?.publicUrl}>
       <img src={image?.publicUrl} alt="pago" width={80} />
     </a>
-  );
-};
+  )
+}
 
 const Alert = ({
   payment,
   close,
 }: {
-  payment: string | null;
-  close: () => void;
+  payment: string | null
+  close: () => void
 }) => {
   const [aprovePayment, { error, loading, data, reset }] = useMutation(
     APROVE_PAYMENT,
     { refetchQueries: [GET_PAYMENTS] }
-  );
+  )
 
   //THIS WILL CLOSE THE ALERT...
   if (!error && !loading && data) {
-    close();
-    reset();
+    close()
+    reset()
   }
 
   if (payment) {
@@ -151,42 +151,75 @@ const Alert = ({
           </button>
         </div>
       </div>
-    );
+    )
   } else {
-    return <></>;
+    return <></>
   }
-};
+}
 
 const Payments = ({ initialDate, finalDate, searchTerm }: DateRange) => {
-  const [selectedPayment, setSelectedPayment] = useState(null);
+  const [selectedPayment, setSelectedPayment] = useState(null)
   const { data, loading, error } = useQuery(GET_PAYMENTS, {
     variables: { initialDate, finalDate },
-  });
+  })
 
   if (error || loading) {
-    return <Loader error={error} loading={loading} />;
+    return <Loader error={error} loading={loading} />
   }
 
   if (data) {
     const payments = data.payments.map((x: any) => ({
       ...x,
       ...x.property?.[0],
-    }));
-    const orderedPayments = orderBy(payments, ["square", "lot"]).filter(
-      (x) => !!x.property
-    );
+    }))
+    const orderedPayments = orderBy(payments, ["square", "lot"])
+      .filter((x) => !!x.property)
+      .filter((x) => x)
+
+    console.log("orderedPayments", orderedPayments)
     const filteredPayments =
       searchTerm !== ""
         ? orderedPayments.filter((x) => {
-            const until = searchTerm?.length;
+            const until = searchTerm?.length
             return (
               x.property.name.toLowerCase().slice(0, until) ==
               searchTerm?.toLowerCase()
-            );
+            )
           })
-        : orderedPayments;
+        : orderedPayments
+
+    const totalBills = filteredPayments.length
+    const ownedBills = filteredPayments.filter((c) => c.property.owner)
+    const ownedBillTotal = ownedBills.length
+    const payedBillsTotal = ownedBills.filter(
+      (b) => b.status === "payed"
+    ).length
+    const pendingBillsTotal = ownedBills.filter(
+      (b) => b.status === "pending"
+    ).length
+
+    const dueProperties = filteredPayments
+      .filter((b) => b.status !== "payed")
+      .map((b) => b.property.name)
+    console.log(">>> ", {
+      totalBills,
+      ownedBillTotal,
+      payedBillsTotal,
+      pendingBillsTotal,
+      dueProperties,
+    })
     return (
       <div className="relative mt-8 overflow-x-auto shadow-md sm:rounded-lg">
+        <ul>
+          <li>{`Propiedades: ${totalBills}`}</li>
+          <li>{`Propiedades Sin Dueno: ${ownedBillTotal - totalBills}`}</li>
+          <li>{`Propiedades Con Dueno: ${ownedBillTotal}`}</li>
+          <li>{`Propiedades Pagadas: ${payedBillsTotal}`}</li>
+          <li>{`Propiedades Con Adeudo: ${dueProperties.length}`}</li>
+          <li>{`Propiedades Con Adeudo: ${dueProperties.map(
+            (b) => `${b}\n`
+          )}`}</li>
+        </ul>
         <table className="w-full text-left text-sm text-gray-500 dark:text-gray-400">
           <thead className="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
             <tr>
@@ -212,7 +245,7 @@ const Payments = ({ initialDate, finalDate, searchTerm }: DateRange) => {
                 status,
                 image,
               }) => {
-                const thisMonth = status !== "payed" ? 1220 : 0;
+                const thisMonth = status !== "payed" ? 1220 : 0
 
                 return (
                   <tr
@@ -262,7 +295,7 @@ const Payments = ({ initialDate, finalDate, searchTerm }: DateRange) => {
                         <span
                           data-drawer-target="drawer-aprove"
                           onClick={() => {
-                            setSelectedPayment(id);
+                            setSelectedPayment(id)
                           }}
                           className="mr-2 rounded border border-green-400 bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800 dark:bg-gray-700 dark:text-green-400"
                         >
@@ -271,7 +304,7 @@ const Payments = ({ initialDate, finalDate, searchTerm }: DateRange) => {
                       )}
                     </td>
                   </tr>
-                );
+                )
               }
             )}
           </tbody>
@@ -281,10 +314,10 @@ const Payments = ({ initialDate, finalDate, searchTerm }: DateRange) => {
           close={() => setSelectedPayment(null)}
         />
       </div>
-    );
+    )
   }
 
-  return <></>;
-};
+  return <></>
+}
 
 export default Payments;

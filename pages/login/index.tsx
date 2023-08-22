@@ -81,7 +81,7 @@ export default function () {
                     formik.handleChange(e)
                     formik.setFieldValue(
                       "email",
-                      e.target.value.replace(" ", "")
+                      e.target.value.replace(" ", "").toLowerCase()
                     )
                     if (!formik.errors.email && e.target.value.length > 3) {
                       if (delay.current) {
@@ -91,7 +91,9 @@ export default function () {
                       delay.current = setTimeout(async () => {
                         const user = await isUser({
                           variables: {
-                            email: e.target.value.replace(" ", ""),
+                            email: e.target.value
+                              .replace(" ", "")
+                              .toLowerCase(),
                             phone: "0000000000",
                           },
                         })

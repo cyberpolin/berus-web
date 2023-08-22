@@ -24,8 +24,8 @@ export default function () {
         />
         <select
           onChange={(e) => {
-            const value = parseInt(e.target.value);
-            setSelectedMonth(getTextMonth(value));
+            const value = parseInt(e.target.value)
+            setSelectedMonth(getTextMonth(value))
             // setSelectedMonth(getTextMonth(parseInt(e.target.value) + 1))
           }}
           id="countries"
@@ -41,9 +41,9 @@ export default function () {
         <Payments
           searchTerm={searchTerm}
           initialDate={`2023-${selectedMonth}-05T00:00:00Z`}
-          finalDate={`2023-${selectedMonth}-05T23:59:59Z`}
+          finalDate={`2023-${selectedMonth}-06T23:59:59Z`}
         />
       </div>
     </Layout>
-  );
+  )
 }
