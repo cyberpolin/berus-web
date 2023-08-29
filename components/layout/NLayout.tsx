@@ -43,6 +43,12 @@ const NLayout = (props: any) => {
         >
           Add Tags
         </Link>
+        <Link
+          href="/admin/facturacion"
+          className="block p-2 text-xs hover:bg-slate-200"
+        >
+          Facturación
+        </Link>
         <Link href="#" className="block p-2 text-xs hover:bg-slate-200">
           ...
         </Link>

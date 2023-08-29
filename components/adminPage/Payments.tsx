@@ -201,13 +201,7 @@ const Payments = ({ initialDate, finalDate, searchTerm }: DateRange) => {
     const dueProperties = filteredPayments
       .filter((b) => b.status !== "payed")
       .map((b) => b.property.name)
-    console.log(">>> ", {
-      totalBills,
-      ownedBillTotal,
-      payedBillsTotal,
-      pendingBillsTotal,
-      dueProperties,
-    })
+ 
     return (
       <div className="relative mt-8 overflow-x-auto shadow-md sm:rounded-lg">
         <ul>

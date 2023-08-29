@@ -1,5 +1,4 @@
-import Payments from "@/components/Payments";
-import Reports from "@/components/Reports"
+import Payments from "@/components/Payments"
 import UseAuth from "@/lib/UseAuth"
 import { useRouter } from "next/router"
 import Layout from "../../components/layout/NLayout"
@@ -21,4 +20,4 @@ const Cuotas = () => {
   )
 }
 
-export default Cuotas;
+export default Cuotas

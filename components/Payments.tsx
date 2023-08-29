@@ -140,6 +140,7 @@ const Payments = ({ user }: any) => {
         {formKeys.map((p) => (
           <>
             <select
+              key={p}
               className="m-2 block w-full rounded-md border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
               onChange={({ target }) => {
                 const newProp = { ...form }
@@ -248,17 +249,26 @@ const Payments = ({ user }: any) => {
             "DD-MMM"
           )} - Cantidad: ${currency(payment.dueAmount).format()} - Estatus: `}
           <Status value={payment.status} />
+
           {payment.image?.publicUrl && (
-            <img
-              height={200}
-              alt={"payment"}
-              className="center m-4 w-32"
-              src={
-                payment?.image?.mimetype === "application/pdf"
-                  ? "/pdfIcon.png"
-                  : payment?.image?.publicUrl
-              }
-            />
+            <>
+              <a target="_blank" href={payment?.image?.publicUrl}>
+                <img
+                  alt={"payment"}
+                  className="center m-4 w-24"
+                  src={
+                    payment?.image?.mimetype === "application/pdf"
+                      ? "/pdfIcon.png"
+                      : payment?.image?.publicUrl
+                  }
+                />
+              </a>
+              {payment?.image?.mimetype === "application/pdf" && (
+                <a target="_blank" href={payment?.image?.publicUrl}>
+                  <i>Ver comprobante...</i>
+                </a>
+              )}
+            </>
           )}
 
           {
@@ -267,6 +277,25 @@ const Payments = ({ user }: any) => {
             form === payment.id && <PayForm payment={payment} />
           }
           <Action status={payment.status} show={() => setForm(payment.id)} />
+          {!!payment?.bill?.factura?.publicUrl && (
+            <>
+              <br />
+              <a
+                className="hover:opacity-50"
+                target="_blank"
+                href={payment?.bill?.factura?.publicUrl}
+              >
+                <img
+                  height={100}
+                  alt={"payment"}
+                  className="center m-4 w-12 "
+                  src={"/pdfIcon.png"}
+                />
+                <i>Ver o descargar factura</i>
+              </a>
+              <br />
+            </>
+          )}
         </li>
       )
     )

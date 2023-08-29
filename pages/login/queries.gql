@@ -127,6 +127,11 @@ query GET_PAYMENTS($id: ID!) {
         id
         dueAt
         status
+        bill {
+          factura {
+            publicUrl
+          }
+        }
         dueAmount
         image {
           publicUrl

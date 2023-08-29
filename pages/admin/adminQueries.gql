@@ -2,6 +2,32 @@ query CREATE_PAYMENT_IF_DONT_EXIST($id: ID!) {
   createPayment(id: $id)
 }
 
+query GET_BILLS($selectedDate: DateTime!) {
+  getBills(selectedDate: $selectedDate) {
+    id
+    dueAmount
+    dueAt
+    status
+    bill {
+      id
+      factura {
+        publicUrl
+      }
+    }
+    property {
+      name
+      owner {
+        name
+        id
+        rfc {
+          id
+          publicUrl
+        }
+      }
+    }
+  }
+}
+
 query GET_POST($id: ID!) {
   post(where: { id: $id }) {
     content {
@@ -59,13 +85,11 @@ mutation UPDATE_AREA(
   }
 }
 
-
 mutation CREATE_TAG_IDS($data: [TagIdCreateInput!]!) {
   createTagIds(data: $data) {
     tagId
   }
 }
-
 
 query GET_PAYMENTS($initialDate: DateTime!, $finalDate: DateTime!) {
   payments(
@@ -123,5 +147,20 @@ mutation UPDATE_USER($id: ID!, $image: Upload) {
       publicUrl
     }
     needsBill
+  }
+}
+
+mutation UPDATE_PAYMENT($id: ID!, $image: Upload) {
+  updatePayment(
+    where: { id: $id }
+    data: { bill: { create: { factura: $image } } }
+  ) {
+    id
+  }
+}
+
+mutation DELETE_PAYMENT($id: ID!) {
+  updatePayment(where: { id: $id }, data: { bill: { disconnect: true } }) {
+    id
   }
 }
