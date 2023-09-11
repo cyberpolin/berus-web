@@ -1,12 +1,17 @@
-import { useMutation, useQuery } from "@apollo/client";
-import currency from "currency.js";
-import dayjs from "dayjs";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client"
+import currency from "currency.js"
+import dayjs from "dayjs"
+import es from "dayjs/locale/es-mx"
+import utc from "dayjs/plugin/utc"
 import {
   GET_PAYMENTS,
   GET_FREE_PROPERTY,
   ASSIGN_OWNER,
 } from "../pages/login/queries.gql"
-import { CREATE_PAYMENT_IF_DONT_EXIST } from "../pages/admin/adminQueries.gql"
+import {
+  CREATE_PAYMENT_IF_DONT_EXIST,
+  CREATE_NEXT_PAYMENT_IF_DONT_EXIST,
+} from "../pages/admin/adminQueries.gql"
 import Image from "next/image"
 import Link from "next/link"
 import PayForm from "../pages/dashboard/pagar-cuota"
@@ -14,6 +19,9 @@ import { useEffect, useState } from "react"
 import Button from "./Button"
 import { useRouter } from "next/router"
 import { orderBy } from "lodash"
+
+dayjs.locale(es)
+dayjs.extend(utc)
 
 const Status = ({ value }: { value: string }) => {
   const statusOption = {
@@ -66,19 +74,31 @@ const Payments = ({ user }: any) => {
   const router = useRouter()
   const [form, setForm] = useState({})
   const formKeys = Object.keys(form).length > 0 ? Object.keys(form) : [""]
+  const nextMonth = dayjs(new Date()).add(1, "M").format("MMMM")
 
   const id =
     user.user.isAdmin && router?.query.pretend
       ? router?.query.pretend
       : user.user.id
 
-  const createPayment = useQuery(CREATE_PAYMENT_IF_DONT_EXIST, {
-    variables: {
-      id: user.user.id,
-    },
-    //@ts-ignore
-    refetchQueries: [GET_PAYMENTS],
-  })
+  const [createPayment, createPaymentData] = useLazyQuery(
+    CREATE_PAYMENT_IF_DONT_EXIST,
+    {
+      variables: {
+        id: user.user.id,
+      },
+      //@ts-ignore
+      refetchQueries: [GET_PAYMENTS],
+    }
+  )
+
+  const [createNextPayment, createNextPaymentData] = useLazyQuery(
+    CREATE_NEXT_PAYMENT_IF_DONT_EXIST,
+    {
+      //@ts-ignore
+      refetchQueries: [GET_PAYMENTS],
+    }
+  )
 
   const freeProperties = useQuery(GET_FREE_PROPERTY)
   const [assignOwner, aod] = useMutation(ASSIGN_OWNER, {
@@ -94,6 +114,7 @@ const Payments = ({ user }: any) => {
   )
 
   useEffect(() => {
+    if (user.user.id) createPayment()
     return stopPolling
   }, [])
 
@@ -240,7 +261,7 @@ const Payments = ({ user }: any) => {
   }
 
   // @ts-ignore: Unreachable code error
-  return properties.map((p, i) => {
+  const payments = properties.map((p, i) => {
     // @ts-ignore: Unreachable code error
     const payments = orderBy(p.payments, ["dueAt"], "desc").map(
       (payment, i) => (
@@ -316,6 +337,23 @@ const Payments = ({ user }: any) => {
       ) || null
     )
   })
+
+  return (
+    <div>
+      <Button
+        title={`Pagar ${nextMonth} `}
+        onClick={() => {
+          createNextPayment({
+            variables: {
+              id: user.user.id,
+              date: dayjs(new Date()).add(1, "M").utc().format(),
+            },
+          })
+        }}
+      />
+      {payments}
+    </div>
+  )
 }
 
-export default Payments;
+export default Payments

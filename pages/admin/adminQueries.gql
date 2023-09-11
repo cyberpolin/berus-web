@@ -1,6 +1,9 @@
 query CREATE_PAYMENT_IF_DONT_EXIST($id: ID!) {
   createPayment(id: $id)
 }
+query CREATE_NEXT_PAYMENT_IF_DONT_EXIST($id: ID!, $date: DateTime!) {
+  createNextPayment(id: $id, date: $date)
+}
 
 query GET_BILLS($selectedDate: DateTime!) {
   getBills(selectedDate: $selectedDate) {

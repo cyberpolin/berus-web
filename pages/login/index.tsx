@@ -17,9 +17,9 @@ const schema = yup.object().shape({
 });
 
 const initialValues = {
-  email: "",
-  password: "",
-};
+  email: process.env.NEXT_PUBLIC_USR || "",
+  password: process.env.NEXT_PUBLIC_PSW || "",
+}
 
 export default function () {
   const [loginMutation, { data, loading, error }] = useMutation(LOG_IN, {
