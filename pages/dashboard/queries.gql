@@ -8,6 +8,21 @@ query GET_RESERVATION($date: DateTime!) {
   }
 }
 
+query GET_VOUCHERS($from: DateTime!, $to: DateTime) {
+  vouchers(
+    where: { AND: [{ createdAt: { gte: $from } }, { createdAt: { lte: $to } }] }
+  ) {
+    createdAt
+    bankTransaction {
+      transactionId
+    }
+    image {
+      publicUrlTransformed(transformation: { width: "120", crop: "limit" })
+    }
+    notes
+  }
+}
+
 query CREATE_PAYMENT_IF_DONT_EXIST($id: ID!) {
   createPayment(id: $id)
 }
