@@ -22,18 +22,23 @@ const Vouchers = ({ date }) => {
   if (data && date) {
     return (
       <div className="transition-75 m-2 w-full rounded bg-slate-500 text-center hover:bg-slate-600">
-        {data.vouchers.map(({ createdAt, bankTransaction, image, notes }) => {
-          return (
-            <div className="m-2 border-b-2 border-dotted border-slate-400 p-2">
-              <p>{dayjs(createdAt).format("DD-MMM-YYYY")}</p>
-              <a href={image.publicUrlTransformed} target="_blank">
-                Ver comprobante...
-              </a>
-              <p>{`Notas: ${notes}`}</p>
-              <p>{`Transaccion bancaria: ${bankTransaction.transactionId}`}</p>
-            </div>
-          )
-        })}
+        {data.vouchers.map(
+          ({ createdAt, bankTransaction, image, notes }, i: number) => {
+            return (
+              <div
+                key={i}
+                className="m-2 border-b-2 border-dotted border-slate-400 p-2"
+              >
+                <p>{dayjs(createdAt).format("DD-MMM-YYYY")}</p>
+                <a href={image.publicUrlTransformed} target="_blank">
+                  Ver comprobante...
+                </a>
+                <p>{`Notas: ${notes}`}</p>
+                <p>{`Transaccion bancaria: ${bankTransaction.transactionId}`}</p>
+              </div>
+            )
+          }
+        )}
       </div>
     )
   }
