@@ -42,12 +42,17 @@ const Reports = () => {
             <a
               href="#"
               onClick={() => {
+                // @ts-ignore
                 setDate(fecha)
               }}
             >
               Comprobantes
             </a>
-            {date === fecha && <Vouchers date={date} />}
+
+            {
+              // @ts-ignore
+              date === fecha && <Vouchers date={date} />
+            }
           </div>
         )
       )
