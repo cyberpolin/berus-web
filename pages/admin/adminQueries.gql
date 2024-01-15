@@ -167,3 +167,43 @@ mutation DELETE_PAYMENT($id: ID!) {
     id
   }
 }
+
+query GET_PROPERTIES {
+  properties(orderBy: { name: asc }) {
+    name
+    square
+    lot
+    id
+    owner {
+      id
+    }
+    payments {
+      id
+    }
+  }
+}
+
+query GET_PAYMENT($id: ID) {
+  property(where: { id: $id }) {
+    name
+    paymentsCount
+    payments {
+      id
+      status
+      dueAt
+    }
+  }
+}
+
+query GET_CLUSTER($id: ID) {
+  cluster(where: { id: $id }) {
+    name
+    initialDate
+  }
+}
+
+mutation CREATE_PAYMENTS($data: [PaymentCreateInput!]!) {
+  createPayments(data: $data) {
+    id
+  }
+}

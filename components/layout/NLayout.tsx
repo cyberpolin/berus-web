@@ -86,12 +86,20 @@ const NLayout = (props: any) => {
             className={`${showMobile} w-full border-red-100 text-end sm:mx-2 sm:w-4/6 sm:w-max sm:py-2 `}
           >
             {user.isAdmin && (
-              <Link
-                className="block p-5 text-center text-sm hover:text-gray-800 hover:underline dark:text-amber-50 md:mt-0 md:inline-block"
-                href="/admin"
-              >
-                Admin
-              </Link>
+              <>
+                <Link
+                  className="block p-5 text-center text-sm hover:text-gray-800 hover:underline dark:text-amber-50 md:mt-0 md:inline-block"
+                  href="/admin"
+                >
+                  Admin
+                </Link>
+                <Link
+                  className="block p-5 text-center text-sm hover:text-gray-800 hover:underline dark:text-amber-50 md:mt-0 md:inline-block"
+                  href="/admin/properties"
+                >
+                  Properties
+                </Link>
+              </>
             )}
             <Link
               className="block p-5 text-center text-sm hover:text-gray-800 hover:underline dark:text-amber-50 md:mt-0 md:inline-block"

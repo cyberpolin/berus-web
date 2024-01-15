@@ -211,6 +211,9 @@ export default function Layout(props: any) {
               {user.isAdmin && (
                 <>
                   <MenuItem title="Admin" link="/admin" />
+                  {/* This could be potentally new admin dashboard
+                   */}
+                  <MenuItem title="Properties" link="/admin/properties" />
                 </>
               )}
               <MenuItem title="Cuotas" link="/dashboard/cuotas" />
