@@ -179,12 +179,12 @@ const Properties = () => {
                 </span>
                 <span>Revisa por favor antes de correr el script</span>
                 {true && (
-                    <Link
-                      href={`https://local.api.c7.altozanotabasco.com:9001/payments?%21property_matches=%22${pId}%22&fields=createdAt%2CsubmittedAt%2CdueAt%2Cimage%2Cstatus&sortBy=dueAt`}
-                    >
-                      <h1>Revisar en Back Office</h1>
-                    </Link>
-                  ))}
+                  <Link
+                    href={`https://local.api.c7.altozanotabasco.com:9001/payments?%21property_matches=%22${pId}%22&fields=createdAt%2CsubmittedAt%2CdueAt%2Cimage%2Cstatus&sortBy=dueAt`}
+                  >
+                    <h1>Revisar en Back Office</h1>
+                  </Link>
+                )}
               </td>
               <td className="px-6 py-4"></td>
               <td className="px-6 py-4">
