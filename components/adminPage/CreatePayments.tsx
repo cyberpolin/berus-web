@@ -8,10 +8,27 @@ import {
 import Loader from "../General/Loader"
 import Link from "next/link"
 import { useRouter } from "next/router"
-import dayjs from "dayjs"
+import dayjs, { Dayjs } from "dayjs"
 import utc from "dayjs/plugin/utc"
 
 dayjs.extend(utc)
+
+type InitialDateProps = {
+  initialDate: string
+  finalDate: string
+}
+
+type Payment = {
+  dueAt: string
+  createdAt: string
+  status: string
+}
+
+type Property = {
+  name: string
+  paymentsCount: number
+  payments: Payment[]
+}
 
 const Properties = () => {
   const clusterId = "11912c96-8baa-4086-ad40-85faae7f6436" // this shouldn't be hardcoded after we implement multiple  clusters
@@ -33,7 +50,7 @@ const Properties = () => {
     refetchQueries: [GET_PAYMENT],
   })
 
-  const getDatesAry = (initialDate, finalDate) => {
+  const getDatesAry = (initialDate: string, finalDate: string) => {
     const initial = dayjs(initialDate)
     const final = dayjs(finalDate)
     const diff = final.diff(initial, "month") + 1
@@ -48,16 +65,16 @@ const Properties = () => {
   const getPaymentsDates = () => {
     return _.orderBy(
       data?.property?.payments?.map(
-        (p) => dayjs(p.dueAt),
-        (d) => d.month(),
+        (p: Payment) => dayjs(p.dueAt),
+        (d: Dayjs) => d.month(),
         ["asc"]
       )
     )
   }
 
-  const getMissingPayments = (datesAry, paymentsDates) => {
-    const result = datesAry.filter((d) => {
-      const isIncluded = paymentsDates?.map((p) => {
+  const getMissingPayments = (datesAry: Dayjs[], paymentsDates: Dayjs[]) => {
+    const result = datesAry.filter((d: Dayjs) => {
+      const isIncluded = paymentsDates?.map((p: Dayjs) => {
         return p.month() === d.month()
       })
 
@@ -71,9 +88,10 @@ const Properties = () => {
 
   const generatePayments = () => {
     const initialDate = clusterData.data.cluster.initialDate
-    const finalDate = dayjs()
+    const finalDate = dayjs().utc().format()
 
     const datesAry = getDatesAry(initialDate, finalDate)
+    //@ts-ignore
     const paymentsDates = getPaymentsDates(data?.property?.payments)
 
     const missingPayments = getMissingPayments(datesAry, paymentsDates)
@@ -100,11 +118,11 @@ const Properties = () => {
 
   const getPaymentsErrors = () => {
     const initialDate = clusterData.data.cluster.initialDate
-    const finalDate = dayjs()
+    const finalDate = dayjs().utc().format()
     const datesAry = getDatesAry(initialDate, finalDate)
-    const paymentsDates = getPaymentsDates(data.property.payments)
+    const paymentsDates = getPaymentsDates()
 
-    const isRepeated = (paymentsDates) => {
+    const isRepeated = (paymentsDates: Dayjs[]) => {
       const repeated = []
       paymentsDates.map((p, i) => {
         if (p.month() === paymentsDates[i + 1]?.month()) {
