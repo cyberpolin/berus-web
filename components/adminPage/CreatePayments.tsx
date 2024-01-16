@@ -178,8 +178,7 @@ const Properties = () => {
                   <h1 className="text-blue-500">Generar Pagos</h1>
                 </span>
                 <span>Revisa por favor antes de correr el script</span>
-                {hasError ||
-                  (true && (
+                {true && (
                     <Link
                       href={`https://local.api.c7.altozanotabasco.com:9001/payments?%21property_matches=%22${pId}%22&fields=createdAt%2CsubmittedAt%2CdueAt%2Cimage%2Cstatus&sortBy=dueAt`}
                     >
