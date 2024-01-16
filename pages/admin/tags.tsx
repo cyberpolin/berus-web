@@ -42,11 +42,6 @@ const initialValues = {
 const Tags = (props) => {
   const ui = useContext(uiCTX)
   const [updateTags, { loading, data, error }] = useMutation(CREATE_TAG_IDS)
-  console.log(">> ", {
-    error,
-    loading,
-    data,
-  })
 
   return (
     <Layout>

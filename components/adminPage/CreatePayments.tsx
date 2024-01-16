@@ -31,7 +31,7 @@ type Property = {
 }
 
 const Properties = () => {
-  const clusterId = "11912c96-8baa-4086-ad40-85faae7f6436" // this shouldn't be hardcoded after we implement multiple  clusters
+  const clusterId = "46b02cb5-35ec-40b7-81e1-ee91203c749b" // this shouldn't be hardcoded after we implement multiple  clusters
   const router = useRouter()
   const { pId } = router.query
   const { data, loading, error } = useQuery(GET_PAYMENT, {
@@ -118,6 +118,7 @@ const Properties = () => {
 
   const getPaymentsErrors = () => {
     const initialDate = clusterData.data.cluster.initialDate
+
     const finalDate = dayjs().utc().format()
     const datesAry = getDatesAry(initialDate, finalDate)
     const paymentsDates = getPaymentsDates()
