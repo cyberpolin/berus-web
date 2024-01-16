@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 3400 & local-ssl-proxy --key local.c7.altozanotabasco.com-key.pem --cert local.c7.altozanotabasco.com.pem --source 443 --target 3400",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
