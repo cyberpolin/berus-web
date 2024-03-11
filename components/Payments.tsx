@@ -1,24 +1,16 @@
-import { useLazyQuery, useMutation, useQuery } from "@apollo/client"
+import { useLazyQuery, useQuery } from "@apollo/client"
 import currency from "currency.js"
 import dayjs from "dayjs"
 import es from "dayjs/locale/es-mx"
 import utc from "dayjs/plugin/utc"
-import {
-  GET_PAYMENTS,
-  GET_FREE_PROPERTY,
-  ASSIGN_OWNER,
-} from "../pages/login/queries.gql"
-import {
-  CREATE_PAYMENT_IF_DONT_EXIST,
-  CREATE_NEXT_PAYMENT_IF_DONT_EXIST,
-} from "../pages/admin/adminQueries.gql"
+import { GET_PAYMENTS } from "../pages/login/queries.gql"
+import { CREATE_NEXT_PAYMENT_IF_DONT_EXIST } from "../pages/admin/adminQueries.gql"
 import Image from "next/image"
-import Link from "next/link"
 import PayForm from "../pages/dashboard/pagar-cuota"
 import { useEffect, useState } from "react"
 import Button from "./Button"
 import { useRouter } from "next/router"
-import { orderBy } from "lodash"
+import _ from "lodash"
 
 dayjs.locale(es)
 dayjs.extend(utc)
@@ -70,10 +62,148 @@ const Action = ({ status, show }: { status: any; show: () => void }) => {
   return options[status] || null
 }
 
+const SinglePayment = ({ payment }: { payment: any }) => {
+  const [form, setForm] = useState({})
+  const { dueAt, dueAmount, status, image } = payment
+  const formattedDueAt = dayjs(dueAt).format("DD-MMM-YYYY")
+  const formattedDueAmount = currency(dueAmount).format()
+
+  return (
+    <li key={payment.id} className="border-b-2 p-2">
+      {`Vence: ${formattedDueAt} - Cantidad: ${formattedDueAmount} - Estatus: `}
+      <Status value={status} />
+
+      {image?.publicUrl && (
+        <>
+          <a target="_blank" href={image?.publicUrl}>
+            <img
+              alt={"payment"}
+              className="center m-4 w-24"
+              src={
+                image?.mimetype === "application/pdf"
+                  ? "/pdfIcon.png"
+                  : image?.publicUrl
+              }
+            />
+          </a>
+          {image?.mimetype === "application/pdf" && (
+            <a target="_blank" href={payment?.image?.publicUrl}>
+              <i>Ver comprobante...</i>
+            </a>
+          )}
+        </>
+      )}
+
+      {
+        /* If isn't payed display Form */
+        // @ts-ignore: Unreachable code error
+        form === payment.id && <PayForm payment={payment} />
+      }
+      <Action status={status} show={() => setForm(payment.id)} />
+      {!!payment?.bill?.factura?.publicUrl && (
+        <>
+          <br />
+          <a
+            className="hover:opacity-50"
+            target="_blank"
+            href={payment?.bill?.factura?.publicUrl}
+          >
+            <img
+              height={100}
+              alt={"payment"}
+              className="center m-4 w-12 "
+              src={"/pdfIcon.png"}
+            />
+            <i>Ver o descargar factura</i>
+          </a>
+          <br />
+        </>
+      )}
+    </li>
+  )
+}
+
+const Caret = ({ isOpen }: { isOpen: boolean }) => {
+  return (
+    <Image
+      alt="caretUp"
+      src="/assets/Icons/caretUp.svg"
+      style={{
+        transform: !isOpen ? "rotate(-180deg)" : "rotate(0deg)",
+        color: "white",
+        transition: "transform 0.3s ease-in-out",
+      }}
+      width={12}
+      height={12}
+    />
+  )
+}
+
+const PaymentsByYear = ({
+  yearsAry,
+  payments,
+}: {
+  yearsAry: string[]
+  payments: any
+}) => {
+  const currentYear = dayjs().format("YYYY")
+  const [showAry, setShowAry] = useState([currentYear])
+  const toggleYear = (year: string) => {
+    setShowAry(
+      showAry.includes(year)
+        ? showAry.filter((y) => y !== year)
+        : [...showAry, year]
+    )
+  }
+
+  return yearsAry.map((year) => {
+    const isOpen = showAry.includes(year)
+    return (
+      <>
+        <div
+          onClick={() => toggleYear(year)}
+          className="mb-2 flex cursor-pointer justify-between rounded bg-black bg-opacity-60 p-2 text-white"
+        >
+          <h3 className="text-white">{`${year}`}</h3>
+          <Caret isOpen={isOpen} />
+        </div>
+        {isOpen &&
+          _.orderBy(payments, "dueAt", "desc")
+            .filter((p) => p.dueAtYear === year)
+            .map((payment, i) => {
+              return <SinglePayment key={i} payment={payment} />
+            })}
+      </>
+    )
+  })
+}
+
+const PropertyInfo = ({
+  lot,
+  square,
+  payments,
+}: {
+  lot: number
+  square: number
+}) => {
+  // all years inside this property will be shown
+
+  const paymentsByYear = _.groupBy(payments, "dueAtYear")
+  const yearsAry = Object.keys(paymentsByYear).reverse()
+
+  return (
+    <li key={`${lot}${square}`} className="relative m-2 w-full rounded border">
+      <h4 className="mb-2 block rounded bg-black bg-opacity-60 p-2 text-white">{`Manzana ${square} Lote ${lot}`}</h4>
+      <ul className="m-4 border-t-2">
+        <PaymentsByYear yearsAry={yearsAry} payments={payments} />
+      </ul>
+    </li>
+  )
+}
+
 const Payments = ({ user }: any) => {
   const router = useRouter()
-  const [form, setForm] = useState({})
-  const formKeys = Object.keys(form).length > 0 ? Object.keys(form) : [""]
+
   const nextMonth = dayjs(new Date()).add(1, "M").format("MMMM")
 
   const id =
@@ -81,40 +211,24 @@ const Payments = ({ user }: any) => {
       ? router?.query.pretend
       : user.user.id
 
-  const [createPayment, createPaymentData] = useLazyQuery(
-    CREATE_PAYMENT_IF_DONT_EXIST,
-    {
-      variables: {
-        id: user.user.id,
-      },
-      //@ts-ignore
-      refetchQueries: [GET_PAYMENTS],
-    }
-  )
-
   const [createNextPayment, createNextPaymentData] = useLazyQuery(
     CREATE_NEXT_PAYMENT_IF_DONT_EXIST,
     {
       //@ts-ignore
       refetchQueries: [GET_PAYMENTS],
+      fetchPolicy: "cache-and-network",
+      onCompleted: (data) => {
+        console.log(data)
+      },
     }
   )
 
-  const freeProperties = useQuery(GET_FREE_PROPERTY)
-  const [assignOwner, aod] = useMutation(ASSIGN_OWNER, {
-    refetchQueries: [GET_PAYMENTS],
+  const { data, loading, error, stopPolling } = useQuery(GET_PAYMENTS, {
+    pollInterval: process?.env?.NEXT_PUBLIC_POLL_INTERVAL || 10000,
+    variables: { id },
   })
 
-  const { data, loading, error, startPolling, stopPolling } = useQuery(
-    GET_PAYMENTS,
-    {
-      pollInterval: 1000,
-      variables: { id },
-    }
-  )
-
   useEffect(() => {
-    if (user.user.id) createPayment()
     return stopPolling
   }, [])
 
@@ -130,228 +244,40 @@ const Payments = ({ user }: any) => {
     user: { properties },
   } = data
 
-  //Dumb developer
-  if (!properties || properties.length === 0 || false) {
-    return (
-      <div>
-        <div
-          className="mb-4 flex rounded-lg border border-blue-300 bg-blue-50 p-4 text-sm text-blue-800 dark:border-blue-800 dark:bg-gray-800 dark:text-blue-400"
-          role="alert"
-        >
-          <svg
-            aria-hidden="true"
-            className="mr-3 inline h-5 w-5 flex-shrink-0"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-              clip-rule="evenodd"
-            ></path>
-          </svg>
-          <span className="sr-only">Info</span>
-          <div>
-            <span className="font-medium">Activa tus tags...</span> Estamos
-            haciendo algunos cambios, para darte mas y mejores opciones en la
-            plataforma, por favor activa tus tags con tu propiedad...
-          </div>
-        </div>
-        {formKeys.map((p) => (
-          <>
-            <select
-              key={p}
-              className="m-2 block w-full rounded-md border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-              onChange={({ target }) => {
-                const newProp = { ...form }
-                //@ts-ignore
-                newProp[target.value] = ["", ""]
-                //@ts-ignore
-                delete newProp[""]
-                setForm({ ...newProp })
-                // assignOwner({
-                //   variables: { pId: id.target.value, ownerId: user.user.id },
-                // })
-              }}
-            >
-              <option>Selecciona una propiedad</option>
-              {freeProperties?.data?.properties.map((p: any) => (
-                <option key={p.id} value={p.id}>
-                  {p.name}
-                </option>
-              ))}
-            </select>
-            {
-              //@ts-ignore
-              form?.[p]?.length > 0 &&
-                //@ts-ignore
-                form[p].map((t, i) => (
-                  <div key={i}>
-                    <input
-                      className="m-2 block w-full rounded-md border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-                      maxLength={8}
-                      placeholder="XXXXXXXX"
-                      value={t}
-                      onChange={({ target }) => {
-                        //@ts-ignore
-                        const newTags = [...form[p]]
-                        newTags.splice(i, 1, target.value)
-                        const nextO = {}
-                        //@ts-ignore
-                        nextO[p] = newTags
-                        setForm({ ...form, ...nextO })
-                      }}
-                    />
-                    {
-                      //@ts-ignore
-                      i === form?.[p]?.length - 1 && (
-                        <a
-                          href="#"
-                          onClick={() => {
-                            //@ts-ignore
-                            const newTags = [...form[p], ""]
-                            const nextO = {}
-                            //@ts-ignore
-                            nextO[p] = newTags
-                            setForm({ ...form, ...nextO })
-                          }}
-                        >
-                          Agregar otro Tag
-                        </a>
-                      )
-                    }
-                  </div>
-                ))
-            }
-          </>
-        ))}
-        ;
-        <a
-          className=""
-          onClick={() => {
-            const newProp = {}
-            //@ts-ignore
-            newProp[""] = ["", ""]
-            setForm({ ...form, ...newProp })
-          }}
-        >
-          Agregar otra Propiedad
-        </a>
-        <Button
-          title="He terminado de activar mis tags "
-          onClick={() => {
-            const data = Object.keys(form).map(async (key) => {
-              const data = {
-                owner: { connect: { id: user.user.id } },
-                tags: {
-                  //@ts-ignore
-                  create: form[key].map((t) => ({ isActive: true, tagId: t })),
-                },
-              }
-
-              await assignOwner({
-                variables: { pId: key, data },
-              })
-            })
-          }}
-        />
-      </div>
+  const allPayments = properties
+    .map((p) =>
+      p.payments.map((payment) => ({
+        ...payment,
+        dueAtYear: dayjs(payment.dueAt).format("YYYY"),
+        propertyName: p.name,
+        propertyId: p.id,
+      }))
     )
-  }
+    .flat()
 
   // @ts-ignore: Unreachable code error
-  const payments = properties.map((p, i) => {
-    // @ts-ignore: Unreachable code error
-    const payments = orderBy(p.payments, ["dueAt"], "desc").map(
-      (payment, i) => (
-        <li key={i} className="border-b-2 p-2">
-          {`Vence: ${dayjs(payment.dueAt).format(
-            "DD-MMM"
-          )} - Cantidad: ${currency(payment.dueAmount).format()} - Estatus: `}
-          <Status value={payment.status} />
-
-          {payment.image?.publicUrl && (
-            <>
-              <a target="_blank" href={payment?.image?.publicUrl}>
-                <img
-                  alt={"payment"}
-                  className="center m-4 w-24"
-                  src={
-                    payment?.image?.mimetype === "application/pdf"
-                      ? "/pdfIcon.png"
-                      : payment?.image?.publicUrl
-                  }
-                />
-              </a>
-              {payment?.image?.mimetype === "application/pdf" && (
-                <a target="_blank" href={payment?.image?.publicUrl}>
-                  <i>Ver comprobante...</i>
-                </a>
-              )}
-            </>
-          )}
-
-          {
-            /* If isn't payed display Form */
-            // @ts-ignore: Unreachable code error
-            form === payment.id && <PayForm payment={payment} />
-          }
-          <Action status={payment.status} show={() => setForm(payment.id)} />
-          {!!payment?.bill?.factura?.publicUrl && (
-            <>
-              <br />
-              <a
-                className="hover:opacity-50"
-                target="_blank"
-                href={payment?.bill?.factura?.publicUrl}
-              >
-                <img
-                  height={100}
-                  alt={"payment"}
-                  className="center m-4 w-12 "
-                  src={"/pdfIcon.png"}
-                />
-                <i>Ver o descargar factura</i>
-              </a>
-              <br />
-            </>
-          )}
-        </li>
-      )
-    )
-    return (
-      (
-        <li key={i} className="relative m-2 w-full rounded border">
-          <Link
-            // href={`./visits?property=${p.id}`}
-            href={`#`}
-            onClick={() => alert("Proximamente...")}
-            className="absolute right-2 top-2 m-2 rounded-full bg-slate-400 p-2 shadow-lg hover:bg-slate-500 "
-          >
-            <Image width={30} height={30} src="/qr.png" alt="Mandar Qr" />
-          </Link>
-          <h4 className="mb-2 block rounded bg-black bg-opacity-60 p-2 text-white">{`Manzana ${p.square} Lote ${p.lot}`}</h4>
-          <ul className="m-4 border-t-2">{payments}</ul>
-        </li>
-      ) || null
-    )
-  })
 
   return (
     <div>
       <Button
-        title={`Pagar ${nextMonth} `}
+        title={`Pagar mes siguiente`}
         onClick={() => {
           createNextPayment({
             variables: {
               id: user.user.id,
-              date: dayjs(new Date()).add(1, "M").utc().format(),
             },
           })
         }}
       />
-      {payments}
+      {properties.map((p) => {
+        const { lot, square, id } = p
+
+        const propertyPayments = allPayments.filter((p) => p.propertyId === id)
+
+        return (
+          <PropertyInfo lot={lot} square={square} payments={propertyPayments} />
+        )
+      })}
     </div>
   )
 }
