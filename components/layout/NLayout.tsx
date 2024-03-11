@@ -90,12 +90,14 @@ const NLayout = (props: any) => {
                 <Link
                   className="block p-5 text-center text-sm hover:text-gray-800 hover:underline dark:text-amber-50 md:mt-0 md:inline-block"
                   href="/admin"
+                  key="/admin"
                 >
                   Admin
                 </Link>
                 <Link
                   className="block p-5 text-center text-sm hover:text-gray-800 hover:underline dark:text-amber-50 md:mt-0 md:inline-block"
                   href="/admin/properties"
+                  key="/admin/properties"
                 >
                   Properties
                 </Link>
@@ -104,30 +106,35 @@ const NLayout = (props: any) => {
             <Link
               className="block p-5 text-center text-sm hover:text-gray-800 hover:underline dark:text-amber-50 md:mt-0 md:inline-block"
               href="/dashboard/cuotas"
+              key="/dashboard/cuotas"
             >
               Cuotas
             </Link>
             <Link
               className="block p-5 text-center text-sm hover:text-gray-800 hover:underline dark:text-amber-50 md:mt-0 md:inline-block"
               href="/dashboard/descargables"
+              key="/dashboard/descargables"
             >
               Descargables
             </Link>
             {/* <Link
               className="block p-5 text-center text-sm hover:text-gray-800 hover:underline dark:text-amber-50 md:mt-0 md:inline-block"
               href="/dashboard/areas"
-            >
+              key="/dashboard/areas"
+              >
               Reservar Areas
             </Link>
             <Link
               className="block p-5 text-center text-sm hover:text-gray-800 hover:underline dark:text-amber-50 md:mt-0 md:inline-block"
               href="/dashboard/card"
-            >
+              key="/dashboard/card"
+              >
               Card
             </Link> */}
             <Link
               className="block p-5 text-center text-sm hover:text-gray-800 hover:underline dark:text-amber-50 md:mt-0 md:inline-block"
               href="/logout"
+              key="/logout"
             >
               Salir
             </Link>

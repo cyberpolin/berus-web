@@ -156,11 +156,16 @@ const PaymentsByYear = ({
     )
   }
 
+  if (yearsAry.length === 0) {
+    return <p>No hay pagos para este año</p>
+  }
+
   return yearsAry.map((year) => {
     const isOpen = showAry.includes(year)
     return (
       <>
         <div
+          key={year}
           onClick={() => toggleYear(year)}
           className="mb-2 flex cursor-pointer justify-between rounded bg-black bg-opacity-60 p-2 text-white"
         >
@@ -185,6 +190,7 @@ const PropertyInfo = ({
 }: {
   lot: number
   square: number
+  payments: any
 }) => {
   // all years inside this property will be shown
 
@@ -195,7 +201,12 @@ const PropertyInfo = ({
     <li key={`${lot}${square}`} className="relative m-2 w-full rounded border">
       <h4 className="mb-2 block rounded bg-black bg-opacity-60 p-2 text-white">{`Manzana ${square} Lote ${lot}`}</h4>
       <ul className="m-4 border-t-2">
-        <PaymentsByYear yearsAry={yearsAry} payments={payments} />
+        {/* @ts-ignore: Unreachable code error*/}
+        <PaymentsByYear
+          key={`${lot}${square}`}
+          yearsAry={yearsAry}
+          payments={payments}
+        />
       </ul>
     </li>
   )
@@ -218,13 +229,13 @@ const Payments = ({ user }: any) => {
       refetchQueries: [GET_PAYMENTS],
       fetchPolicy: "cache-and-network",
       onCompleted: (data) => {
-        console.log(data)
+        // console.log(data)
       },
     }
   )
 
   const { data, loading, error, stopPolling } = useQuery(GET_PAYMENTS, {
-    pollInterval: process?.env?.NEXT_PUBLIC_POLL_INTERVAL || 10000,
+    pollInterval: parseInt(process?.env?.NEXT_PUBLIC_POLL_INTERVAL || '10000'),
     variables: { id },
   })
 
@@ -245,8 +256,8 @@ const Payments = ({ user }: any) => {
   } = data
 
   const allPayments = properties
-    .map((p) =>
-      p.payments.map((payment) => ({
+    .map((p:any) =>
+      p.payments.map((payment:any) => ({
         ...payment,
         dueAtYear: dayjs(payment.dueAt).format("YYYY"),
         propertyName: p.name,
@@ -269,13 +280,18 @@ const Payments = ({ user }: any) => {
           })
         }}
       />
-      {properties.map((p) => {
+      {properties.map((p:any) => {
         const { lot, square, id } = p
 
-        const propertyPayments = allPayments.filter((p) => p.propertyId === id)
+        const propertyPayments = allPayments.filter((p:any) => p.propertyId === id)
 
         return (
-          <PropertyInfo lot={lot} square={square} payments={propertyPayments} />
+          <PropertyInfo
+            key={id}
+            lot={lot}
+            square={square}
+            payments={propertyPayments}
+          />
         )
       })}
     </div>

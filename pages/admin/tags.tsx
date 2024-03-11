@@ -53,18 +53,12 @@ const Tags = (props) => {
               validationSchema={schema}
               initialValues={initialValues}
               onSubmit={async (variables, { resetForm }) => {
-                console.log("variables", variables)
-
                 const { initialTag, finalTag } = variables
-                console.log(initialTag)
-                console.log(finalTag)
                 const tags = range(parseInt(initialTag), parseInt(finalTag) + 1)
-                console.log("tags", tags)
                 const data = tags.map((t) => ({
                   tagId: `${t}`,
                   isActive: true,
                 }))
-                console.log("data", data)
                 await updateTags({ variables: { data } })
               }}
             >
