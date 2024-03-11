@@ -27,10 +27,12 @@ const Layout = (props) => {
   return (
     <div className="flex flex-wrap">
       <div className="mb-4 w-full">
-        {childAry.map((child, i) => React.cloneElement(child, { ...props }))}
+        {childAry.map((child, i) =>
+          React.cloneElement(child, { ...props, key: i })
+        )}
       </div>
     </div>
-  );
+  )
 };
 
 export default Layout;

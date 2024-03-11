@@ -23,12 +23,9 @@ query GET_VOUCHERS($from: DateTime!, $to: DateTime) {
   }
 }
 
-query CREATE_PAYMENT_IF_DONT_EXIST($id: ID!) {
-  createPayment(id: $id)
-}
 
-query CREATE_NEXT_PAYMENT_IF_DONT_EXIST($id: ID!, $date: DateTime!) {
-  createNextPayment(id: $id, date: $date)
+query CREATE_NEXT_PAYMENT_IF_DONT_EXIST($id: ID!) {
+  createNextPayment(id: $id)
 }
 
 query GET_POST($id: ID!) {

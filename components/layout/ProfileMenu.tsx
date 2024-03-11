@@ -76,8 +76,7 @@ const Drop = ({
 const ProfileMenu = ({ user, show }) => {
   const ui = useUI();
   const router = useRouter();
-  const [force, setForce] = useState(false);
-  console.log("user ", user);
+  const [force, setForce] = useState(false)
 
   const id =
     user.isAdmin && router?.query.pretend ? router?.query.pretend : user.id;

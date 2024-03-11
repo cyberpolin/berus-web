@@ -27,7 +27,6 @@ export default function () {
   useEffect(() => {
     //@ts-ignore
     if (image.id && image.image) {
-      console.log(image)
       updatePayment({
         variables: {
           //@ts-ignore

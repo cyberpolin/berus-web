@@ -51,8 +51,6 @@ export default function () {
   const [recoverPassword, recoveryPasswordQuery] =
     useLazyQuery(RECOVERY_PASSWORD)
 
-  console.log("recoveryPasswordQuery", recoveryPasswordQuery)
-
   if (updatePasswordQuery.called && updatePasswordQuery.data?.updatePassword) {
     return (
       <div className="m-4">

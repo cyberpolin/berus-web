@@ -31,7 +31,6 @@ export default function () {
 
   const [isUser, { data: haveUser }] = useLazyQuery(IS_USER)
 
-  console.log("haveUser", haveUser)
   const delay = useRef()
 
   return (
@@ -57,7 +56,7 @@ export default function () {
               email: variables.email.replace(" ", ""),
             }
             const { data } = await loginMutation({ variables: cleanVars })
-            console.log("data", data)
+
             if (
               data?.authenticateUserWithPassword?.message ===
               "Authentication failed."

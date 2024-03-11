@@ -176,7 +176,6 @@ const Payments = ({ initialDate, finalDate, searchTerm }: DateRange) => {
       .filter((x) => !!x.property)
       .filter((x) => x)
 
-    console.log("orderedPayments", orderedPayments)
     const filteredPayments =
       searchTerm !== ""
         ? orderedPayments.filter((x) => {
