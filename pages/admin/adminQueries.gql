@@ -74,6 +74,7 @@ query GET_PAYMENTS($initialDate: DateTime!, $finalDate: DateTime!) {
       }
       square
       lot
+      name
     }
     id
     createdAt

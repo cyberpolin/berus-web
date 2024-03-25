@@ -163,10 +163,6 @@ const Payments = ({ initialDate, finalDate }: DateRange) => {
     variables: { initialDate, finalDate },
   })
 
-  console.log("selected >> ", {
-    selectedPayment,
-  })
-
   if (error || loading) {
     return <Loader error={error} loading={loading} />
   }
@@ -174,8 +170,9 @@ const Payments = ({ initialDate, finalDate }: DateRange) => {
   if (data) {
     const payments = data.payments.map((x: any) => ({
       ...x,
-      ...x.property?.[0],
+      ...x.property,
     }))
+
     const orderedPayments = orderBy(payments, ["square", "lot"])
 
     return (

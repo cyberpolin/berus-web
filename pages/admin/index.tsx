@@ -3,38 +3,42 @@ import { months } from "../../lib/utils/date"
 
 import Layout from "../../components/layout/NLayout"
 import Payments from "@/components/adminPage/Payments"
-
-const getTextMonth = (month: any) =>
-  parseInt(month) < 9 ? `0${parseInt(month) + 1}` : `${parseInt(month) + 1}`
+import dayjs from "dayjs"
 
 export default function () {
-  const today = new Date()
-  const month = today.getMonth()
-  const year = today.getFullYear
+  const today = dayjs()
+  const currentMonth = today.format("YYYY-MM")
 
-  const [selectedMonth, setSelectedMonth] = useState(getTextMonth(month))
+  const [selectedMonth, setSelectedMonth] = useState(currentMonth)
+
+  const initialDate = dayjs(selectedMonth).startOf("day").add(3, "day")
+  const finalDate = initialDate.endOf("day").add(2, "day")
+
   return (
     <Layout>
       <div className="m-4 w-full">
         <select
           onChange={(e) => {
             const value = parseInt(e.target.value)
-            setSelectedMonth(getTextMonth(value))
-            // setSelectedMonth(getTextMonth(parseInt(e.target.value) + 1))
+            setSelectedMonth(dayjs(e.target.value).format("YYYY-MM"))
           }}
           id="countries"
           className="block w-1/2 rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
         >
-          {months.map((m, i) => (
-            <option key={i} value={i} selected={i === month}>
-              {m}
-            </option>
-          ))}
+          {months.map((m, i) => {
+            const month = m.format("YYYY-MM")
+
+            return (
+              <option key={i} value={month} selected={month === currentMonth}>
+                {m.format("MMMM YYYY")}
+              </option>
+            )
+          })}
         </select>
 
         <Payments
-          initialDate={`2023-${selectedMonth}-05T00:00:00Z`}
-          finalDate={`2023-${selectedMonth}-05T23:59:59Z`}
+          initialDate={initialDate.toISOString()}
+          finalDate={finalDate.toISOString()}
         />
       </div>
     </Layout>
