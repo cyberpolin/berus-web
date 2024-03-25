@@ -67,60 +67,60 @@ const SinglePayment = ({ payment }: { payment: any }) => {
   const { dueAt, dueAmount, status, image } = payment
   const formattedDueAt = dayjs(dueAt).format("DD-MMM-YYYY")
   const formattedDueAmount = currency(dueAmount).format()
+console.log("payment", image)
+return (
+  <li key={payment.id} className="border-b-2 p-2">
+    {`Vence: ${formattedDueAt} - Cantidad: ${formattedDueAmount} - Estatus: `}
+    <Status value={status} />
 
-  return (
-    <li key={payment.id} className="border-b-2 p-2">
-      {`Vence: ${formattedDueAt} - Cantidad: ${formattedDueAmount} - Estatus: `}
-      <Status value={status} />
-
-      {image?.publicUrl && (
-        <>
-          <a target="_blank" href={image?.publicUrl}>
-            <img
-              alt={"payment"}
-              className="center m-4 w-24"
-              src={
-                image?.mimetype === "application/pdf"
-                  ? "/pdfIcon.png"
-                  : image?.publicUrl
-              }
-            />
+    {image?.publicUrl && (
+      <>
+        <a target="_blank" href={image?.publicUrl}>
+          <img
+            alt={"payment"}
+            className="center m-4 w-24"
+            src={
+              image?.mimetype === "application/pdf"
+                ? "/pdfIcon.png"
+                : image?.publicUrlTransformed
+            }
+          />
+        </a>
+        {image?.mimetype === "application/pdf" && (
+          <a target="_blank" href={payment?.image?.publicUrl}>
+            <i>Ver comprobante...</i>
           </a>
-          {image?.mimetype === "application/pdf" && (
-            <a target="_blank" href={payment?.image?.publicUrl}>
-              <i>Ver comprobante...</i>
-            </a>
-          )}
-        </>
-      )}
+        )}
+      </>
+    )}
 
-      {
-        /* If isn't payed display Form */
-        // @ts-ignore: Unreachable code error
-        form === payment.id && <PayForm payment={payment} />
-      }
-      <Action status={status} show={() => setForm(payment.id)} />
-      {!!payment?.bill?.factura?.publicUrl && (
-        <>
-          <br />
-          <a
-            className="hover:opacity-50"
-            target="_blank"
-            href={payment?.bill?.factura?.publicUrl}
-          >
-            <img
-              height={100}
-              alt={"payment"}
-              className="center m-4 w-12 "
-              src={"/pdfIcon.png"}
-            />
-            <i>Ver o descargar factura</i>
-          </a>
-          <br />
-        </>
-      )}
-    </li>
-  )
+    {
+      /* If isn't payed display Form */
+      // @ts-ignore: Unreachable code error
+      form === payment.id && <PayForm payment={payment} />
+    }
+    <Action status={status} show={() => setForm(payment.id)} />
+    {!!payment?.bill?.factura?.publicUrl && (
+      <>
+        <br />
+        <a
+          className="hover:opacity-50"
+          target="_blank"
+          href={payment?.bill?.factura?.publicUrl}
+        >
+          <img
+            height={100}
+            alt={"payment"}
+            className="center m-4 w-12 "
+            src={"/pdfIcon.png"}
+          />
+          <i>Ver o descargar factura</i>
+        </a>
+        <br />
+      </>
+    )}
+  </li>
+)
 }
 
 const Caret = ({ isOpen }: { isOpen: boolean }) => {

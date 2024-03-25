@@ -114,6 +114,7 @@ query GET_PAYMENTS($initialDate: DateTime!, $finalDate: DateTime!) {
     status
     image {
       publicUrl
+      publicUrlTransformed(transformation: { width: "300" })
     }
   }
 }

@@ -135,6 +135,7 @@ query GET_PAYMENTS($id: ID!) {
         dueAmount
         image {
           publicUrl
+          publicUrlTransformed(transformation: { width: "300" })
           mimetype
         }
       }

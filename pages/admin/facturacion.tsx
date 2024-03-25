@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { months } from "../../lib/utils/date"
 
 import Layout from "../../components/layout/NLayout"
@@ -6,13 +6,11 @@ import dayjs from "dayjs"
 import { useMutation, useQuery } from "@apollo/client"
 import { GET_BILLS, UPDATE_PAYMENT, DELETE_PAYMENT } from "./adminQueries.gql"
 import { Loader } from "@/components/Button"
-
-const getTextMonth = (month: any) =>
-  parseInt(month) < 9 ? `0${parseInt(month) + 1}` : `${parseInt(month) + 1}`
+import { orderBy } from "lodash"
 
 export default function () {
-  const today = new Date()
-  const year = today.getFullYear()
+  const today = dayjs()
+  const year = today.format("YYYY")
 
   const [image, setImage] = useState({})
   const [deleteImage, setDeleteImage] = useState()
@@ -49,8 +47,9 @@ export default function () {
   })
 
   const [selectedMonth, setSelectedMonth] = useState(
-    dayjs(today).startOf("month").toISOString()
+    today.startOf("month").toISOString()
   )
+  console.log("selectedMonth", selectedMonth)
 
   const { data, loading, error } = useQuery(GET_BILLS, {
     variables: {
@@ -90,17 +89,15 @@ export default function () {
           className="block w-1/2 rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
         >
           {months.map((m, i) => {
-            const dateString = dayjs(new Date(year, i))
-              .startOf("month")
-              .toISOString()
-            const formated = dayjs(dateString).format("MMMM")
+            const dateString = m.format("MMMM YY")
+            const isoDate = m.toISOString()
             return (
               <option
-                key={dateString}
-                value={dateString}
-                selected={dateString === selectedMonth}
+                key={isoDate}
+                value={isoDate}
+                selected={isoDate === selectedMonth}
               >
-                {m}
+                {dateString}
               </option>
             )
           })}

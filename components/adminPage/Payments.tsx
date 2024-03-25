@@ -60,7 +60,7 @@ const Image = ({ image }: { image: any }) => {
 
   return (
     <a target="_blank" rel="noreferrer" href={image?.publicUrl}>
-      <img src={image?.publicUrl} alt="pago" width={80} />
+      <img src={image?.publicUrlTransformed} alt="pago" width={80} />
     </a>
   )
 }
@@ -159,6 +159,7 @@ const Alert = ({
 
 const Payments = ({ initialDate, finalDate, searchTerm }: DateRange) => {
   const [selectedPayment, setSelectedPayment] = useState(null)
+
   const { data, loading, error } = useQuery(GET_PAYMENTS, {
     variables: { initialDate, finalDate },
   })
@@ -170,8 +171,9 @@ const Payments = ({ initialDate, finalDate, searchTerm }: DateRange) => {
   if (data) {
     const payments = data.payments.map((x: any) => ({
       ...x,
-      ...x.property?.[0],
+      ...x.property,
     }))
+    console.log("data>> ", data)
     const orderedPayments = orderBy(payments, ["square", "lot"])
       .filter((x) => !!x.property)
       .filter((x) => x)
@@ -200,7 +202,9 @@ const Payments = ({ initialDate, finalDate, searchTerm }: DateRange) => {
     const dueProperties = filteredPayments
       .filter((b) => b.status !== "payed")
       .map((b) => b.property.name)
- 
+
+    console.log("filteredPayments>>", filteredPayments)
+
     return (
       <div className="relative mt-8 overflow-x-auto shadow-md sm:rounded-lg">
         <ul>
