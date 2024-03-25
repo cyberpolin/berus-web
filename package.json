@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "ssl": "npx local-ssl-proxy --key local.c7.altozanotabasco.com-key.pem --cert local.c7.altozanotabasco.com.pem --source 3400 --target 3000"
   },
   "dependencies": {
     "@apollo/client": "^3.7.9",
