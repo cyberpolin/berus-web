@@ -1,15 +1,15 @@
-import Logout from "@/components/Logout"
-import UseAuth from "@/lib/UseAuth"
-import { useMutation } from "@apollo/client"
-import Image from "next/image"
-import Link from "next/link"
-import { useRouter } from "next/router"
-import React, { useCallback, useEffect, useState } from "react"
-import Dropzone, { useDropzone } from "react-dropzone"
-import { UPDATE_USER } from "../../pages/admin/adminQueries.gql"
-import { IS_LOGGED } from "../../pages/login/queries.gql"
-import SubMenu from "../../components/Menu/SubMenu"
-import useUI from "@/lib/hooks/useUI"
+import Logout from "@/components/Logout";
+import UseAuth from "@/lib/UseAuth";
+import { useMutation } from "@apollo/client";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import React, { useCallback, useEffect, useState } from "react";
+import Dropzone, { useDropzone } from "react-dropzone";
+import { UPDATE_USER } from "../../pages/admin/adminQueries.gql";
+import { IS_LOGGED } from "../../pages/login/queries.gql";
+import SubMenu from "../../components/Menu/SubMenu";
+import useUI from "@/lib/hooks/useUI";
 
 const Drop = ({
   dz: { getInputProps, getRootProps, loading },
@@ -55,9 +55,9 @@ const Drop = ({
             xmlns="http://www.w3.org/2000/svg"
           >
             <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
               d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
             ></path>
           </svg>
@@ -74,13 +74,17 @@ const Drop = ({
 
 //@ts-ignore
 const ProfileMenu = ({ user, show }) => {
-  const ui = useUI()
+  const ui = useUI();
+  const router = useRouter();
   const [force, setForce] = useState(false)
+
+  const id =
+    user.isAdmin && router?.query.pretend ? router?.query.pretend : user.id;
 
   const [updateUser, { loading, data, error, called }] = useMutation(
     UPDATE_USER,
     { refetchQueries: [IS_LOGGED] }
-  )
+  );
 
   //@ts-ignore
   const onDrop = useCallback(
@@ -92,28 +96,28 @@ const ProfileMenu = ({ user, show }) => {
         Object.assign(file, {
           preview: URL.createObjectURL(file),
         })
-      )[0]
+      )[0];
 
       await updateUser({
         variables: {
-          id: user.id,
+          id,
           // @ts-ignore: Unreachable code error
           image,
         },
-      })
+      });
 
       if (called && !error) {
-        setForce(false)
+        setForce(false);
       }
     },
     [force]
-  )
+  );
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     accept: {
       "image/png": [".png", ".pdf", ".jpeg", ".jpg"],
     },
     onDrop,
-  })
+  });
 
   return (
     <div
@@ -184,7 +188,7 @@ const ProfileMenu = ({ user, show }) => {
         )}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default ProfileMenu
+export default ProfileMenu;

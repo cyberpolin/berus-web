@@ -2,6 +2,30 @@ query USER_EXISTS($email: String!, $phone: String!) {
   userExists(email: $email, phone: $phone)
 }
 
+query RECOVERY_PASSWORD($email: String!) {
+  getRecoveryEmail(email: $email)
+}
+
+query UPDATE_PASSWORD($recoveryId: String!, $password: String!) {
+  updatePassword(recoveryId: $recoveryId, password: $password)
+}
+
+query GET_FREE_PROPERTY {
+  properties(where: { owner: null }) {
+    id
+    name
+    owner {
+      email
+    }
+  }
+}
+
+mutation ASSIGN_OWNER($pId: ID!, $data: PropertyUpdateInput!) {
+  updateProperty(where: { id: $pId }, data: $data) {
+    id
+  }
+}
+
 query VERIFY_PHONE($code: String!) {
   verifyPhone(code: $code)
 }
@@ -48,6 +72,10 @@ mutation LOG_IN($email: String!, $password: String!) {
   }
 }
 
+query IS_USER($email: String!, $phone: String) {
+  isUser(email: $email, phone: $phone)
+}
+
 mutation UPDATE_PAYMENT($pId: ID!, $image: Upload) {
   updatePayment(where: { id: $pId }, data: { status: pending, image: $image }) {
     id
@@ -55,6 +83,19 @@ mutation UPDATE_PAYMENT($pId: ID!, $image: Upload) {
   }
 }
 
+mutation TEMP_CREATE_USER($email: String!, $password: String!, $phone: String) {
+  createUser(
+    data: {
+      email: $email
+      password: $password
+      name: "Predefinido"
+      phone: $phone
+      isVerified: true
+    }
+  ) {
+    name
+  }
+}
 mutation CREATE_USER(
   $name: String!
   $phone: String!
@@ -81,13 +122,20 @@ query GET_PAYMENTS($id: ID!) {
       id
       square
       lot
+      name
       payments {
         id
         dueAt
         status
+        bill {
+          factura {
+            publicUrl
+          }
+        }
         dueAmount
         image {
           publicUrl
+          publicUrlTransformed(transformation: { width: "300" })
           mimetype
         }
       }

@@ -1,14 +1,15 @@
-import Field from "@/components/Field"
-import { Formik, Form, FieldArray } from "formik"
+import Field from "@/components/Field";
+import { Formik, Form, FieldArray } from "formik";
 
-import { useEffect, useState } from "react"
-import { useLazyQuery, useMutation, useQuery } from "@apollo/client"
+import { useEffect, useState } from "react";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import {
   CREATE_USER,
   LOG_IN,
   IS_LOGGED,
   GENERATE_PAYMENTS,
   USER_EXISTS,
+  IS_USER,
 } from "./queries.gql"
 
 import { createUser, addProperties, makePayment } from "../schema"
@@ -17,7 +18,7 @@ import Layout from "@/components/layout/login"
 import Link from "next/link"
 
 // @ts-ignore: Unreachable code error
-const CreateUser = ({ goNext, goBack, data, final, haveUser }) => {
+const CreateUser = ({ goNext, goBack, data, final, haveUser, loading }) => {
   return (
     <Formik
       initialValues={{ ...data }}
@@ -117,10 +118,10 @@ const CreateUser = ({ goNext, goBack, data, final, haveUser }) => {
               </p>
 
               <p>O simplemente intente con otro correo y/o celular...</p>
-              <Button title="Intentar de nuevo" />
+              <Button loading={loading} title="Intentar de nuevo" />
             </>
           ) : (
-            <Button title="Crear Usuario" />
+            <Button loading={loading} title="Crear Usuario" />
           )}
         </Form>
       )}
@@ -309,8 +310,7 @@ const SignUp = () => {
 
   const [form, setData] = useState({})
 
-  const [userExists, { error, data, loading, called }] =
-    useLazyQuery(USER_EXISTS)
+  const [userExists, { error, data, loading, called }] = useLazyQuery(IS_USER)
 
   const goBack = () => {
     if (currentStep >= 1) {
@@ -328,8 +328,8 @@ const SignUp = () => {
       },
     })
 
-    setUserExist(haveUser.data?.userExists)
-    if (haveUser.data?.userExists === false) {
+    setUserExist(haveUser.data?.isUser)
+    if (haveUser.data?.isUser === false) {
       setData({ ...form, ...props })
       setStep(currentStep + 1)
       return
@@ -339,6 +339,7 @@ const SignUp = () => {
   const steps = [
     // @ts-ignore: Unreachable code error
     <CreateUser
+      loading={loading}
       key={1}
       goNext={goNext}
       goBack={goBack}
@@ -428,4 +429,4 @@ const SignUp = () => {
   )
 }
 
-export default SignUp
+export default SignUp;

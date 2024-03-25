@@ -1,5 +1,31 @@
-query CREATE_PAYMENT_IF_DONT_EXIST($id: ID!) {
-  createPayment(id: $id)
+query GET_RESERVATION($date: DateTime!) {
+  getReservationByDate(date: $date) {
+    startsAt
+    endsAt
+    property {
+      name
+    }
+  }
+}
+
+query GET_VOUCHERS($from: DateTime!, $to: DateTime) {
+  vouchers(
+    where: { AND: [{ createdAt: { gte: $from } }, { createdAt: { lte: $to } }] }
+  ) {
+    createdAt
+    bankTransaction {
+      transactionId
+    }
+    image {
+      publicUrlTransformed(transformation: { width: "120", crop: "limit" })
+    }
+    notes
+  }
+}
+
+
+query CREATE_NEXT_PAYMENT_IF_DONT_EXIST($id: ID!) {
+  createNextPayment(id: $id)
 }
 
 query GET_POST($id: ID!) {
@@ -8,6 +34,13 @@ query GET_POST($id: ID!) {
       document
     }
     title
+  }
+}
+
+query GET_REPORTS {
+  reports(where: {}) {
+    fecha
+    reporteUrl
   }
 }
 
@@ -94,6 +127,7 @@ query GET_PAYMENTS($id: ID!) {
       id
       square
       lot
+      name
       payments {
         id
         dueAt

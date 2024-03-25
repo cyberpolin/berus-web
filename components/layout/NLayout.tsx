@@ -1,25 +1,25 @@
-import UseAuth from "@/lib/UseAuth"
-import Link from "next/link"
-import Image from "next/image"
-import React, { useEffect } from "react"
-import useUI from "@/lib/hooks/useUI"
-import ProfileMenu from "./ProfileMenu"
-import { useRouter } from "next/router"
+import UseAuth from "@/lib/UseAuth";
+import Link from "next/link";
+import Image from "next/image";
+import React, { useEffect } from "react";
+import useUI from "@/lib/hooks/useUI";
+import ProfileMenu from "./ProfileMenu";
+import { useRouter } from "next/router";
 
 const NLayout = (props: any) => {
-  const { user } = UseAuth()
-  const router = useRouter()
-  const ui = useUI()
+  const { user } = UseAuth();
+  const router = useRouter();
+  const ui = useUI();
 
   useEffect(() => {
     if (!user) {
-      router?.push("/login")
+      router?.push("/login");
     }
-  }, [])
+  }, []);
 
-  const showSettings = ui.settings ? "" : "hidden -z-10"
-  const showProfile = ui.profile ? "" : "hidden -z-10"
-  const showMobile = ui.mobile ? "sm:inline-block" : "hidden sm:inline-block"
+  const showSettings = ui.settings ? "" : "hidden -z-10";
+  const showProfile = ui.profile ? "" : "hidden -z-10";
+  const showMobile = ui.mobile ? "sm:inline-block" : "hidden sm:inline-block";
 
   return (
     <div>
@@ -36,6 +36,18 @@ const NLayout = (props: any) => {
           className="block p-2 text-xs hover:bg-slate-200"
         >
           Areas Comunes
+        </Link>
+        <Link
+          href="/admin/tags"
+          className="block p-2 text-xs hover:bg-slate-200"
+        >
+          Add Tags
+        </Link>
+        <Link
+          href="/admin/facturacion"
+          className="block p-2 text-xs hover:bg-slate-200"
+        >
+          Facturación
         </Link>
         <Link href="#" className="block p-2 text-xs hover:bg-slate-200">
           ...
@@ -74,28 +86,55 @@ const NLayout = (props: any) => {
             className={`${showMobile} w-full border-red-100 text-end sm:mx-2 sm:w-4/6 sm:w-max sm:py-2 `}
           >
             {user.isAdmin && (
-              <Link
-                className="block p-5 text-center text-sm hover:text-gray-800 hover:underline dark:text-amber-50 md:mt-0 md:inline-block"
-                href="/admin"
-              >
-                Admin
-              </Link>
+              <>
+                <Link
+                  className="block p-5 text-center text-sm hover:text-gray-800 hover:underline dark:text-amber-50 md:mt-0 md:inline-block"
+                  href="/admin"
+                  key="/admin"
+                >
+                  Admin
+                </Link>
+                <Link
+                  className="block p-5 text-center text-sm hover:text-gray-800 hover:underline dark:text-amber-50 md:mt-0 md:inline-block"
+                  href="/admin/properties"
+                  key="/admin/properties"
+                >
+                  Properties
+                </Link>
+              </>
             )}
             <Link
               className="block p-5 text-center text-sm hover:text-gray-800 hover:underline dark:text-amber-50 md:mt-0 md:inline-block"
               href="/dashboard/cuotas"
+              key="/dashboard/cuotas"
             >
               Cuotas
+            </Link>
+            <Link
+              className="block p-5 text-center text-sm hover:text-gray-800 hover:underline dark:text-amber-50 md:mt-0 md:inline-block"
+              href="/dashboard/descargables"
+              key="/dashboard/descargables"
+            >
+              Descargables
             </Link>
             {/* <Link
               className="block p-5 text-center text-sm hover:text-gray-800 hover:underline dark:text-amber-50 md:mt-0 md:inline-block"
               href="/dashboard/areas"
-            >
+              key="/dashboard/areas"
+              >
               Reservar Areas
+            </Link>
+            <Link
+              className="block p-5 text-center text-sm hover:text-gray-800 hover:underline dark:text-amber-50 md:mt-0 md:inline-block"
+              href="/dashboard/card"
+              key="/dashboard/card"
+              >
+              Card
             </Link> */}
             <Link
               className="block p-5 text-center text-sm hover:text-gray-800 hover:underline dark:text-amber-50 md:mt-0 md:inline-block"
               href="/logout"
+              key="/logout"
             >
               Salir
             </Link>
@@ -141,6 +180,6 @@ const NLayout = (props: any) => {
       </div>
     </div>
   )
-}
+};
 
-export default NLayout
+export default NLayout;

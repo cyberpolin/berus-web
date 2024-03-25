@@ -1,5 +1,31 @@
-query CREATE_PAYMENT_IF_DONT_EXIST($id: ID!) {
-  createPayment(id: $id)
+query CREATE_NEXT_PAYMENT_IF_DONT_EXIST($id: ID!) {
+  createNextPayment(id: $id)
+}
+
+query GET_BILLS($selectedDate: DateTime!) {
+  getBills(selectedDate: $selectedDate) {
+    id
+    dueAmount
+    dueAt
+    status
+    bill {
+      id
+      factura {
+        publicUrl
+      }
+    }
+    property {
+      name
+      owner {
+        name
+        id
+        rfc {
+          id
+          publicUrl
+        }
+      }
+    }
+  }
 }
 
 query GET_POST($id: ID!) {
@@ -59,6 +85,12 @@ mutation UPDATE_AREA(
   }
 }
 
+mutation CREATE_TAG_IDS($data: [TagIdCreateInput!]!) {
+  createTagIds(data: $data) {
+    tagId
+  }
+}
+
 query GET_PAYMENTS($initialDate: DateTime!, $finalDate: DateTime!) {
   payments(
     where: {
@@ -82,6 +114,7 @@ query GET_PAYMENTS($initialDate: DateTime!, $finalDate: DateTime!) {
     status
     image {
       publicUrl
+      publicUrlTransformed(transformation: { width: "300" })
     }
   }
 }
@@ -115,5 +148,60 @@ mutation UPDATE_USER($id: ID!, $image: Upload) {
       publicUrl
     }
     needsBill
+  }
+}
+
+mutation UPDATE_PAYMENT($id: ID!, $image: Upload) {
+  updatePayment(
+    where: { id: $id }
+    data: { bill: { create: { factura: $image } } }
+  ) {
+    id
+  }
+}
+
+mutation DELETE_PAYMENT($id: ID!) {
+  updatePayment(where: { id: $id }, data: { bill: { disconnect: true } }) {
+    id
+  }
+}
+
+query GET_PROPERTIES {
+  properties(orderBy: { name: asc }) {
+    name
+    square
+    lot
+    id
+    owner {
+      id
+    }
+    payments {
+      id
+    }
+  }
+}
+
+query GET_PAYMENT($id: ID) {
+  property(where: { id: $id }) {
+    name
+    paymentsCount
+    payments {
+      id
+      status
+      dueAt
+    }
+  }
+}
+
+query GET_CLUSTER($id: ID) {
+  cluster(where: { id: $id }) {
+    name
+    initialDate
+  }
+}
+
+mutation CREATE_PAYMENTS($data: [PaymentCreateInput!]!) {
+  createPayments(data: $data) {
+    id
   }
 }

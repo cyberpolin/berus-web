@@ -1,4 +1,4 @@
-import { LoaderType } from "@/lib/types"
+import { LoaderType } from "@/lib/types";
 
 const Loader = ({ error, loading, errorTitle, errorMessage }: LoaderType) => {
   if (error) {
@@ -10,7 +10,7 @@ const Loader = ({ error, loading, errorTitle, errorMessage }: LoaderType) => {
         <span className="font-medium">{errorTitle || "Algo salio mal!"}</span>
         {errorMessage || "Por favor intente de nuevo mas tarde..."}
       </div>
-    )
+    );
   }
 
   if (loading) {
@@ -21,10 +21,10 @@ const Loader = ({ error, loading, errorTitle, errorMessage }: LoaderType) => {
       >
         <span className="font-medium">Info alert!</span> Cargando...
       </div>
-    )
+    );
   }
 
-  return <></>
-}
+  return <></>;
+};
 
-export default Loader
+export default Loader;

@@ -2,40 +2,41 @@
 
 export type UserType = {
   user: {
-    id: string
-  }
-}
+    id: string;
+  };
+};
 
 export type PropertyType = {
-  square: string
-  lot: string
-  payments?: [PaymentType]
-}
+  square: string;
+  lot: string;
+  payments?: [PaymentType];
+};
 
 export type PaymentType = {
-  dueAt: string
-  id: string
-}
+  dueAt: string;
+  id: string;
+};
 
 export type DateRange = {
-  initialDate: string
-  finalDate: string
-}
+  initialDate: string;
+  finalDate: string;
+  searchTerm?: string;
+};
 
 export type LoaderType = {
-  error: any
-  loading: boolean
-  errorTitle?: string
-  errorMessage?: string
-}
+  error: any;
+  loading: boolean;
+  errorTitle?: string;
+  errorMessage?: string;
+};
 
 export type Payments = {
-  id: string
-  image: any
-  dueAmount: number
-  status: string
-  aprovedAt: string
-  createdAt: string
-  submittedAt: string
-  dueAt: string
-}
+  id: string;
+  image: any;
+  dueAmount: number;
+  status: string;
+  aprovedAt: string;
+  createdAt: string;
+  submittedAt: string;
+  dueAt: string;
+};

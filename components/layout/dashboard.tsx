@@ -1,20 +1,20 @@
-import UseAuth from "@/lib/UseAuth"
-import { useMutation } from "@apollo/client"
-import Image from "next/image"
-import Link from "next/link"
-import { useRouter } from "next/router"
-import React, { useCallback, useEffect, useState } from "react"
-import { useDropzone } from "react-dropzone"
-import { UPDATE_USER } from "../../pages/admin/adminQueries.gql"
-import { IS_LOGGED } from "../../pages/login/queries.gql"
+import UseAuth from "@/lib/UseAuth";
+import { useMutation } from "@apollo/client";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import React, { useCallback, useEffect, useState } from "react";
+import { useDropzone } from "react-dropzone";
+import { UPDATE_USER } from "../../pages/admin/adminQueries.gql";
+import { IS_LOGGED } from "../../pages/login/queries.gql";
 
-const hide = "-z-10 opacity-0"
-const show = "z-10 opacity-1"
+const hide = "-z-10 opacity-0";
+const show = "z-10 opacity-1";
 
 const Drop = ({
   dz: { getInputProps, getRootProps, loading },
 }: {
-  dz: any
+  dz: any;
 }) => (
   <div className="z flex w-full items-center justify-center">
     <label
@@ -70,16 +70,16 @@ const Drop = ({
       <input id="dropzone-file" type="file" className="hidden" />
     </label>
   </div>
-)
+);
 
 const MenuItem = ({
   title,
   link,
   toggle,
 }: {
-  title: string
-  link: string
-  toggle?: () => void
+  title: string;
+  link: string;
+  toggle?: () => void;
 }) => (
   <li>
     <div className="text-sm">
@@ -92,28 +92,28 @@ const MenuItem = ({
       </Link>
     </div>
   </li>
-)
+);
 
 export default function Layout(props: any) {
-  const router = useRouter()
-  const { user } = UseAuth()
-  const [hidden, setHidden] = useState("hidden")
-  const [showInfo, setShowInfo] = useState(false)
-  const [force, setForce] = useState(false)
-  const [subMenuShow, setSubMenuShow] = useState(true)
+  const router = useRouter();
+  const { user } = UseAuth();
+  const [hidden, setHidden] = useState("hidden");
+  const [showInfo, setShowInfo] = useState(false);
+  const [force, setForce] = useState(false);
+  const [subMenuShow, setSubMenuShow] = useState(true);
 
   const setSubmenuToggle = () => {
-    setSubMenuShow(!subMenuShow)
-  }
+    setSubMenuShow(!subMenuShow);
+  };
 
   const toggleInfo = () => {
-    setShowInfo(!showInfo)
-  }
+    setShowInfo(!showInfo);
+  };
 
   const [updateUser, { loading, data, error, called }] = useMutation(
     UPDATE_USER,
     { refetchQueries: [IS_LOGGED] }
-  )
+  );
 
   //@ts-ignore
   const onDrop = useCallback(
@@ -125,7 +125,7 @@ export default function Layout(props: any) {
         Object.assign(file, {
           preview: URL.createObjectURL(file),
         })
-      )[0]
+      )[0];
 
       await updateUser({
         variables: {
@@ -133,40 +133,40 @@ export default function Layout(props: any) {
           // @ts-ignore: Unreachable code error
           image,
         },
-      })
+      });
 
       if (called && !error) {
-        setForce(false)
-        toggleInfo()
+        setForce(false);
+        toggleInfo();
       }
     },
     [force]
-  )
+  );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     accept: {
       "image/png": [".png", ".pdf", ".jpeg", ".jpg"],
     },
     onDrop,
-  })
+  });
 
   const toggleHidden = () => {
-    const nextState = hidden === "" ? "hidden" : ""
-    setHidden(nextState)
-  }
+    const nextState = hidden === "" ? "hidden" : "";
+    setHidden(nextState);
+  };
 
   const childAry = Array.isArray(props.children)
     ? [...props.children.filter((x: any) => x)]
-    : [props.children]
+    : [props.children];
 
   useEffect(() => {
     if (!user) {
-      router?.push("/login")
+      router?.push("/login");
     }
-  }, [])
+  }, []);
 
   if (router.isFallback) {
-    ;<h1>Data is loading</h1>
+    <h1>Data is loading</h1>;
   }
 
   return (
@@ -211,6 +211,9 @@ export default function Layout(props: any) {
               {user.isAdmin && (
                 <>
                   <MenuItem title="Admin" link="/admin" />
+                  {/* This could be potentally new admin dashboard
+                   */}
+                  <MenuItem title="Properties" link="/admin/properties" />
                 </>
               )}
               <MenuItem title="Cuotas" link="/dashboard/cuotas" />
@@ -257,12 +260,12 @@ export default function Layout(props: any) {
               <Link href="#" className="block p-2 text-xs hover:bg-slate-200">
                 ...
               </Link>
-              <Link
+              {/* <Link
                 href="/admin/comon-areas"
                 className="block p-2 text-xs hover:bg-slate-200"
               >
                 Areas Comunes
-              </Link>
+              </Link> */}
               <Link href="#" className="block p-2 text-xs hover:bg-slate-200">
                 ...
               </Link>

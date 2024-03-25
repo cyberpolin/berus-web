@@ -1,9 +1,8 @@
-import Link from "next/link"
+import Link from "next/link";
 
-type SubmenuItem = { title: string; url: string }
+type SubmenuItem = { title: string; url: string };
 
-type Items = { items: [SubmenuItem]
-hidden: boolean }
+type Items = { items: [SubmenuItem]; hidden: boolean };
 
 const SubMenu = ({ items, hidden }: Items) => {
   return (
@@ -28,12 +27,12 @@ const SubMenu = ({ items, hidden }: Items) => {
                   {title}
                 </Link>
               </li>
-            )
+            );
           })}
         </ul>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default SubMenu
+export default SubMenu;

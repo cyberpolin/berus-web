@@ -1,4 +1,4 @@
-import Layout from "../../components/layout/dashboard"
+import Layout from "../../components/layout/dashboard";
 
 export default function () {
   return (
@@ -22,5 +22,5 @@ export default function () {
       </p>
       <p>Gracias...</p>
     </Layout>
-  )
+  );
 }

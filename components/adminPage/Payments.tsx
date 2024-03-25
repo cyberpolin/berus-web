@@ -1,15 +1,15 @@
-import { get, orderBy } from "lodash"
-import { useMutation, useQuery } from "@apollo/client"
+import _, { get, orderBy } from "lodash";
+import { useMutation, useQuery } from "@apollo/client";
 import {
   GET_PAYMENTS,
   APROVE_PAYMENT,
-} from "../../pages/admin/adminQueries.gql"
-import Loader from "../General/Loader"
-import Debt from "./Debt"
-import currency from "currency.js"
-import { DateRange, LoaderType } from "@/lib/types"
-import { useState } from "react"
-import Link from "next/link"
+} from "../../pages/admin/adminQueries.gql";
+import Loader from "../General/Loader";
+import Debt from "./Debt";
+import currency from "currency.js";
+import { DateRange, LoaderType } from "@/lib/types";
+import { useState } from "react";
+import Link from "next/link";
 
 const Status = ({ status }: { status: string }) => {
   if (status === "onTime") {
@@ -17,7 +17,7 @@ const Status = ({ status }: { status: string }) => {
       <span className="mr-2 rounded bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800 dark:bg-blue-900 dark:text-blue-300">
         A tiempo
       </span>
-    )
+    );
   }
 
   if (status === "pending") {
@@ -25,28 +25,28 @@ const Status = ({ status }: { status: string }) => {
       <span className="mr-2 rounded bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300">
         Pendiente
       </span>
-    )
+    );
   }
   if (status === "payed") {
     return (
       <span className="mr-2 rounded bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800 dark:bg-green-900 dark:text-green-300">
         {status}
       </span>
-    )
+    );
   }
   if (status === "pending") {
     return (
       <span className="mr-2 rounded bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300">
         {status}
       </span>
-    )
+    );
   }
 
-  return <span>{status}</span>
-}
+  return <span>{status}</span>;
+};
 
 const Image = ({ image }: { image: any }) => {
-  const isPdf = image?.publicUrl.includes(".pdf")
+  const isPdf = image?.publicUrl?.includes(".pdf")
 
   if (!image) return <></>
 
@@ -60,7 +60,7 @@ const Image = ({ image }: { image: any }) => {
 
   return (
     <a target="_blank" rel="noreferrer" href={image?.publicUrl}>
-      <img src={image?.publicUrl} alt="pago" width={80} />
+      <img src={image?.publicUrlTransformed} alt="pago" width={80} />
     </a>
   )
 }
@@ -157,8 +157,9 @@ const Alert = ({
   }
 }
 
-const Payments = ({ initialDate, finalDate }: DateRange) => {
+const Payments = ({ initialDate, finalDate, searchTerm }: DateRange) => {
   const [selectedPayment, setSelectedPayment] = useState(null)
+
   const { data, loading, error } = useQuery(GET_PAYMENTS, {
     variables: { initialDate, finalDate },
   })
@@ -172,11 +173,50 @@ const Payments = ({ initialDate, finalDate }: DateRange) => {
       ...x,
       ...x.property,
     }))
-
+    console.log("data>> ", data)
     const orderedPayments = orderBy(payments, ["square", "lot"])
+      .filter((x) => !!x.property)
+      .filter((x) => x)
+
+    const filteredPayments =
+      searchTerm !== ""
+        ? orderedPayments.filter((x) => {
+            const until = searchTerm?.length
+            return (
+              x.property.name.toLowerCase().slice(0, until) ==
+              searchTerm?.toLowerCase()
+            )
+          })
+        : orderedPayments
+
+    const totalBills = filteredPayments.length
+    const ownedBills = filteredPayments.filter((c) => c.property.owner)
+    const ownedBillTotal = ownedBills.length
+    const payedBillsTotal = ownedBills.filter(
+      (b) => b.status === "payed"
+    ).length
+    const pendingBillsTotal = ownedBills.filter(
+      (b) => b.status === "pending"
+    ).length
+
+    const dueProperties = filteredPayments
+      .filter((b) => b.status !== "payed")
+      .map((b) => b.property.name)
+
+    console.log("filteredPayments>>", filteredPayments)
 
     return (
       <div className="relative mt-8 overflow-x-auto shadow-md sm:rounded-lg">
+        <ul>
+          <li>{`Propiedades: ${totalBills}`}</li>
+          <li>{`Propiedades Sin Dueno: ${ownedBillTotal - totalBills}`}</li>
+          <li>{`Propiedades Con Dueno: ${ownedBillTotal}`}</li>
+          <li>{`Propiedades Pagadas: ${payedBillsTotal}`}</li>
+          <li>{`Propiedades Con Adeudo: ${dueProperties.length}`}</li>
+          <li>{`Propiedades Con Adeudo: ${dueProperties.map(
+            (b) => `${b}\n`
+          )}`}</li>
+        </ul>
         <table className="w-full text-left text-sm text-gray-500 dark:text-gray-400">
           <thead className="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
             <tr>
@@ -195,9 +235,15 @@ const Payments = ({ initialDate, finalDate }: DateRange) => {
             </tr>
           </thead>
           <tbody>
-            {orderedPayments.map(
-              ({ id, square, lot, status, owner, image }) => {
+            {filteredPayments.map(
+              ({
+                id,
+                property: { lot, square, owner, name },
+                status,
+                image,
+              }) => {
                 const thisMonth = status !== "payed" ? 1220 : 0
+
                 return (
                   <tr
                     key={id}
@@ -271,4 +317,4 @@ const Payments = ({ initialDate, finalDate }: DateRange) => {
   return <></>
 }
 
-export default Payments
+export default Payments;

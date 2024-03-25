@@ -3,7 +3,7 @@ const nextConfig = {
   experimental: {
     appDir: true,
   },
-  reactStrictMode: true,
+  reactStrictMode: false, // aparently this fix polling interval
 }
 
 module.exports = {

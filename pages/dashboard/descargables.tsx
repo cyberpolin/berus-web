@@ -1,9 +1,9 @@
-import Payments from "@/components/Payments"
+import Reports from "@/components/Reports"
 import UseAuth from "@/lib/UseAuth"
 import { useRouter } from "next/router"
 import Layout from "../../components/layout/NLayout"
 
-const Cuotas = () => {
+const Descargables = () => {
   const router = useRouter()
   const user = UseAuth()
 
@@ -13,11 +13,9 @@ const Cuotas = () => {
 
   return (
     <Layout>
-      <div className="flex-row">
-        <Payments user={user} />
-      </div>
+      <Reports />
     </Layout>
   )
 }
 
-export default Cuotas
+export default Descargables
