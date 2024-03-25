@@ -10,7 +10,6 @@ import { useRouter } from "next/router"
 import { useContext, useState } from "react"
 import { uiCTX } from "../_app"
 
-import Paper from "@mui/material/Paper"
 import { ViewState } from "@devexpress/dx-react-scheduler"
 import {
   Scheduler,
@@ -18,14 +17,9 @@ import {
   MonthView,
 } from "@devexpress/dx-react-scheduler-material-ui"
 // @ts-ignore
-import DatePicker from "react-datepicker"
-
-import "react-datepicker/dist/react-datepicker.css"
 
 const currentDate = "2018-11-01"
-const schedulerData = [
-
-]
+const schedulerData = []
 
 const headers = [
   "Nombre",
@@ -56,8 +50,8 @@ const Areas = (props) => {
 
   const selectedArea =
     query.edit && data?.areas?.length > 0
-    // @ts-ignore
-      ? data.areas.find((i) => i.id === query.edit)
+      ? // @ts-ignore
+        data.areas.find((i) => i.id === query.edit)
       : initialValues
 
   const [createArea, createAreaCTX] = useMutation(ADD_AREA, {
@@ -92,10 +86,10 @@ const Areas = (props) => {
                   }
                   return
                 }
-                
+
                 try {
                   const { data } = await createArea({ variables })
-                  
+
                   //@ts-ignore
                   if (data) resetForm(initialValues)
                 } catch {}
@@ -103,11 +97,6 @@ const Areas = (props) => {
             >
               {(formik) => (
                 <Form className="mb-8 mt-8 flex flex-col">
-                  <DatePicker
-                    selected={startDate}
-                    // @ts-ignore
-                    onChange={(date) => setStartDate(date)}
-                  />
                   <Field
                     label="Nombre del area"
                     name="name"
@@ -116,7 +105,7 @@ const Areas = (props) => {
                     errors={formik.errors}
                   />
                   <Field
-                  // @ts-ignore
+                    // @ts-ignore
                     as="textarea"
                     label="Descripción o reglas"
                     name="description"
@@ -148,12 +137,12 @@ const Areas = (props) => {
         </div>
         <div className="w-4/6 p-2">
           <div className="text-sm font-semibold uppercase tracking-wide text-indigo-500">
-            <Paper>
+            {/* <Paper>
               <Scheduler data={schedulerData}>
                 <ViewState currentDate={currentDate} />
                 <MonthView /> <Appointments />
               </Scheduler>
-            </Paper>
+            </Paper> */}
           </div>
         </div>
       </>

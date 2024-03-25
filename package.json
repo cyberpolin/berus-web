@@ -10,7 +10,6 @@
     "ssl": "npx local-ssl-proxy --key local.c7.altozanotabasco.com-key.pem --cert local.c7.altozanotabasco.com.pem --source 3400 --target 3000"
   },
   "dependencies": {
-
     "@devexpress/dx-react-core": "^4.0.3",
     "@devexpress/dx-react-scheduler": "^4.0.3",
     "@devexpress/dx-react-scheduler-material-ui": "^4.0.3",
@@ -38,7 +37,6 @@
     "lodash": "^4.17.21",
     "next": "^13.1.6",
     "react": "^18.2.0",
-    "react-datepicker": "^4.11.0",
     "react-dom": "^18.2.0",
     "react-dropzone": "^14.2.3",
     "react-qr-svg": "^2.4.0",

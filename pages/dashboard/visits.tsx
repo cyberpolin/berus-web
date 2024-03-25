@@ -10,8 +10,7 @@ import { useMutation, useQuery } from "@apollo/client";
 import Loading from "@/components/Loading";
 import { useRouter } from "next/router";
 import { useContext, useState } from "react";
-import { uiCTX } from "../_app";
-import HourDatePicker from "@/components/HourDatePicker";
+import { uiCTX } from "../_app"
 
 const headers = [
   "Nombre",
@@ -70,27 +69,27 @@ const CommonAreas = (props) => {
               initialValues={{ ...selectedArea }}
               onSubmit={async (variables, { resetForm }) => {
                 if (query.edit) {
-                  const editVariables = { ...variables, id: query.edit };
+                  const editVariables = { ...variables, id: query.edit }
                   try {
                     const { data } = await updateArea({
                       variables: editVariables,
-                    });
+                    })
                   } catch (error) {
-                    console.log("error >> ", error);
+                    console.log("error >> ", error)
                   }
                   if (data) {
-                    push("./comon-areas");
+                    push("./comon-areas")
                     //@ts-ignore
-                    resetForm(initialValues);
+                    resetForm(initialValues)
                   }
-                  return;
+                  return
                 }
 
                 try {
-                  const { data } = await createArea({ variables });
+                  const { data } = await createArea({ variables })
 
                   //@ts-ignore
-                  if (data) resetForm(initialValues);
+                  if (data) resetForm(initialValues)
                 } catch {}
               }}
             >
@@ -114,15 +113,7 @@ const CommonAreas = (props) => {
                     type="text"
                     errors={formik.errors}
                   />
-                  <HourDatePicker
-                    label="Dia de visita"
-                    name="initialDate"
-                    id="initialDate"
-                    type="text"
-                    errors={formik.errors}
-                    //@ts-ignore
-                    formik={formik}
-                  />
+
                   <Field
                     label="property"
                     name="property"
@@ -155,7 +146,7 @@ const CommonAreas = (props) => {
         </div>
       </>
     </Layout>
-  );
+  )
 };
 
 export default CommonAreas;

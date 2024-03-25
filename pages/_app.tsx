@@ -8,16 +8,16 @@ import useUI from "@/lib/hooks/useUI";
 export const uiCTX = createContext({
   ui: {},
 });
-
-function MyApp({ Component, pageProps }: AppProps) {
-  const ui = useUI();
+// @ts-ignore
+function MyApp({ Component, pageProps }) {
+  const ui = useUI()
   return (
     <uiCTX.Provider value={{ ui }}>
       <ApolloProvider client={client}>
         <Component {...pageProps} />
       </ApolloProvider>
     </uiCTX.Provider>
-  );
+  )
 }
 
 export default MyApp;
