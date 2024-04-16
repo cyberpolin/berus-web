@@ -4,10 +4,16 @@ import { months } from "../../lib/utils/date";
 import Layout from "../../components/layout/NLayout"
 import Payments from "@/components/adminPage/Payments"
 import dayjs from "dayjs"
+import { useLazyQuery } from "@apollo/client"
+
+import { MAKE_IT_DUE, CREATE_ALL_PAYMENTS } from "../admin/adminQueries.gql"
 
 export default function () {
   const today = dayjs()
   const currentMonth = today.format("YYYY-MM")
+
+  const [makeItDue, makeItDueData] = useLazyQuery(MAKE_IT_DUE)
+  const [createPayments, createPaymentsData] = useLazyQuery(CREATE_ALL_PAYMENTS)
 
   const [selectedMonth, setSelectedMonth] = useState(currentMonth)
   const [searchTerm, setSearchTerm] = useState("")
@@ -41,7 +47,20 @@ export default function () {
             )
           })}
         </select>
-
+        <a
+          href="#"
+          onClick={() => createPayments()}
+          className="rounded-md border bg-green-950  p-4 text-white "
+        >
+          {createPaymentsData.loading ? "loading" : "create payments"}
+        </a>
+        <a
+          href="#"
+          onClick={() => (makeItDueData.loading ? () => {} : makeItDue())}
+          className="rounded-md border bg-green-950 p-4 text-white "
+        >
+          {makeItDueData.loading ? "loading..." : "make it due"}
+        </a>
         <Payments
           initialDate={initialDate.toISOString()}
           finalDate={finalDate.toISOString()}
