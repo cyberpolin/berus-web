@@ -1,5 +1,5 @@
+"use client"
 import { useState } from "react"
-import { months } from "../../../lib/utils/date"
 
 import Layout from "../../../components/layout/NLayout"
 import CreatePayments from "@/components/adminPage/CreatePayments"

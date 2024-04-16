@@ -200,6 +200,12 @@ query GET_CLUSTER($id: ID) {
   }
 }
 
+mutation CREATE_PAYMENTS($data: [PaymentCreateInput!]!) {
+  createPayments(data: $data) {
+    id
+  }
+}
+
 query CREATE_ALL_PAYMENTS {
   createAllPayments
 }
