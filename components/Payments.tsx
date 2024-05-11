@@ -3,8 +3,8 @@ import currency from "currency.js"
 import dayjs from "dayjs"
 import es from "dayjs/locale/es-mx"
 import utc from "dayjs/plugin/utc"
-import { UPDATE_PAYMENT } from "../pages/login/queries.gql"
-import { CREATE_NEXT_PAYMENT_IF_DONT_EXIST, GET_PAYMENTS } from "../pages/admin/adminQueries.gql"
+
+import { CREATE_NEXT_PAYMENT_IF_DONT_EXIST, GET_PAYMENTS, UPDATE_PAYMENT_ADMIN } from "../pages/admin/adminQueries.gql"
 import Image from "next/image"
 import PayForm from "../pages/dashboard/pagar-cuota"
 import { useEffect, useState } from "react"
@@ -77,7 +77,7 @@ const SinglePayment = ({ payment }: { payment: any }) => {
   }
 
   const [updatePayment, { error, loading, data, reset }] = useMutation(
-    UPDATE_PAYMENT
+    UPDATE_PAYMENT_ADMIN
   )
   const user = UseAuth()
   const isAdmin = user.user.isAdmin

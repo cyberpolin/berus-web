@@ -142,7 +142,7 @@ mutation APROVE_PAYMENT($id: ID) {
   }
 }
 
-mutation UPDATE_PAYMENT($id: ID, $status: PaymentStatus) {
+mutation UPDATE_PAYMENT_ADMIN($id: ID, $status: PaymentStatus) {
   updatePayment(where: { id: $id }, data: { status: $status }) {
     status
     id
