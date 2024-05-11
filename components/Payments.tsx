@@ -3,22 +3,26 @@ import currency from "currency.js"
 import dayjs from "dayjs"
 import es from "dayjs/locale/es-mx"
 import utc from "dayjs/plugin/utc"
-import { UPDATE_PAYMENT, GET_PAYMENTS } from "../pages/login/queries.gql"
-import { CREATE_NEXT_PAYMENT_IF_DONT_EXIST } from "../pages/admin/adminQueries.gql"
+import { UPDATE_PAYMENT } from "../pages/login/queries.gql"
+import { CREATE_NEXT_PAYMENT_IF_DONT_EXIST, GET_PAYMENTS } from "../pages/admin/adminQueries.gql"
 import Image from "next/image"
 import PayForm from "../pages/dashboard/pagar-cuota"
 import { useEffect, useState } from "react"
 import Button from "./Button"
 import { useRouter } from "next/router"
 import _ from "lodash"
-import {APROVE_PAYMENT} from "../pages/admin/adminQueries.gql"
 import UseAuth from "@/lib/UseAuth"
 
 dayjs.locale(es)
 dayjs.extend(utc)
 
 const Status = ({ value }: { value: string }) => {
-  
+  const statusOption = {
+    pending: "En revisión",
+    due: "Vencido",
+    onTime: "A tiempo",
+    payed: "Pagado",
+  }
 
   const colors = {
     onTime:
