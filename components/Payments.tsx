@@ -79,6 +79,9 @@ const SinglePayment = ({ payment }: { payment: any }) => {
   const [updatePayment, { error, loading, data, reset }] = useMutation(
     UPDATE_PAYMENT_ADMIN
   )
+
+  console.log('>>>>', {data, error, loading})
+  
   const user = UseAuth()
   const isAdmin = user.user.isAdmin
 return (

@@ -142,8 +142,8 @@ mutation APROVE_PAYMENT($id: ID) {
   }
 }
 
-mutation UPDATE_PAYMENT_ADMIN($id: ID, $status: String!) {
-  updatePayment(where: { id: $id }, data: { status: $status }) {
+mutation UPDATE_PAYMENT_ADMIN($id: ID!, $status:PaymentStatusType!){
+  updatePayment(where:{id:$id}, data:{status:$status}){
     status
     id
   }
