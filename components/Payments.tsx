@@ -275,7 +275,7 @@ const Payments = ({ user }: any) => {
         onClick={() => {
           createNextPayment({
             variables: {
-              id: user.user.id,
+              id
             },
           })
         }}
