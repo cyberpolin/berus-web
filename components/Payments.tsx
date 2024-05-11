@@ -1,9 +1,9 @@
-import { useLazyQuery, useQuery } from "@apollo/client"
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client"
 import currency from "currency.js"
 import dayjs from "dayjs"
 import es from "dayjs/locale/es-mx"
 import utc from "dayjs/plugin/utc"
-import { GET_PAYMENTS } from "../pages/login/queries.gql"
+import { UPDATE_PAYMENT } from "../pages/login/queries.gql"
 import { CREATE_NEXT_PAYMENT_IF_DONT_EXIST } from "../pages/admin/adminQueries.gql"
 import Image from "next/image"
 import PayForm from "../pages/dashboard/pagar-cuota"
@@ -11,17 +11,14 @@ import { useEffect, useState } from "react"
 import Button from "./Button"
 import { useRouter } from "next/router"
 import _ from "lodash"
+import {APROVE_PAYMENT} from "../pages/admin/adminQueries.gql"
+import UseAuth from "@/lib/UseAuth"
 
 dayjs.locale(es)
 dayjs.extend(utc)
 
 const Status = ({ value }: { value: string }) => {
-  const statusOption = {
-    pending: "En revisión",
-    due: "Vencido",
-    onTime: "A tiempo",
-    payed: "Pagado",
-  }
+  
 
   const colors = {
     onTime:
@@ -58,6 +55,7 @@ const Action = ({ status, show }: { status: any; show: () => void }) => {
       />
     ),
   }
+  
   // @ts-ignore: Unreachable code error
   return options[status] || null
 }
@@ -67,7 +65,18 @@ const SinglePayment = ({ payment }: { payment: any }) => {
   const { dueAt, dueAmount, status, image } = payment
   const formattedDueAt = dayjs(dueAt).format("DD-MMM-YYYY")
   const formattedDueAmount = currency(dueAmount).format()
-console.log("payment", image)
+  const statusOption = {
+    due: "Vencido",
+    onTime: "A tiempo",
+    payed: "Pagado",
+    pending: "En revisión",
+  }
+
+  const [updatePayment, { error, loading, data, reset }] = useMutation(
+    UPDATE_PAYMENT
+  )
+  const user = UseAuth()
+  const isAdmin = user.user.isAdmin
 return (
   <li key={payment.id} className="border-b-2 p-2">
     {`Vence: ${formattedDueAt} - Cantidad: ${formattedDueAmount} - Estatus: `}
@@ -100,6 +109,24 @@ return (
       form === payment.id && <PayForm payment={payment} />
     }
     <Action status={status} show={() => setForm(payment.id)} />
+    { isAdmin && <div className="w-40 text-xs">
+          <span>Admin Options</span>
+          <select onChange={(e)=>{
+            updatePayment({
+              variables: {
+                id: payment.id,
+                status: e.target.value
+              }
+            })
+          }}>
+            <option value="0">---</option>
+            {Object.keys(statusOption).map((key) => (
+              <option value={key} key={key}>{statusOption[key as keyof typeof statusOption]}</option>
+            ))}
+            
+          </select>
+        </div>
+          }
     {!!payment?.bill?.factura?.publicUrl && (
       <>
         <br />

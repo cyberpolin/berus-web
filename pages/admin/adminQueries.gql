@@ -142,6 +142,13 @@ mutation APROVE_PAYMENT($id: ID) {
   }
 }
 
+mutation UPDATE_PAYMENT($id: ID, $status: PaymentStatus) {
+  updatePayment(where: { id: $id }, data: { status: $status }) {
+    status
+    id
+  }
+}
+
 mutation UPDATE_USER($id: ID!, $image: Upload) {
   updateUser(where: { id: $id }, data: { rfc: $image }) {
     rfc {

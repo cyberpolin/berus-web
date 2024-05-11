@@ -33,6 +33,13 @@ export default function () {
 
   const delay = useRef()
 
+  const statusOption = {
+    due: "Vencido",
+    onTime: "A tiempo",
+    payed: "Pagado",
+    pending: "En revisión",
+  }
+
   return (
     // @ts-ignore: Unreachable code error
     <Layout>
@@ -169,6 +176,7 @@ export default function () {
             No recuerdo mi contraseña
           </Link>
         </div>
+        
       </div>
     </Layout>
   )
