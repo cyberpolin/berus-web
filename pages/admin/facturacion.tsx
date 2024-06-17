@@ -7,6 +7,7 @@ import { useMutation, useQuery } from "@apollo/client"
 import { GET_BILLS, UPDATE_PAYMENT, DELETE_PAYMENT } from "./adminQueries.gql"
 import { Loader } from "@/components/Button"
 import { orderBy } from "lodash"
+import getStatus from "@/lib/utils/status"
 
 export default function () {
   const today = dayjs()
@@ -49,7 +50,6 @@ export default function () {
   const [selectedMonth, setSelectedMonth] = useState(
     today.startOf("month").toISOString()
   )
-  console.log("selectedMonth", selectedMonth)
 
   const { data, loading, error } = useQuery(GET_BILLS, {
     variables: {
@@ -57,12 +57,13 @@ export default function () {
     },
   })
 
+  const onlyPaid = data?.getBills.filter((b) => b.status === "payed") || []
   const pendingBills =
     //@ts-ignore
-    data?.getBills.filter((b) => !b.bill?.factura?.publicUrl) || []
+    onlyPaid.filter((b) => !b.bill?.factura?.publicUrl) || []
   const billed =
     //@ts-ignore
-    data?.getBills.filter((b) => !!b.bill?.factura?.publicUrl) || []
+    onlyPaid.filter((b) => !!b.bill?.factura?.publicUrl) || []
 
   //@ts-ignore
   const updateBill = (e, id) => {
@@ -102,7 +103,7 @@ export default function () {
             )
           })}
         </select>
-        <h2>Facturas Pendientes</h2>
+        <h2 className="text-2xl my-4">Facturas Pendientes</h2>
         {loading ? (
           <div
             className="mb-4 rounded-lg bg-red-50 p-4 text-sm text-red-800 dark:bg-gray-800 dark:text-red-400"
@@ -114,9 +115,17 @@ export default function () {
           <>
             <ul>
               {pendingBills.map((b: any) => (
-                <li key={b.id}>
-                  {`${dayjs(b.dueAt).format("DD-MMM-YYYY")}, ${b.status} `}
+                <div className={`my-4 mb-8`} key={b.id}>
+                  <p>
+                    {dayjs(b.dueAt).format("DD-MMM-YYYY")}
+                  </p>
+                  <p>
+                    {getStatus(b.status)}
+                  </p>
+                  <p>
+
                   <b>{b.property.name}</b>
+                  </p>
                   {
                     //@ts-ignore
                     paymentMutation.loading && image.id === b.id ? (
@@ -137,18 +146,24 @@ export default function () {
                   <a target="_blank" href={b.property?.owner?.rfc?.publicUrl}>
                     {"Ver Datos de facturación"}
                   </a>
-                </li>
+                </div>
               ))}
             </ul>
             <br />
-            <h2>Facturas Listas</h2>
+            <h2 className="text-2xl my-4">Facturas Listas</h2>
             <ul>
               {
                 //@ts-ignore
                 billed.map((b) => (
-                  <li key={b.id}>
+                  <div className={`my-4 mb-8 shadow ` } key={b.id}>
+                    <p>
+
                     {`${dayjs(b.dueAt).format("DD-MMM-YYYY")}, ${b.status} `}
+                    </p>
+                    <p>
+
                     <b>{b.property.name}</b>
+                    </p>
 
                     <br />
                     <a target="_blank" href={b.bill?.factura?.publicUrl}>
@@ -162,7 +177,7 @@ export default function () {
                     <a href="#" onClick={() => deleteBill(b.id)}>
                       Eliminar factura (Podrás agregar una nueva despues)
                     </a>
-                  </li>
+                  </div>
                 ))
               }
             </ul>

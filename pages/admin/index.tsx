@@ -49,7 +49,7 @@ export default function () {
         </select>
         <a
           href="#"
-          onClick={() => createPayments()}
+          onClick={() => !!!createPaymentsData.loading &&  createPayments()}
           className="rounded-md border bg-green-950  p-4 text-white "
         >
           {createPaymentsData.loading ? "loading" : "create payments"}

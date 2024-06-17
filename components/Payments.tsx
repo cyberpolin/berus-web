@@ -4,7 +4,7 @@ import dayjs from "dayjs"
 import es from "dayjs/locale/es-mx"
 import utc from "dayjs/plugin/utc"
 import {GET_PAYMENTS} from "../pages/login/queries.gql"
-import { CREATE_NEXT_PAYMENT_IF_DONT_EXIST, UPDATE_PAYMENT_ADMIN } from "../pages/admin/adminQueries.gql"
+import { CREATE_NEXT_PAYMENT_IF_DONT_EXIST, UPDATE_PAYMENT_ADMIN, DELETE_PERMANENT_PAYMENT } from "../pages/admin/adminQueries.gql"
 import Image from "next/image"
 import PayForm from "../pages/dashboard/pagar-cuota"
 import { useEffect, useState } from "react"
@@ -77,11 +77,17 @@ const SinglePayment = ({ payment }: { payment: any }) => {
   }
 
   const [updatePayment, { error, loading, data, reset }] = useMutation(
-    UPDATE_PAYMENT_ADMIN
+    UPDATE_PAYMENT_ADMIN, {
+      refetchQueries: [GET_PAYMENTS]
+    }
+  )
+  
+  const [deletePayment, { error: deleteError, loading: deleteLoading, data: deleteData, reset: deleteReset }] = useMutation(
+    DELETE_PERMANENT_PAYMENT, {
+      refetchQueries: [GET_PAYMENTS]
+    }
   )
 
-  console.log('>>>>', {data, error, loading})
-  
   const user = UseAuth()
   const isAdmin = user.user.isAdmin
 return (
@@ -130,10 +136,21 @@ return (
             {Object.keys(statusOption).map((key) => (
               <option value={key} key={key}>{statusOption[key as keyof typeof statusOption]}</option>
             ))}
-            
           </select>
+        <span>Delete duplicated payment</span>
+        <Button 
+          loading={deleteLoading}
+          disabled={deleteLoading} 
+          title={`Delete`} onClick={() => {
+            window.confirm('Are you sure you want to delete this payment?') &&
+          deletePayment({
+            variables: {
+              paymentId: payment.id
+            }
+          })
+        }}/>
         </div>
-          }
+    }
     {!!payment?.bill?.factura?.publicUrl && (
       <>
         <br />
@@ -256,7 +273,7 @@ const Payments = ({ user }: any) => {
       ? router?.query.pretend
       : user.user.id
 
-  const [createNextPayment, createNextPaymentData] = useLazyQuery(
+  const [createNextPayment, {error: nextPaymentError, loading: nextPaymentLoading }] = useLazyQuery(
     CREATE_NEXT_PAYMENT_IF_DONT_EXIST,
     {
       //@ts-ignore
@@ -306,6 +323,8 @@ const Payments = ({ user }: any) => {
     <div>
       <Button
         title={`Pagar mes siguiente`}
+        loading={nextPaymentLoading}
+        disabled={nextPaymentLoading}
         onClick={() => {
           createNextPayment({
             variables: {

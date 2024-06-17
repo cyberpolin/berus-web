@@ -173,6 +173,15 @@ mutation DELETE_PAYMENT($id: ID!) {
   }
 }
 
+mutation DELETE_PERMANENT_PAYMENT($paymentId: ID!){
+  deletePayment(where:{
+    id:$paymentId
+  })
+  {
+    id
+  }
+}
+
 query GET_PROPERTIES {
   properties(orderBy: { name: asc }) {
     name
