@@ -173,7 +173,7 @@ const Payments = ({ initialDate, finalDate, searchTerm }: DateRange) => {
       ...x,
       ...x.property,
     }))
-    console.log("data>> ", data)
+    
     const orderedPayments = orderBy(payments, ["square", "lot"])
       .filter((x) => !!x.property)
       .filter((x) => x)
@@ -203,7 +203,7 @@ const Payments = ({ initialDate, finalDate, searchTerm }: DateRange) => {
       .filter((b) => b.status !== "payed")
       .map((b) => b.property.name)
 
-    console.log("filteredPayments>>", filteredPayments)
+    // console.log("filteredPayments>>", filteredPayments)
 
     return (
       <div className="relative mt-8 overflow-x-auto shadow-md sm:rounded-lg">
