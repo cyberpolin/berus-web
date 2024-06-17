@@ -57,7 +57,7 @@ export default function () {
     },
   })
 
-  const onlyPaid = data?.getBills.filter((b) => b.status === "payed") || []
+  const onlyPaid = data?.getBills.filter(({status}:{status:string}) => status === "payed") || []
   const pendingBills =
     //@ts-ignore
     onlyPaid.filter((b) => !b.bill?.factura?.publicUrl) || []

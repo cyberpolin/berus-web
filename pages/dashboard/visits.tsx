@@ -44,8 +44,6 @@ const CommonAreas = (props) => {
     area: "",
   };
 
-  console.log("get areas >> ", data);
-
   const selectedArea =
     query.edit && data?.areas?.length > 0
       ? //@ts-ignore
