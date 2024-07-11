@@ -1,8 +1,9 @@
 import _, { get, orderBy } from "lodash";
-import { useMutation, useQuery } from "@apollo/client";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import {
   GET_PAYMENTS,
   APROVE_PAYMENT,
+  MAKE_IT_DUE, CREATE_ALL_PAYMENTS
 } from "../../pages/admin/adminQueries.gql";
 import Loader from "../General/Loader";
 import Debt from "./Debt";
@@ -10,6 +11,7 @@ import currency from "currency.js";
 import { DateRange, LoaderType } from "@/lib/types";
 import { useState } from "react";
 import Link from "next/link";
+import Button from "../Button";
 
 const Status = ({ status }: { status: string }) => {
   if (status === "onTime") {
@@ -163,6 +165,8 @@ const Payments = ({ initialDate, finalDate, searchTerm }: DateRange) => {
   const { data, loading, error } = useQuery(GET_PAYMENTS, {
     variables: { initialDate, finalDate },
   })
+  const [makeItDue, makeItDueData] = useLazyQuery(MAKE_IT_DUE)
+  const [createPayments, createPaymentsData] = useLazyQuery(CREATE_ALL_PAYMENTS)
 
   if (error || loading) {
     return <Loader error={error} loading={loading} />
@@ -202,11 +206,21 @@ const Payments = ({ initialDate, finalDate, searchTerm }: DateRange) => {
     const dueProperties = filteredPayments
       .filter((b) => b.status !== "payed")
       .map((b) => b.property.name)
-
-    // console.log("filteredPayments>>", filteredPayments)
-
-    return (
+    return ( 
       <div className="relative mt-8 overflow-x-auto shadow-md sm:rounded-lg">
+        <Button
+          title={`Crear Pagos`}
+          loading={createPaymentsData.loading}
+          disabled={createPaymentsData.loading}
+          onClick={createPayments}
+        />
+        <Button 
+          title={`Hacer Vencido`}
+          loading={makeItDueData.loading}
+          disabled={makeItDueData.loading}
+          onClick={makeItDue}
+        />
+        
         <ul>
           <li>{`Propiedades: ${totalBills}`}</li>
           <li>{`Propiedades Sin Dueno: ${ownedBillTotal - totalBills}`}</li>
@@ -313,7 +327,6 @@ const Payments = ({ initialDate, finalDate, searchTerm }: DateRange) => {
       </div>
     )
   }
-
   return <></>
 }
 
