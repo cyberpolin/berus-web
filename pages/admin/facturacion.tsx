@@ -27,7 +27,7 @@ export default function () {
     refetchQueries: ['GET_BILLS'],
   })
 
-  const getPNames = (name) => {
+  const getPNames = (name: string) => {
     // get M and convert it to Manzana, get L and convert it to Lote, add space between Manzana y Lote
     name = name.replace('M', 'Manzana ')
     name = name.replace('L', ' Lote ')
@@ -98,7 +98,7 @@ export default function () {
   // bills grouped by ownerid
   const pendingBillsGrouped =
     pendingBills != 0
-      ? pendingBills.reduce((acc, b) => {
+      ? pendingBills.reduce((acc: any, b: any) => {
           if (!acc[b?.property?.owner?.id]) {
             acc[b?.property?.owner?.id] = []
           }
@@ -109,7 +109,7 @@ export default function () {
 
   const billedGrouped =
     billed.length != 0
-      ? billed.reduce((acc, b) => {
+      ? billed.reduce((acc: any, b: any) => {
           if (!acc[b?.property?.owner?.id]) {
             acc[b?.property?.owner?.id] = []
           }
@@ -150,7 +150,7 @@ export default function () {
             const properties = pendingBillsGrouped[key].map(
               (b: any) => b.property.name
             )
-            const properyIds = pendingBillsGrouped[key].map((p) => {
+            const properyIds = pendingBillsGrouped[key].map((p: any) => {
               return p.id
             })
             const pnames = pendingBillsGrouped[key].map((b: any) =>
@@ -172,7 +172,7 @@ export default function () {
                   {name} - <b>{properties.length}</b> propiedades
                 </h2>
                 <ul className="ml-4 py-2">
-                  {pnames.map((p) => (
+                  {pnames.map((p: any) => (
                     <li key={p} className="list-disc text-sm ">
                       {p}
                     </li>
@@ -222,7 +222,7 @@ export default function () {
             const properties = billedGrouped[key].map(
               (b: any) => b.property.name
             )
-            const properyIds = billedGrouped[key].map((p) => {
+            const properyIds = billedGrouped[key].map((p: { id: string }) => {
               return p.id
             })
             const pnames = billedGrouped[key].map((b: any) =>
@@ -244,7 +244,7 @@ export default function () {
                   {name} - <b>{properties.length}</b> propiedades
                 </h2>
                 <ul className="ml-4 py-2">
-                  {pnames.map((p) => (
+                  {pnames.map((p: string) => (
                     <li key={p} className="list-disc text-sm ">
                       {p}
                     </li>
