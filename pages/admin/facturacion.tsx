@@ -164,13 +164,18 @@ export default function () {
             ).format('MMMM YYYY')}`
             const b = pendingBillsGrouped[key]
             return (
-              <div className="mb-80 flex flex-col rounded-md border border-green-800 p-2 ">
+              <div
+                key={key}
+                className="mb-80 flex flex-col rounded-md border border-green-800 p-2 "
+              >
                 <h2 className="border-b py-2 font-semibold">
                   {name} - <b>{properties.length}</b> propiedades
                 </h2>
                 <ul className="ml-4 py-2">
                   {pnames.map((p) => (
-                    <li className="list-disc text-sm ">{p}</li>
+                    <li key={p} className="list-disc text-sm ">
+                      {p}
+                    </li>
                   ))}
                 </ul>
                 <div className="m-2 rounded-md border p-2 text-sm">
@@ -231,13 +236,18 @@ export default function () {
             ).format('MMMM YYYY')}`
             const b = billedGrouped[key]
             return (
-              <div className="mb-80 flex flex-col rounded-md border border-green-800 p-2 ">
+              <div
+                key={key}
+                className="mb-80 flex flex-col rounded-md border border-green-800 p-2 "
+              >
                 <h2 className="border-b py-2 font-semibold">
                   {name} - <b>{properties.length}</b> propiedades
                 </h2>
                 <ul className="ml-4 py-2">
                   {pnames.map((p) => (
-                    <li className="list-disc text-sm ">{p}</li>
+                    <li key={p} className="list-disc text-sm ">
+                      {p}
+                    </li>
                   ))}
                 </ul>
                 <div className="m-2 rounded-md border p-2 text-sm">
