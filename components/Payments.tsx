@@ -333,6 +333,8 @@ const Payments = ({ user }: any) => {
           })
         }}
       />
+      
+      
       {properties.map((p:any) => {
         const { lot, square, id } = p
 

@@ -54,7 +54,7 @@ const NLayout = (props: any) => {
         </Link>
       </div>
       <div>
-        <nav className="m-0 mb-3 flex max-w-full flex-col border-gray-200 bg-white py-1 dark:border-gray-600 dark:bg-gray-800 sm:flex-row">
+        <nav className="m-0 mb-3 flex max-w-full flex-col border-gray-200 bg-white py-1 sm:flex-row dark:border-gray-600 dark:bg-gray-800">
           <div id="logo" className="w-full py-2 sm:w-2/6">
             <button
               className={`m-2 inline-block rounded-md border p-1 sm:hidden`}
@@ -88,14 +88,14 @@ const NLayout = (props: any) => {
             {user.isAdmin && (
               <>
                 <Link
-                  className="block p-5 text-center text-sm hover:text-gray-800 hover:underline dark:text-amber-50 md:mt-0 md:inline-block"
+                  className="block p-5 text-center text-sm hover:text-gray-800 hover:underline md:mt-0 md:inline-block dark:text-amber-50"
                   href="/admin"
                   key="/admin"
                 >
                   Admin
                 </Link>
                 <Link
-                  className="block p-5 text-center text-sm hover:text-gray-800 hover:underline dark:text-amber-50 md:mt-0 md:inline-block"
+                  className="block p-5 text-center text-sm hover:text-gray-800 hover:underline md:mt-0 md:inline-block dark:text-amber-50"
                   href="/admin/properties"
                   key="/admin/properties"
                 >
@@ -104,14 +104,14 @@ const NLayout = (props: any) => {
               </>
             )}
             <Link
-              className="block p-5 text-center text-sm hover:text-gray-800 hover:underline dark:text-amber-50 md:mt-0 md:inline-block"
+              className="block p-5 text-center text-sm hover:text-gray-800 hover:underline md:mt-0 md:inline-block dark:text-amber-50"
               href="/dashboard/cuotas"
               key="/dashboard/cuotas"
             >
               Cuotas
             </Link>
             <Link
-              className="block p-5 text-center text-sm hover:text-gray-800 hover:underline dark:text-amber-50 md:mt-0 md:inline-block"
+              className="block p-5 text-center text-sm hover:text-gray-800 hover:underline md:mt-0 md:inline-block dark:text-amber-50"
               href="/dashboard/descargables"
               key="/dashboard/descargables"
             >
@@ -132,7 +132,7 @@ const NLayout = (props: any) => {
               Card
             </Link> */}
             <Link
-              className="block p-5 text-center text-sm hover:text-gray-800 hover:underline dark:text-amber-50 md:mt-0 md:inline-block"
+              className="block p-5 text-center text-sm hover:text-gray-800 hover:underline md:mt-0 md:inline-block dark:text-amber-50"
               href="/logout"
               key="/logout"
             >
@@ -175,7 +175,19 @@ const NLayout = (props: any) => {
           </div>
         </nav>
         <div className="mx-auto max-w-full overflow-hidden">
-          <div className="md:flex">{props.children}</div>
+          <div className="flex w-full flex-col">
+            <>
+              {props.loading && (
+                <div
+                  className="mb-4 rounded-lg bg-red-50 p-4 text-sm text-red-800 dark:bg-gray-800 dark:text-red-400"
+                  role="alert"
+                >
+                  Cargando...
+                </div>
+              )}
+              {props.children}
+            </>
+          </div>
         </div>
       </div>
     </div>

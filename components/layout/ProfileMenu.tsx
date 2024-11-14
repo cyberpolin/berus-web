@@ -1,15 +1,10 @@
-import Logout from "@/components/Logout";
-import UseAuth from "@/lib/UseAuth";
-import { useMutation } from "@apollo/client";
-import Image from "next/image";
-import Link from "next/link";
-import { useRouter } from "next/router";
-import React, { useCallback, useEffect, useState } from "react";
-import Dropzone, { useDropzone } from "react-dropzone";
-import { UPDATE_USER } from "../../pages/admin/adminQueries.gql";
-import { IS_LOGGED } from "../../pages/login/queries.gql";
-import SubMenu from "../../components/Menu/SubMenu";
-import useUI from "@/lib/hooks/useUI";
+import { useMutation } from '@apollo/client'
+import { useRouter } from 'next/router'
+import React, { useCallback, useEffect, useState } from 'react'
+import { useDropzone } from 'react-dropzone'
+import { UPDATE_USER } from '../../pages/admin/adminQueries.gql'
+import { IS_LOGGED } from '../../pages/login/queries.gql'
+import useUI from '@/lib/hooks/useUI'
 
 const Drop = ({
   dz: { getInputProps, getRootProps, loading },
@@ -74,17 +69,17 @@ const Drop = ({
 
 //@ts-ignore
 const ProfileMenu = ({ user, show }) => {
-  const ui = useUI();
-  const router = useRouter();
+  const ui = useUI()
+  const router = useRouter()
   const [force, setForce] = useState(false)
 
   const id =
-    user.isAdmin && router?.query.pretend ? router?.query.pretend : user.id;
+    user.isAdmin && router?.query.pretend ? router?.query.pretend : user.id
 
   const [updateUser, { loading, data, error, called }] = useMutation(
     UPDATE_USER,
     { refetchQueries: [IS_LOGGED] }
-  );
+  )
 
   //@ts-ignore
   const onDrop = useCallback(
@@ -96,7 +91,7 @@ const ProfileMenu = ({ user, show }) => {
         Object.assign(file, {
           preview: URL.createObjectURL(file),
         })
-      )[0];
+      )[0]
 
       await updateUser({
         variables: {
@@ -104,31 +99,31 @@ const ProfileMenu = ({ user, show }) => {
           // @ts-ignore: Unreachable code error
           image,
         },
-      });
+      })
 
       if (called && !error) {
-        setForce(false);
+        setForce(false)
       }
     },
     [force]
-  );
+  )
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     accept: {
-      "image/png": [".png", ".pdf", ".jpeg", ".jpg"],
+      'image/png': ['.png', '.pdf', '.jpeg', '.jpg'],
     },
     onDrop,
-  });
+  })
 
   return (
     <div
-      className={`absolute left-2 top-2 inline-block w-fit rounded-lg border border-gray-200 bg-white text-sm text-gray-500 shadow-sm transition-opacity duration-300  dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 sm:right-2 sm:top-20 sm:w-64 ${
-        show ? "opacity-100" : "hidden opacity-0"
+      className={`absolute left-2 top-2 inline-block w-fit rounded-lg border border-gray-200 bg-white text-sm text-gray-500 shadow-sm transition-opacity duration-300  sm:right-2 sm:top-20 sm:w-64 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 ${
+        show ? 'opacity-100' : 'hidden opacity-0'
       }`}
     >
       <div className="p-3">
         <div className="mb-2 flex items-center justify-between">
           <p className="text-base font-semibold leading-none text-gray-900 dark:text-white">
-            Hola{" "}
+            Hola{' '}
             <a
               className="font-medium text-blue-600 hover:underline dark:text-blue-500"
               href="#"
@@ -174,7 +169,7 @@ const ProfileMenu = ({ user, show }) => {
           <>
             {force ? (
               <p className="mb-4 text-sm">
-                Solo necesitas subir un documento nuevo de{" "}
+                Solo necesitas subir un documento nuevo de{' '}
                 <b>situación fiscal</b> y listo!
               </p>
             ) : (
@@ -188,7 +183,7 @@ const ProfileMenu = ({ user, show }) => {
         )}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ProfileMenu;
+export default ProfileMenu
