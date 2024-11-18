@@ -142,8 +142,8 @@ const Alert = ({
                 clip-rule="evenodd"
               ></path>
             </svg>
+            {loading && <Loading size={4} />}
             Aprobar
-            {loading && <Loading />}
           </button>
           <button
             onClick={close}
