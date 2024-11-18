@@ -12,43 +12,44 @@ import { DateRange, LoaderType } from "@/lib/types";
 import { useState } from "react";
 import Link from "next/link";
 import Button from "../Button";
+import Loading from '../Loading'
 
 const Status = ({ status }: { status: string }) => {
-  if (status === "onTime") {
+  if (status === 'onTime') {
     return (
       <span className="mr-2 rounded bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800 dark:bg-blue-900 dark:text-blue-300">
         A tiempo
       </span>
-    );
+    )
   }
 
-  if (status === "pending") {
+  if (status === 'pending') {
     return (
       <span className="mr-2 rounded bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300">
         Pendiente
       </span>
-    );
+    )
   }
-  if (status === "payed") {
+  if (status === 'payed') {
     return (
       <span className="mr-2 rounded bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800 dark:bg-green-900 dark:text-green-300">
         {status}
       </span>
-    );
+    )
   }
-  if (status === "pending") {
+  if (status === 'pending') {
     return (
       <span className="mr-2 rounded bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300">
         {status}
       </span>
-    );
+    )
   }
 
-  return <span>{status}</span>;
-};
+  return <span>{status}</span>
+}
 
 const Image = ({ image }: { image: any }) => {
-  const isPdf = image?.publicUrl?.includes(".pdf")
+  const isPdf = image?.publicUrl?.includes('.pdf')
 
   if (!image) return <></>
 
@@ -116,6 +117,7 @@ const Alert = ({
         </div>
         <div className="flex">
           <button
+            disabled={loading}
             onClick={() =>
               aprovePayment({
                 variables: {
@@ -141,6 +143,7 @@ const Alert = ({
               ></path>
             </svg>
             Aprobar
+            {loading && <Loading />}
           </button>
           <button
             onClick={close}
