@@ -3,9 +3,9 @@ import Link from "next/link";
 import Image from "next/image";
 import React, { useEffect } from "react";
 import useUI from "@/lib/hooks/useUI";
-import ProfileMenu from "./ProfileMenu";
 import { useRouter } from "next/router";
 import DropdownMenu from "../DropdownMenu";
+import Avatar from "../Avatar";
 const NLayout = (props: any) => {
   const { user } = UseAuth();
   const router = useRouter();
@@ -19,21 +19,8 @@ const NLayout = (props: any) => {
 
   const showSettings = ui.settings ? "" : "hidden -z-10";
   const showProfile = ui.profile ? "" : "hidden -z-10";
-  // const showMobile = ui.mobile ? "sm:flex" : "hidden sm:inline-block";
 
-  const Avatar = ({width}:{width?:string}) =>{
-    const size = width?  width: '80'
-    return (
-    <img
-      onClick={ui.toggleProfile}
-      data-popover-target="popover-user-profile"
-      className="block rounded-full p-1 text-center ring-2 ring-gray-300 dark:ring-gray-500 cursor-pointer"
-      src="/avatar.png"
-      alt="Bordered avatar"
-      width={size}
-    />
-  )
-};
+ 
   const InfoTag = ({info,count}:{info:string,count?:number}) => {
   return(
     <Link className="hover:bg-gray-100" href=''><span className="text-sm text-gray-600">{info}: </span>{count}</Link>
@@ -155,8 +142,7 @@ const NLayout = (props: any) => {
             >
               Salir
             </Link>
-
-            <DropdownMenu Avatar={<Avatar width={'60'} />} >
+            <DropdownMenu Avatar={<Avatar width={'60'} handleClick={()=> ui.toggleProfile} />} >
               <div className="flex flex-col m-4">
                 <div className="flex gap-2 items-center">
                 <div className="flex flex-col">
@@ -172,7 +158,6 @@ const NLayout = (props: any) => {
                 </div>
               </div>
             </DropdownMenu>
-            
             <button
               className="m-4 hidden transition-all hover:rotate-45 sm:inline-block"
               onClick={ui.toggleSettings}
