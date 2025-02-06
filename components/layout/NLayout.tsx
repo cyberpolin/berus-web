@@ -5,7 +5,7 @@ import React, { useEffect } from "react";
 import useUI from "@/lib/hooks/useUI";
 import ProfileMenu from "./ProfileMenu";
 import { useRouter } from "next/router";
-
+import DropdownMenu from "../DropdownMenu";
 const NLayout = (props: any) => {
   const { user } = UseAuth();
   const router = useRouter();
@@ -19,11 +19,28 @@ const NLayout = (props: any) => {
 
   const showSettings = ui.settings ? "" : "hidden -z-10";
   const showProfile = ui.profile ? "" : "hidden -z-10";
-  const showMobile = ui.mobile ? "sm:inline-block" : "hidden sm:inline-block";
+  // const showMobile = ui.mobile ? "sm:flex" : "hidden sm:inline-block";
 
+  const Avatar = ({width}:{width?:string}) =>{
+    const size = width?  width: '80'
+    return (
+    <img
+      onClick={ui.toggleProfile}
+      data-popover-target="popover-user-profile"
+      className="block rounded-full p-1 text-center ring-2 ring-gray-300 dark:ring-gray-500 cursor-pointer"
+      src="/avatar.png"
+      alt="Bordered avatar"
+      width={size}
+    />
+  )
+};
+  const InfoTag = ({info,count}:{info:string,count?:number}) => {
+  return(
+    <Link className="hover:bg-gray-100" href=''><span className="text-sm text-gray-600">{info}: </span>{count}</Link>
+  )}
   return (
     <div>
-      <ProfileMenu user={user} show={ui.profile} />
+      {/* <ProfileMenu user={user} show={ui.profile} /> */}
       <div
         id="setting"
         className={`${showSettings} absolute right-2 top-20 block w-40  overflow-hidden rounded-md border-2 bg-white transition-opacity  dark:border-gray-600 dark:bg-gray-800`}
@@ -54,10 +71,10 @@ const NLayout = (props: any) => {
         </Link>
       </div>
       <div>
-        <nav className="m-0 mb-3 flex max-w-full flex-col border-gray-200 bg-white py-1 sm:flex-row dark:border-gray-600 dark:bg-gray-800">
+        <nav className="m-0 mb-3 flex items-center max-w-full flex-col border-gray-200 bg-white py-1 sm:flex-row dark:border-gray-600 dark:bg-gray-800">
           <div id="logo" className="w-full py-2 sm:w-2/6">
             <button
-              className={`m-2 inline-block rounded-md border p-1 sm:hidden`}
+              className={`m-2 inline-block rounded-md border p-1 sm:hidden `}
               onClick={ui.toggleMobile}
             >
               <svg
@@ -83,7 +100,7 @@ const NLayout = (props: any) => {
           </div>
           <div
             id="menu"
-            className={`${showMobile} w-full border-red-100 text-end sm:mx-2 sm:w-4/6 sm:w-max sm:py-2 `}
+            className={`w-full border-red-100 text-end sm:mx-2 sm:w-4/6 sm:w-max sm:py-2  items-center sm: hidden md:flex`}
           >
             {user.isAdmin && (
               <>
@@ -139,15 +156,23 @@ const NLayout = (props: any) => {
               Salir
             </Link>
 
-            <img
-              onClick={ui.toggleProfile}
-              data-popover-target="popover-user-profile"
-              className="mx-auto block rounded-full p-1 text-center ring-2 ring-gray-300 dark:ring-gray-500"
-              src="/avatar.png"
-              alt="Bordered avatar"
-              width="30"
-            />
-
+            <DropdownMenu Avatar={<Avatar width={'60'} />} >
+              <div className="flex flex-col m-4">
+                <div className="flex gap-2 items-center">
+                <div className="flex flex-col">
+                  <Avatar/>
+                  <span className="my-1 text-xs">{true ? 'cambiar avatar' : 'subir avatar'}</span>
+                </div>
+                  <span className="mx-2">{user.name}</span>
+                </div>
+                <div className="flex flex-col border-t-2">
+                <InfoTag info='coabitantes' count={4}/>
+                <InfoTag info='inquilinos' count={4}/>
+                <InfoTag info='propiedades' count={4}/>
+                </div>
+              </div>
+            </DropdownMenu>
+            
             <button
               className="m-4 hidden transition-all hover:rotate-45 sm:inline-block"
               onClick={ui.toggleSettings}
