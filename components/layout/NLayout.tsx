@@ -1,11 +1,18 @@
 import UseAuth from "@/lib/UseAuth";
 import Link from "next/link";
 import Image from "next/image";
-import React, { useEffect } from "react";
+import React, { Profiler, useEffect, useState, useCallback } from "react";
+import { UPDATE_USER } from '../../pages/admin/adminQueries.gql'
 import useUI from "@/lib/hooks/useUI";
 import { useRouter } from "next/router";
 import DropdownMenu from "../DropdownMenu";
 import Avatar from "../Avatar";
+import ProfileMenu from "../layout/ProfileMenu";
+import { useDropzone } from 'react-dropzone'
+import { useMutation } from '@apollo/client'
+import { IS_LOGGED } from '../../pages/login/queries.gql'
+
+import Drop from "./Drop";
 const NLayout = (props: any) => {
   const { user } = UseAuth();
   const router = useRouter();
@@ -17,8 +24,48 @@ const NLayout = (props: any) => {
     }
   }, []);
 
+  const [updateUser, { loading, data, error, called }] = useMutation(
+    UPDATE_USER,
+    { refetchQueries: [IS_LOGGED] }
+  )
+  
+  const id = user.id
+  
+  const onDrop = useCallback(
+    //@ts-ignore
+    async (acceptedFiles, i) => {
+      // Do something with the files
+      //@ts-ignore
+      const image = acceptedFiles.map((file) =>
+        Object.assign(file, {
+          preview: URL.createObjectURL(file),
+        })
+      )[0]
+  
+      await updateUser({
+        variables: {
+          id,
+          // @ts-ignore: Unreachable code error
+          image,
+        },
+      })
+  
+      if (called && !error) {
+        console.log('error')
+      }
+    },
+    []
+  )
+
   const showSettings = ui.settings ? "" : "hidden -z-10";
   const showProfile = ui.profile ? "" : "hidden -z-10";
+  const [uploadAvatar, setUploadAvatar] = useState(false);
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    accept: {
+      'image/png': ['.png', '.pdf', '.jpeg', '.jpg'],
+    },
+    onDrop,
+  })
 
  
   const InfoTag = ({info,count}:{info:string,count?:number}) => {
@@ -27,7 +74,6 @@ const NLayout = (props: any) => {
   )}
   return (
     <div>
-      {/* <ProfileMenu user={user} show={ui.profile} /> */}
       <div
         id="setting"
         className={`${showSettings} absolute right-2 top-20 block w-40  overflow-hidden rounded-md border-2 bg-white transition-opacity  dark:border-gray-600 dark:bg-gray-800`}
@@ -147,11 +193,17 @@ const NLayout = (props: any) => {
                 <div className="flex gap-2 items-center">
                 <div className="flex flex-col">
                   <Avatar/>
-                  <span className="my-1 text-xs">{true ? 'cambiar avatar' : 'subir avatar'}</span>
+                  <span className="my-1 text-xs text-blue-500 cursor-pointer" onClick={() => setUploadAvatar(!uploadAvatar)} >{true ? 'cambiar avatar' : 'subir avatar'}</span>
                 </div>
                   <span className="mx-2">{user.name}</span>
                 </div>
+                {uploadAvatar &&
+                <div className=" mb-2">
+                  <Drop dz={{ getInputProps, getRootProps, loading }}  />
+                </div>
+                }
                 <div className="flex flex-col border-t-2">
+                <ProfileMenu user={user} show={ui.profile} />
                 <InfoTag info='coabitantes' count={4}/>
                 <InfoTag info='inquilinos' count={4}/>
                 <InfoTag info='propiedades' count={4}/>
