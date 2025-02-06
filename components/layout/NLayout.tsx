@@ -7,7 +7,6 @@ import useUI from "@/lib/hooks/useUI";
 import { useRouter } from "next/router";
 import DropdownMenu from "../DropdownMenu";
 import Avatar from "../Avatar";
-import ProfileMenu from "../layout/ProfileMenu";
 import { useDropzone } from 'react-dropzone'
 import { useMutation } from '@apollo/client'
 import { IS_LOGGED } from '../../pages/login/queries.gql'
@@ -70,7 +69,7 @@ const NLayout = (props: any) => {
  
   const InfoTag = ({info,count}:{info:string,count?:number}) => {
   return(
-    <Link className="hover:bg-gray-100" href=''><span className="text-sm text-gray-600">{info}: </span>{count}</Link>
+    <Link className="hover:bg-gray-100 text-gray-500" href=''><span className="text-sm text-gray-400">{info}: </span>{count}</Link>
   )}
   return (
     <div>
@@ -189,21 +188,20 @@ const NLayout = (props: any) => {
               Salir
             </Link>
             <DropdownMenu Avatar={<Avatar width={'60'} handleClick={()=> ui.toggleProfile} />} >
-              <div className="flex flex-col m-4">
+              <div className="flex flex-col m-5">
                 <div className="flex gap-2 items-center">
-                <div className="flex flex-col">
+                <div className="flex flex-col mb-2">
                   <Avatar/>
-                  <span className="my-1 text-xs text-blue-500 cursor-pointer" onClick={() => setUploadAvatar(!uploadAvatar)} >{true ? 'cambiar avatar' : 'subir avatar'}</span>
+                  <span className="my-2 text-xs text-blue-500 cursor-pointer" onClick={() => setUploadAvatar(!uploadAvatar)} >{true ? 'cambiar avatar' : 'subir avatar'}</span>
                 </div>
-                  <span className="mx-2">{user.name}</span>
+                  <span className="mx-2 text-gray-500">{user.name}</span>
                 </div>
                 {uploadAvatar &&
                 <div className=" mb-2">
                   <Drop dz={{ getInputProps, getRootProps, loading }}  />
                 </div>
                 }
-                <div className="flex flex-col border-t-2">
-                <ProfileMenu user={user} show={ui.profile} />
+                <div className="flex flex-col border-t-2 pt-2">
                 <InfoTag info='coabitantes' count={4}/>
                 <InfoTag info='inquilinos' count={4}/>
                 <InfoTag info='propiedades' count={4}/>

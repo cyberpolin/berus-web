@@ -1,5 +1,5 @@
 const Avatar = ({ width, handleClick }: { width?: string, handleClick?: () => void }) => {
-  const size = width ?? '80';
+  const size = width ?? '70';
   return (
     <img
       onClick={handleClick}
