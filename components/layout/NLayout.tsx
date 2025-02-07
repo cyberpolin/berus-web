@@ -1,10 +1,18 @@
 import UseAuth from "@/lib/UseAuth";
 import Link from "next/link";
 import Image from "next/image";
-import React, { useEffect } from "react";
+import React, { Profiler, useEffect, useState, useCallback } from "react";
+import { UPDATE_USER_AVATAR } from '../../pages/admin/adminQueries.gql'
 import useUI from "@/lib/hooks/useUI";
-import ProfileMenu from "./ProfileMenu";
 import { useRouter } from "next/router";
+import DropdownMenu from "../DropdownMenu";
+import Avatar from "../Avatar";
+import { useDropzone } from 'react-dropzone'
+import { useMutation } from '@apollo/client'
+import { IS_LOGGED } from '../../pages/login/queries.gql'
+import ProfileMenu from "./ProfileMenu";
+import Drop from "./Drop";
+
 
 const NLayout = (props: any) => {
   const { user } = UseAuth();
@@ -17,13 +25,57 @@ const NLayout = (props: any) => {
     }
   }, []);
 
+  const [updateUser, { loading, data, error, called }] = useMutation(
+    UPDATE_USER_AVATAR,
+    { refetchQueries: [IS_LOGGED] }
+  )
+  
+  const id = user.id
+  
+  const onDrop = useCallback(
+    //@ts-ignore
+    async (acceptedFiles, i) => {
+      // Do something with the files
+      //@ts-ignore
+      const image = acceptedFiles.map((file) =>
+        Object.assign(file, {
+          preview: URL.createObjectURL(file),
+        })
+      )[0]
+  
+      await updateUser({
+        variables: {
+          id,
+          // @ts-ignore: Unreachable code error
+          image,
+        },
+      })
+  
+      if (called && !error) {
+        console.log('error')
+      }
+    },
+    []
+  )
+
   const showSettings = ui.settings ? "" : "hidden -z-10";
   const showProfile = ui.profile ? "" : "hidden -z-10";
-  const showMobile = ui.mobile ? "sm:inline-block" : "hidden sm:inline-block";
-
+  const [uploadAvatar, setUploadAvatar] = useState(false);
+  const [uploadRFC, setUploadRFC] = useState(false);
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    accept: {
+      'image/png': ['.png', '.jpeg', '.jpg'],
+    },
+    onDrop,
+  })
+  const avatar = user.avatar?.publicUrl
+ 
+  const InfoTag = ({info,count}:{info:string,count?:number}) => {
+  return(
+    <Link className="hover:bg-gray-100 text-gray-500" href=''><span className="text-sm text-gray-400">{info}: </span>{count}</Link>
+  )}
   return (
     <div>
-      <ProfileMenu user={user} show={ui.profile} />
       <div
         id="setting"
         className={`${showSettings} absolute right-2 top-20 block w-40  overflow-hidden rounded-md border-2 bg-white transition-opacity  dark:border-gray-600 dark:bg-gray-800`}
@@ -54,10 +106,10 @@ const NLayout = (props: any) => {
         </Link>
       </div>
       <div>
-        <nav className="m-0 mb-3 flex max-w-full flex-col border-gray-200 bg-white py-1 sm:flex-row dark:border-gray-600 dark:bg-gray-800">
+        <nav className="m-0 mb-3 flex items-center max-w-full flex-col border-gray-200 bg-white py-1 sm:flex-row dark:border-gray-600 dark:bg-gray-800">
           <div id="logo" className="w-full py-2 sm:w-2/6">
             <button
-              className={`m-2 inline-block rounded-md border p-1 sm:hidden`}
+              className={`m-2 inline-block rounded-md border p-1 sm:hidden `}
               onClick={ui.toggleMobile}
             >
               <svg
@@ -83,7 +135,7 @@ const NLayout = (props: any) => {
           </div>
           <div
             id="menu"
-            className={`${showMobile} w-full border-red-100 text-end sm:mx-2 sm:w-4/6 sm:w-max sm:py-2 `}
+            className={`w-full border-red-100 text-end sm:mx-2 sm:w-4/6 sm:w-max sm:py-2  items-center sm: hidden md:flex`}
           >
             {user.isAdmin && (
               <>
@@ -138,16 +190,33 @@ const NLayout = (props: any) => {
             >
               Salir
             </Link>
-
-            <img
-              onClick={ui.toggleProfile}
-              data-popover-target="popover-user-profile"
-              className="mx-auto block rounded-full p-1 text-center ring-2 ring-gray-300 dark:ring-gray-500"
-              src="/avatar.png"
-              alt="Bordered avatar"
-              width="30"
-            />
-
+            <DropdownMenu Avatar={<Avatar image={avatar} handleClick={()=> ui.toggleProfile} />} >
+              <div className="flex flex-col m-5">
+                <div className="flex gap-2 items-center">
+                <div className="flex flex-col mb-2">
+                  <Avatar image={avatar} />
+                  <span className="my-1 text-xs text-blue-500 cursor-pointer" onClick={() => setUploadAvatar(!uploadAvatar)} >{user.avatar ? 'Cambiar avatar' : 'Subir avatar'}</span>
+                  <span className="my-1 text-xs text-blue-500 cursor-pointer" onClick={() => setUploadRFC(!uploadRFC)} >{user.rfc ? 'Cambiar RFC' : 'Subir RFC'}</span>
+                </div>
+                  <span className="mx-2 text-gray-500">{user.name}</span>
+                </div>
+                {uploadAvatar &&
+                <div className=" mb-2">
+                  <Drop dz={{ getInputProps, getRootProps, loading }} typeOfDoc={true}  />
+                </div>
+                }
+                {uploadRFC &&
+                <div className=" mb-2">
+                  <ProfileMenu user={user} />
+                </div>
+                }
+                <div className="flex flex-col border-t-2 pt-2">
+                <InfoTag info='coabitantes' count={4}/>
+                <InfoTag info='inquilinos' count={4}/>
+                <InfoTag info='propiedades' count={4}/>
+                </div>
+              </div>
+            </DropdownMenu>
             <button
               className="m-4 hidden transition-all hover:rotate-45 sm:inline-block"
               onClick={ui.toggleSettings}
