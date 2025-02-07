@@ -2,7 +2,7 @@ import UseAuth from "@/lib/UseAuth";
 import Link from "next/link";
 import Image from "next/image";
 import React, { Profiler, useEffect, useState, useCallback } from "react";
-import { UPDATE_USER } from '../../pages/admin/adminQueries.gql'
+import { UPDATE_USER_AVATAR } from '../../pages/admin/adminQueries.gql'
 import useUI from "@/lib/hooks/useUI";
 import { useRouter } from "next/router";
 import DropdownMenu from "../DropdownMenu";
@@ -24,7 +24,7 @@ const NLayout = (props: any) => {
   }, []);
 
   const [updateUser, { loading, data, error, called }] = useMutation(
-    UPDATE_USER,
+    UPDATE_USER_AVATAR,
     { refetchQueries: [IS_LOGGED] }
   )
   
@@ -61,11 +61,11 @@ const NLayout = (props: any) => {
   const [uploadAvatar, setUploadAvatar] = useState(false);
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     accept: {
-      'image/png': ['.png', '.pdf', '.jpeg', '.jpg'],
+      'image/png': ['.png', '.jpeg', '.jpg'],
     },
     onDrop,
   })
-
+  const avatar = user.avatar?.publicUrl
  
   const InfoTag = ({info,count}:{info:string,count?:number}) => {
   return(
@@ -187,18 +187,18 @@ const NLayout = (props: any) => {
             >
               Salir
             </Link>
-            <DropdownMenu Avatar={<Avatar width={'60'} handleClick={()=> ui.toggleProfile} />} >
+            <DropdownMenu Avatar={<Avatar image={avatar} handleClick={()=> ui.toggleProfile} />} >
               <div className="flex flex-col m-5">
                 <div className="flex gap-2 items-center">
                 <div className="flex flex-col mb-2">
-                  <Avatar/>
+                  <Avatar image={avatar} />
                   <span className="my-2 text-xs text-blue-500 cursor-pointer" onClick={() => setUploadAvatar(!uploadAvatar)} >{true ? 'cambiar avatar' : 'subir avatar'}</span>
                 </div>
                   <span className="mx-2 text-gray-500">{user.name}</span>
                 </div>
                 {uploadAvatar &&
                 <div className=" mb-2">
-                  <Drop dz={{ getInputProps, getRootProps, loading }}  />
+                  <Drop dz={{ getInputProps, getRootProps, loading }} typeOfDoc={true}  />
                 </div>
                 }
                 <div className="flex flex-col border-t-2 pt-2">

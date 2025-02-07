@@ -6,10 +6,25 @@ import { UPDATE_USER } from '../../pages/admin/adminQueries.gql'
 import { IS_LOGGED } from '../../pages/login/queries.gql'
 import useUI from '@/lib/hooks/useUI'
 
+
+const TypeOfDoc = ({ image }: { image?: boolean }) => {
+  const  title = image ? "por favor sube tu imagen aqui" : "por favor sube tu imagen archivo "
+  return (
+    <>
+       <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+          <span className="font-semibold">{title}</span>
+        </p>
+        {!image && (
+          <p className="text-xs text-gray-500 dark:text-gray-400">PDF o imágen</p>
+        )}
+    </>
+  );
+};
+
 const Drop = ({
-  dz: { getInputProps, getRootProps, loading },
+  dz: { getInputProps, getRootProps, loading, }, typeOfDoc
 }: {
-  dz: any
+  dz: any, typeOfDoc?: boolean
 }) => (
   <div className="z flex w-full items-center justify-center">
     <label
@@ -57,10 +72,7 @@ const Drop = ({
             ></path>
           </svg>
         )}
-        <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-          <span className="font-semibold">Sube tu archivo aqui</span>
-        </p>
-        <p className="text-xs text-gray-500 dark:text-gray-400">PDF o imágen</p>
+       <TypeOfDoc  image={typeOfDoc}/>
       </div>
       <input id="dropzone-file" type="file" className="hidden" />
     </label>

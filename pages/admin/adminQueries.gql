@@ -157,6 +157,13 @@ mutation UPDATE_USER($id: ID!, $image: Upload) {
     needsBill
   }
 }
+mutation UPDATE_USER_AVATAR($id: ID!, $image: Upload) {
+  updateUser(where: { id: $id }, data: { avatar: $image }) {
+    avatar {
+      publicUrl
+    }
+  }
+}
 
 mutation UPDATE_PAYMENT($id: ID!, $image: Upload) {
   updatePayment(
