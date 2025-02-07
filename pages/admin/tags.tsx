@@ -1,47 +1,47 @@
-import Button from "@/components/Button"
-import Field from "@/components/Field"
-import Layout from "@/components/layout/NLayout"
-import { Form, Formik } from "formik"
-import * as yup from "yup"
-import { CREATE_TAG_IDS } from "../admin/adminQueries.gql"
+import Button from '@/components/Button';
+import Field from '@/components/Field';
+import Layout from '@/components/layout/NLayout';
+import { Form, Formik } from 'formik';
+import * as yup from 'yup';
+import { CREATE_TAG_IDS } from '../admin/adminQueries.gql';
 
-import { useMutation } from "@apollo/client"
-import { useContext } from "react"
-import { uiCTX } from "../_app"
-import { range } from "lodash"
+import { useMutation } from '@apollo/client';
+import { useContext } from 'react';
+import { uiCTX } from '../_app';
+import { range } from 'lodash';
 
 const headers = [
-  "Nombre",
-  "Descripción",
-  "Puede aprtarse",
-  "Necesita aprovación",
-  "Acciones",
-]
+  'Nombre',
+  'Descripción',
+  'Puede aprtarse',
+  'Necesita aprovación',
+  'Acciones',
+];
 
 const schema = yup.object().shape({
   initialTag: yup
     .string()
-    .matches(/\d{8}/, "El numero de tag se encuentra abajo a la derecha"),
+    .matches(/\d{8}/, 'El numero de tag se encuentra abajo a la derecha'),
   finalTag: yup
     .string()
-    .matches(/\d{8}/, "El numero de tag se encuentra abajo a la derecha"),
-})
+    .matches(/\d{8}/, 'El numero de tag se encuentra abajo a la derecha'),
+});
 type areasType = {
-  id: String
-  name: string
-  description?: string
-  reserve: boolean
-  needsAproval: boolean
-}
+  id: String;
+  name: string;
+  description?: string;
+  reserve: boolean;
+  needsAproval: boolean;
+};
 const initialValues = {
-  initialTag: "",
-  finalTag: "",
-}
+  initialTag: '',
+  finalTag: '',
+};
 
 // @ts-ignore
 const Tags = (props) => {
-  const ui = useContext(uiCTX)
-  const [updateTags, { loading, data, error }] = useMutation(CREATE_TAG_IDS)
+  const ui = useContext(uiCTX);
+  const [updateTags, { loading, data, error }] = useMutation(CREATE_TAG_IDS);
 
   return (
     <Layout>
@@ -53,13 +53,13 @@ const Tags = (props) => {
               validationSchema={schema}
               initialValues={initialValues}
               onSubmit={async (variables, { resetForm }) => {
-                const { initialTag, finalTag } = variables
-                const tags = range(parseInt(initialTag), parseInt(finalTag) + 1)
+                const { initialTag, finalTag } = variables;
+                const tags = range(parseInt(initialTag), parseInt(finalTag) + 1);
                 const data = tags.map((t) => ({
                   tagId: `${t}`,
                   isActive: true,
-                }))
-                await updateTags({ variables: { data } })
+                }));
+                await updateTags({ variables: { data } });
               }}
             >
               {(formik) => (
@@ -79,7 +79,7 @@ const Tags = (props) => {
                     errors={formik.errors}
                   />
 
-                  <Button title={"Agregar Tags"} />
+                  <Button title={'Agregar Tags'} />
                 </Form>
               )}
             </Formik>
@@ -92,7 +92,7 @@ const Tags = (props) => {
         </div>
       </>
     </Layout>
-  )
-}
+  );
+};
 
-export default Tags
+export default Tags;

@@ -9,9 +9,7 @@ query GET_RESERVATION($date: DateTime!) {
 }
 
 query GET_VOUCHERS($from: DateTime!, $to: DateTime) {
-  vouchers(
-    where: { AND: [{ createdAt: { gte: $from } }, { createdAt: { lte: $to } }] }
-  ) {
+  vouchers(where: { AND: [{ createdAt: { gte: $from } }, { createdAt: { lte: $to } }] }) {
     createdAt
     bankTransaction {
       transactionId
@@ -22,7 +20,6 @@ query GET_VOUCHERS($from: DateTime!, $to: DateTime) {
     notes
   }
 }
-
 
 query CREATE_NEXT_PAYMENT_IF_DONT_EXIST($id: ID!) {
   createNextPayment(id: $id)

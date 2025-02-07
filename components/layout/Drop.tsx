@@ -1,30 +1,29 @@
-import { useMutation } from '@apollo/client'
-import { useRouter } from 'next/router'
-import React, { useCallback } from 'react'
-import { useDropzone } from 'react-dropzone'
-import { UPDATE_USER } from '../../pages/admin/adminQueries.gql'
-import { IS_LOGGED } from '../../pages/login/queries.gql'
-import useUI from '@/lib/hooks/useUI'
-
+import { useMutation } from '@apollo/client';
+import { useRouter } from 'next/router';
+import React, { useCallback } from 'react';
+import { useDropzone } from 'react-dropzone';
+import { UPDATE_USER } from '../../pages/admin/adminQueries.gql';
+import { IS_LOGGED } from '../../pages/login/queries.gql';
+import useUI from '@/lib/hooks/useUI';
 
 const TypeOfDoc = ({ image }: { image?: boolean }) => {
-  const  title = image ? "Sube tu imagen aqui" : "Sube tu archivo aqui"
+  const title = image ? 'Sube tu imagen aqui' : 'Sube tu archivo aqui';
   return (
     <>
-       <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-          <span className="font-semibold">{title}</span>
-        </p>
-        {!image && (
-          <p className="text-xs text-gray-500 dark:text-gray-400">PDF o imágen</p>
-        )}
+      <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+        <span className="font-semibold">{title}</span>
+      </p>
+      {!image && <p className="text-xs text-gray-500 dark:text-gray-400">PDF o imágen</p>}
     </>
   );
 };
 
 const Drop = ({
-  dz: { getInputProps, getRootProps, loading, }, typeOfDoc
+  dz: { getInputProps, getRootProps, loading },
+  typeOfDoc,
 }: {
-  dz: any, typeOfDoc?: boolean
+  dz: any;
+  typeOfDoc?: boolean;
 }) => (
   <div className="z flex w-full items-center justify-center">
     <label
@@ -72,11 +71,11 @@ const Drop = ({
             ></path>
           </svg>
         )}
-        <TypeOfDoc  image={typeOfDoc}/>
+        <TypeOfDoc image={typeOfDoc} />
       </div>
       <input id="dropzone-file" type="file" className="hidden" />
     </label>
   </div>
-)
+);
 
-export default Drop
+export default Drop;

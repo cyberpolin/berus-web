@@ -1,25 +1,23 @@
-import { useMutation } from '@apollo/client'
-import { useRouter } from 'next/router'
-import React, { useCallback, useEffect, useState } from 'react'
-import { useDropzone } from 'react-dropzone'
-import { UPDATE_USER } from '../../pages/admin/adminQueries.gql'
-import { IS_LOGGED } from '../../pages/login/queries.gql'
-import useUI from '@/lib/hooks/useUI'
-import Drop from './Drop'
+import { useMutation } from '@apollo/client';
+import { useRouter } from 'next/router';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useDropzone } from 'react-dropzone';
+import { UPDATE_USER } from '../../pages/admin/adminQueries.gql';
+import { IS_LOGGED } from '../../pages/login/queries.gql';
+import useUI from '@/lib/hooks/useUI';
+import Drop from './Drop';
 
 //@ts-ignore
 const ProfileMenu = ({ user }) => {
-  const ui = useUI()
-  const router = useRouter()
-  const [force, setForce] = useState(false)
+  const ui = useUI();
+  const router = useRouter();
+  const [force, setForce] = useState(false);
 
-  const id =
-    user.isAdmin && router?.query.pretend ? router?.query.pretend : user.id
+  const id = user.isAdmin && router?.query.pretend ? router?.query.pretend : user.id;
 
-  const [updateUser, { loading, data, error, called }] = useMutation(
-    UPDATE_USER,
-    { refetchQueries: [IS_LOGGED] }
-  )
+  const [updateUser, { loading, data, error, called }] = useMutation(UPDATE_USER, {
+    refetchQueries: [IS_LOGGED],
+  });
 
   //@ts-ignore
   const onDrop = useCallback(
@@ -30,8 +28,8 @@ const ProfileMenu = ({ user }) => {
       const image = acceptedFiles.map((file) =>
         Object.assign(file, {
           preview: URL.createObjectURL(file),
-        })
-      )[0]
+        }),
+      )[0];
 
       await updateUser({
         variables: {
@@ -39,20 +37,20 @@ const ProfileMenu = ({ user }) => {
           // @ts-ignore: Unreachable code error
           image,
         },
-      })
+      });
 
       if (called && !error) {
-        setForce(false)
+        setForce(false);
       }
     },
-    [force]
-  )
+    [force],
+  );
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     accept: {
       'image/png': ['.png', '.pdf', '.jpeg', '.jpg'],
     },
     onDrop,
-  })
+  });
 
   return (
     <div>
@@ -74,8 +72,8 @@ const ProfileMenu = ({ user }) => {
               Recibiras tus facturas los dias 15 y 30 de cada mes
             </p>
             <p className="mb-4 text-sm">
-              Si deseas cambiar tu documento de situación fiscal, pide al
-              administrador ayuda
+              Si deseas cambiar tu documento de situación fiscal, pide al administrador
+              ayuda
             </p>
             <p>
               <a
@@ -105,13 +103,13 @@ const ProfileMenu = ({ user }) => {
           <>
             {force ? (
               <p className="mb-4 text-sm">
-                Solo necesitas subir un documento nuevo de{' '}
-                <b>situación fiscal</b> y listo!
+                Solo necesitas subir un documento nuevo de <b>situación fiscal</b> y
+                listo!
               </p>
             ) : (
               <p className="mb-4 text-sm">
-                Si deseas que te facturemos tus cuotas por favor sube tu
-                documento de <b>situación fiscal</b>. .
+                Si deseas que te facturemos tus cuotas por favor sube tu documento de{' '}
+                <b>situación fiscal</b>. .
               </p>
             )}
             <Drop dz={{ getInputProps, getRootProps, loading }} />
@@ -119,7 +117,7 @@ const ProfileMenu = ({ user }) => {
         )}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default ProfileMenu
+export default ProfileMenu;

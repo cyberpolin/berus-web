@@ -1,21 +1,17 @@
-import UseAuth from "@/lib/UseAuth";
-import { useMutation } from "@apollo/client";
-import Image from "next/image";
-import Link from "next/link";
-import { useRouter } from "next/router";
-import React, { useCallback, useEffect, useState } from "react";
-import { useDropzone } from "react-dropzone";
-import { UPDATE_USER } from "../../pages/admin/adminQueries.gql";
-import { IS_LOGGED } from "../../pages/login/queries.gql";
+import UseAuth from '@/lib/UseAuth';
+import { useMutation } from '@apollo/client';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useDropzone } from 'react-dropzone';
+import { UPDATE_USER } from '../../pages/admin/adminQueries.gql';
+import { IS_LOGGED } from '../../pages/login/queries.gql';
 
-const hide = "-z-10 opacity-0";
-const show = "z-10 opacity-1";
+const hide = '-z-10 opacity-0';
+const show = 'z-10 opacity-1';
 
-const Drop = ({
-  dz: { getInputProps, getRootProps, loading },
-}: {
-  dz: any;
-}) => (
+const Drop = ({ dz: { getInputProps, getRootProps, loading } }: { dz: any }) => (
   <div className="z flex w-full items-center justify-center">
     <label
       {...getRootProps}
@@ -84,7 +80,7 @@ const MenuItem = ({
   <li>
     <div className="text-sm">
       <Link
-        className="block p-5 hover:text-gray-800 dark:text-amber-50 md:mt-0 md:inline-block"
+        className="block p-5 hover:text-gray-800 md:mt-0 md:inline-block dark:text-amber-50"
         href={link}
         onClick={toggle}
       >
@@ -97,7 +93,7 @@ const MenuItem = ({
 export default function Layout(props: any) {
   const router = useRouter();
   const { user } = UseAuth();
-  const [hidden, setHidden] = useState("hidden");
+  const [hidden, setHidden] = useState('hidden');
   const [showInfo, setShowInfo] = useState(false);
   const [force, setForce] = useState(false);
   const [subMenuShow, setSubMenuShow] = useState(true);
@@ -110,10 +106,9 @@ export default function Layout(props: any) {
     setShowInfo(!showInfo);
   };
 
-  const [updateUser, { loading, data, error, called }] = useMutation(
-    UPDATE_USER,
-    { refetchQueries: [IS_LOGGED] }
-  );
+  const [updateUser, { loading, data, error, called }] = useMutation(UPDATE_USER, {
+    refetchQueries: [IS_LOGGED],
+  });
 
   //@ts-ignore
   const onDrop = useCallback(
@@ -124,7 +119,7 @@ export default function Layout(props: any) {
       const image = acceptedFiles.map((file) =>
         Object.assign(file, {
           preview: URL.createObjectURL(file),
-        })
+        }),
       )[0];
 
       await updateUser({
@@ -140,18 +135,18 @@ export default function Layout(props: any) {
         toggleInfo();
       }
     },
-    [force]
+    [force],
   );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     accept: {
-      "image/png": [".png", ".pdf", ".jpeg", ".jpg"],
+      'image/png': ['.png', '.pdf', '.jpeg', '.jpg'],
     },
     onDrop,
   });
 
   const toggleHidden = () => {
-    const nextState = hidden === "" ? "hidden" : "";
+    const nextState = hidden === '' ? 'hidden' : '';
     setHidden(nextState);
   };
 
@@ -161,7 +156,7 @@ export default function Layout(props: any) {
 
   useEffect(() => {
     if (!user) {
-      router?.push("/login");
+      router?.push('/login');
     }
   }, []);
 
@@ -173,16 +168,11 @@ export default function Layout(props: any) {
     <div className="relative">
       <nav className="h-24 border-gray-200 bg-white dark:border-gray-600 dark:bg-gray-800">
         <div className="mx-auto flex max-w-screen-xl flex-wrap items-center justify-between p-4">
-          <Image
-            src="/c7logo.png"
-            width={240}
-            height={50}
-            alt="Altozano Tabasco"
-          />
+          <Image src="/c7logo.png" width={240} height={50} alt="Altozano Tabasco" />
           <button
             data-collapse-toggle="mega-menu-full"
             type="button"
-            className="ml-1 inline-flex items-center rounded-lg p-2 text-sm text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600 md:hidden"
+            className="ml-1 inline-flex items-center rounded-lg p-2 text-sm text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 md:hidden dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
             aria-controls="mega-menu-full"
             aria-expanded="false"
             onClick={toggleHidden}
@@ -280,13 +270,13 @@ export default function Layout(props: any) {
       </nav>
       <div
         className={`top-100 absolute right-0 z-10  inline-block w-64 rounded-lg border border-gray-200 bg-white text-sm text-gray-500  shadow-sm transition-opacity duration-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 ${
-          showInfo ? "opacity-100" : "hidden opacity-0"
+          showInfo ? 'opacity-100' : 'hidden opacity-0'
         }`}
       >
         <div className="p-3">
           <div className="mb-2 flex items-center justify-between">
             <p className="text-base font-semibold leading-none text-gray-900 dark:text-white">
-              Hola{" "}
+              Hola{' '}
               <a
                 className="font-medium text-blue-600 hover:underline dark:text-blue-500"
                 href="#"
@@ -301,8 +291,8 @@ export default function Layout(props: any) {
                 Recibiras tus facturas los dias 15 y 30 de cada mes
               </p>
               <p className="mb-4 text-sm">
-                Si deseas cambiar tu documento de situación fiscal, pide al
-                administrador ayuda
+                Si deseas cambiar tu documento de situación fiscal, pide al administrador
+                ayuda
               </p>
               <p>
                 <a
@@ -332,13 +322,13 @@ export default function Layout(props: any) {
             <>
               {force ? (
                 <p className="mb-4 text-sm">
-                  Solo necesitas subir un documento nuevo de{" "}
-                  <b>situación fiscal</b> y listo!
+                  Solo necesitas subir un documento nuevo de <b>situación fiscal</b> y
+                  listo!
                 </p>
               ) : (
                 <p className="mb-4 text-sm">
-                  Si deseas que te facturemos tus cuotas por favor sube tu
-                  documento de <b>situación fiscal</b>. .
+                  Si deseas que te facturemos tus cuotas por favor sube tu documento de{' '}
+                  <b>situación fiscal</b>. .
                 </p>
               )}
               <Drop dz={{ getInputProps, getRootProps, loading }} />
@@ -353,5 +343,5 @@ export default function Layout(props: any) {
         </div>
       </div>
     </div>
-  )
+  );
 }

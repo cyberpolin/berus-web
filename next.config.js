@@ -4,7 +4,7 @@ const nextConfig = {
     appDir: true,
   },
   reactStrictMode: false, // aparently this fix polling interval
-}
+};
 
 module.exports = {
   ...nextConfig,
@@ -12,9 +12,9 @@ module.exports = {
     config.module.rules.push({
       test: /\.(graphql|gql)/,
       exclude: /node_modules/,
-      loader: "graphql-tag/loader",
-    })
+      loader: 'graphql-tag/loader',
+    });
 
-    return config
+    return config;
   },
-}
+};
