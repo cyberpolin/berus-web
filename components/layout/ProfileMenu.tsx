@@ -8,7 +8,7 @@ import useUI from '@/lib/hooks/useUI'
 import Drop from './Drop'
 
 //@ts-ignore
-const ProfileMenu = ({ user, show }) => {
+const ProfileMenu = ({ user }) => {
   const ui = useUI()
   const router = useRouter()
   const [force, setForce] = useState(false)
@@ -55,12 +55,8 @@ const ProfileMenu = ({ user, show }) => {
   })
 
   return (
-    <div
-      className={`absolute left-2 top-2 inline-block w-fit rounded-lg border border-gray-200 bg-white text-sm text-gray-500 shadow-sm transition-opacity duration-300  sm:right-2 sm:top-20 sm:w-64 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 ${
-        show ? 'opacity-100' : 'hidden opacity-0'
-      }`}
-    >
-      <div className="p-3">
+    <div>
+      <div className="py-3">
         <div className="mb-2 flex items-center justify-between">
           <p className="text-base font-semibold leading-none text-gray-900 dark:text-white">
             Hola{' '}

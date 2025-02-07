@@ -8,7 +8,7 @@ import useUI from '@/lib/hooks/useUI'
 
 
 const TypeOfDoc = ({ image }: { image?: boolean }) => {
-  const  title = image ? "por favor sube tu imagen aqui" : "por favor sube tu imagen archivo "
+  const  title = image ? "Sube tu imagen aqui" : "Sube tu archivo aqui"
   return (
     <>
        <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
@@ -72,7 +72,7 @@ const Drop = ({
             ></path>
           </svg>
         )}
-       <TypeOfDoc  image={typeOfDoc}/>
+        <TypeOfDoc  image={typeOfDoc}/>
       </div>
       <input id="dropzone-file" type="file" className="hidden" />
     </label>
