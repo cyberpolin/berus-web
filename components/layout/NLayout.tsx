@@ -1,7 +1,7 @@
 import UseAuth from '@/lib/UseAuth';
 import Link from 'next/link';
 import Image from 'next/image';
-import React, { Profiler, useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { UPDATE_USER_AVATAR } from '../../pages/admin/adminQueries.gql';
 import useUI from '@/lib/hooks/useUI';
 import { useRouter } from 'next/router';
@@ -12,6 +12,7 @@ import { useMutation } from '@apollo/client';
 import { IS_LOGGED } from '../../pages/login/queries.gql';
 import ProfileMenu from './ProfileMenu';
 import Drop from './Drop';
+import LMenu from '../Menu/LMenu';
 
 const NLayout = (props: any) => {
   const { user } = UseAuth();
@@ -56,10 +57,9 @@ const NLayout = (props: any) => {
     [],
   );
 
-  const showSettings = ui.settings ? '' : 'hidden -z-10';
-  const showProfile = ui.profile ? '' : 'hidden -z-10';
   const [uploadAvatar, setUploadAvatar] = useState(false);
   const [uploadRFC, setUploadRFC] = useState(false);
+  const [isRoleadmind, setIsRoleadmind] = useState(false);
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     accept: {
       'image/png': ['.png', '.jpeg', '.jpg'],
@@ -78,26 +78,6 @@ const NLayout = (props: any) => {
   };
   return (
     <div>
-      <div
-        id="setting"
-        className={`${showSettings} absolute right-2 top-20 block w-40  overflow-hidden rounded-md border-2 bg-white transition-opacity  dark:border-gray-600 dark:bg-gray-800`}
-      >
-        <Link href="#" className="block p-2 text-xs hover:bg-slate-200">
-          ...
-        </Link>
-        <Link href="/admin/comon-areas" className="block p-2 text-xs hover:bg-slate-200">
-          Areas Comunes
-        </Link>
-        <Link href="/admin/tags" className="block p-2 text-xs hover:bg-slate-200">
-          Add Tags
-        </Link>
-        <Link href="/admin/facturacion" className="block p-2 text-xs hover:bg-slate-200">
-          Facturación
-        </Link>
-        <Link href="#" className="block p-2 text-xs hover:bg-slate-200">
-          ...
-        </Link>
-      </div>
       <div>
         <nav className="m-0 mb-3 flex max-w-full flex-col items-center border-gray-200 bg-white py-1 sm:flex-row dark:border-gray-600 dark:bg-gray-800">
           <div id="logo" className="w-full py-2 sm:w-2/6">
@@ -130,59 +110,21 @@ const NLayout = (props: any) => {
             id="menu"
             className={`sm: hidden w-full items-center border-red-100 text-end sm:mx-2  sm:w-4/6 sm:w-max sm:py-2 md:flex`}
           >
-            {user.isAdmin && (
+            {isRoleadmind ? (
               <>
-                <Link
-                  className="block p-5 text-center text-sm hover:text-gray-800 hover:underline md:mt-0 md:inline-block dark:text-amber-50"
-                  href="/admin"
-                  key="/admin"
-                >
-                  Admin
-                </Link>
-                <Link
-                  className="block p-5 text-center text-sm hover:text-gray-800 hover:underline md:mt-0 md:inline-block dark:text-amber-50"
-                  href="/admin/properties"
-                  key="/admin/properties"
-                >
-                  Properties
-                </Link>
+                <LMenu href="/admin" title="Pagos" />
+                <LMenu href="/admin/properties" title="Properties" />
+                <LMenu href="/admin/comon-areas" title="Amenidades" />
+                <LMenu href="/admin/tags" title="Tags" />
+                <LMenu href="/admin/facturacion" title="Facturacion" />
+              </>
+            ) : (
+              <>
+                <LMenu href="/dashboard/cuotas" title="Cuotas" />
+                <LMenu href="/dashboard/descargables" title="Descargables" />
               </>
             )}
-            <Link
-              className="block p-5 text-center text-sm hover:text-gray-800 hover:underline md:mt-0 md:inline-block dark:text-amber-50"
-              href="/dashboard/cuotas"
-              key="/dashboard/cuotas"
-            >
-              Cuotas
-            </Link>
-            <Link
-              className="block p-5 text-center text-sm hover:text-gray-800 hover:underline md:mt-0 md:inline-block dark:text-amber-50"
-              href="/dashboard/descargables"
-              key="/dashboard/descargables"
-            >
-              Descargables
-            </Link>
-            {/* <Link
-              className="block p-5 text-center text-sm hover:text-gray-800 hover:underline dark:text-amber-50 md:mt-0 md:inline-block"
-              href="/dashboard/areas"
-              key="/dashboard/areas"
-              >
-              Reservar Areas
-            </Link>
-            <Link
-              className="block p-5 text-center text-sm hover:text-gray-800 hover:underline dark:text-amber-50 md:mt-0 md:inline-block"
-              href="/dashboard/card"
-              key="/dashboard/card"
-              >
-              Card
-            </Link> */}
-            <Link
-              className="block p-5 text-center text-sm hover:text-gray-800 hover:underline md:mt-0 md:inline-block dark:text-amber-50"
-              href="/logout"
-              key="/logout"
-            >
-              Salir
-            </Link>
+            <LMenu href="/logout" title="Salir" />
             <DropdownMenu
               Avatar={<Avatar image={avatar} handleClick={() => ui.toggleProfile} />}
             >
@@ -202,6 +144,14 @@ const NLayout = (props: any) => {
                     >
                       {user.rfc ? 'Cambiar RFC' : 'Subir RFC'}
                     </span>
+                    {user.isAdmin && (
+                      <span
+                        className="my-1 cursor-pointer text-xs text-blue-500"
+                        onClick={() => setIsRoleadmind(!isRoleadmind)}
+                      >
+                        {isRoleadmind ? 'Cambiar a usuario' : 'Cambiar a admin'}
+                      </span>
+                    )}
                   </div>
                   <span className="mx-2 text-gray-500">{user.name}</span>
                 </div>
@@ -225,30 +175,6 @@ const NLayout = (props: any) => {
                 </div>
               </div>
             </DropdownMenu>
-            <button
-              className="m-4 hidden transition-all hover:rotate-45 sm:inline-block"
-              onClick={ui.toggleSettings}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="h-6 w-6"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z"
-                />
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                />
-              </svg>
-            </button>
           </div>
         </nav>
         <div className="mx-auto max-w-full overflow-hidden">
