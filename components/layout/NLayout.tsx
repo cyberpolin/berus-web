@@ -20,7 +20,6 @@ const NLayout = (props: any) => {
   const ui = useUI();
   const id = user.id;
   const avatar = user.avatar?.publicUrl;
-
   useEffect(() => {
     if (!user) {
       router?.push('/login');
@@ -56,10 +55,8 @@ const NLayout = (props: any) => {
     },
     [],
   );
-
   const [uploadAvatar, setUploadAvatar] = useState(false);
   const [uploadRFC, setUploadRFC] = useState(false);
-  const [isRoleadmind, setIsRoleadmind] = useState(false);
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     accept: {
       'image/png': ['.png', '.jpeg', '.jpg'],
@@ -110,7 +107,7 @@ const NLayout = (props: any) => {
             id="menu"
             className={`sm: hidden w-full items-center border-red-100 text-end sm:mx-2  sm:w-4/6 sm:w-max sm:py-2 md:flex`}
           >
-            {isRoleadmind ? (
+            {ui.isAdminProfile && user.isAdmin ? (
               <>
                 <LMenu href="/admin" title="Pagos" />
                 <LMenu href="/admin/properties" title="Properties" />
@@ -150,9 +147,11 @@ const NLayout = (props: any) => {
                     {user.isAdmin && (
                       <span
                         className="my-1 block cursor-pointer text-xs text-blue-500"
-                        onClick={() => setIsRoleadmind(!isRoleadmind)}
+                        onClick={() => {
+                          ui.toggleAdmin();
+                        }}
                       >
-                        {isRoleadmind ? 'Cambiar a usuario' : 'Cambiar a admin'}
+                        {ui.isAdminProfile ? 'Cambiar a usuario' : 'Cambiar a admin'}
                       </span>
                     )}
                   </div>
