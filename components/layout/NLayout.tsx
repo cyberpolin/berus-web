@@ -18,6 +18,8 @@ const NLayout = (props: any) => {
   const { user } = UseAuth();
   const router = useRouter();
   const ui = useUI();
+  const id = user.id;
+  const avatar = user.avatar?.publicUrl;
 
   useEffect(() => {
     if (!user) {
@@ -28,8 +30,6 @@ const NLayout = (props: any) => {
   const [updateUser, { loading, data, error, called }] = useMutation(UPDATE_USER_AVATAR, {
     refetchQueries: [IS_LOGGED],
   });
-
-  const id = user.id;
 
   const onDrop = useCallback(
     //@ts-ignore
@@ -66,7 +66,6 @@ const NLayout = (props: any) => {
     },
     onDrop,
   });
-  const avatar = user.avatar?.publicUrl;
 
   const InfoTag = ({ info, count }: { info: string; count?: number }) => {
     return (
@@ -81,6 +80,7 @@ const NLayout = (props: any) => {
       <div>
         <nav className="m-0 mb-3 flex max-w-full flex-col items-center border-gray-200 bg-white py-1 sm:flex-row dark:border-gray-600 dark:bg-gray-800">
           <div id="logo" className="w-full py-2 sm:w-2/6">
+            {/* burguer button */}
             <button
               className={`m-2 inline-block rounded-md border p-1 sm:hidden `}
               onClick={ui.toggleMobile}
@@ -129,31 +129,33 @@ const NLayout = (props: any) => {
               Avatar={<Avatar image={avatar} handleClick={() => ui.toggleProfile} />}
             >
               <div className="m-5 flex flex-col">
-                <div className="flex items-center gap-2">
-                  <div className="mb-2 flex flex-col">
+                <div className="flex-col items-center">
+                  <div className="flex items-center gap-2">
                     <Avatar image={avatar} />
+                    <span className="mx-2 text-gray-500">{user.name}</span>
+                  </div>
+                  <div className="flex-col">
                     <span
-                      className="my-1 cursor-pointer text-xs text-blue-500"
+                      className="my-1 block cursor-pointer text-xs text-blue-500"
                       onClick={() => setUploadAvatar(!uploadAvatar)}
                     >
                       {user.avatar ? 'Cambiar avatar' : 'Subir avatar'}
                     </span>
                     <span
-                      className="my-1 cursor-pointer text-xs text-blue-500"
+                      className="my-1 block cursor-pointer text-xs text-blue-500"
                       onClick={() => setUploadRFC(!uploadRFC)}
                     >
                       {user.rfc ? 'Cambiar RFC' : 'Subir RFC'}
                     </span>
                     {user.isAdmin && (
                       <span
-                        className="my-1 cursor-pointer text-xs text-blue-500"
+                        className="my-1 block cursor-pointer text-xs text-blue-500"
                         onClick={() => setIsRoleadmind(!isRoleadmind)}
                       >
                         {isRoleadmind ? 'Cambiar a usuario' : 'Cambiar a admin'}
                       </span>
                     )}
                   </div>
-                  <span className="mx-2 text-gray-500">{user.name}</span>
                 </div>
                 {uploadAvatar && (
                   <div className=" mb-2">
