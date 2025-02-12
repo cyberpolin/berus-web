@@ -138,6 +138,24 @@ query GET_PAYMENTS($id: ID!) {
     }
   }
 }
+query GET_PROVIDERS_PAYMENTS($id: ID) {
+  providerPayments(where: { provider: { id: { equals: $id } } }) {
+    id
+    status
+    dueAt
+    amountWithTax
+    concept
+  }
+}
+query GET_PROVIDER_PAYMENT($id: ID!) {
+  providerPayment(where: { id: $id }) {
+    id
+    status
+    dueAt
+    amountWithTax
+    concept
+  }
+}
 
 mutation LOG_OUT {
   endSession

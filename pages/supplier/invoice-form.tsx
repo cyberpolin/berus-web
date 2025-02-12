@@ -9,26 +9,38 @@ import { useCallback } from 'react';
 import { UPDATE_USER_AVATAR } from '../../pages/admin/adminQueries.gql';
 import { IS_LOGGED } from '../../pages/login/queries.gql';
 import { useMutation } from '@apollo/client';
+import { useQuery } from '@apollo/client';
+import { GET_PROVIDER_PAYMENT } from '../dashboard/queries.gql';
 // import UseAuth from '@/lib/UseAuth';
 
 const schema = yup.object().shape({
-  limitDay: yup.date().required('La fecha es requerida'),
-  finalAmount: yup.number().required('El monto es requerido'),
-  typeInvocie: yup.string().required('El concepto es requerido'),
+  dueAt: yup.date().required('La fecha es requerida'),
+  amountWithTax: yup.number().required('El monto es requerido'),
+  concept: yup.string().required('El concepto es requerido'),
 });
 
 const initialValues = {
-  limitDay: new Date().toISOString().split('T')[0],
-  finalAmount: '0',
-  typeInvocie: '',
+  dueAt: new Date().toISOString().split('T')[0],
+  amountWithTax: '0',
+  concept: '',
 };
 
 // const { user } = UseAuth();
-const id = '1234567';
+const id = '21c2df5c-0ccb-4449-97a3-ef91366ac282';
 
 const InvoiceForm = () => {
+  const { data, loading, error } = useQuery(GET_PROVIDER_PAYMENT, {
+    variables: {
+      id,
+    },
+  });
+  console.log('data', data?.providerPayment);
+  const providerGetValue = {
+    ...data?.providerPayment,
+    dueAt: data?.providerPayment?.dueAt?.toString().split('T')[0],
+  };
   const { values, errors, touched, handleSubmit, setFieldValue } = useFormik({
-    initialValues,
+    initialValues: providerGetValue || initialValues,
     validationSchema: schema,
     onSubmit: async (variables, { resetForm }) => {
       console.log('variables', variables);
@@ -36,7 +48,7 @@ const InvoiceForm = () => {
     },
   });
 
-  const [updateUser, { loading, data, error, called }] = useMutation(UPDATE_USER_AVATAR, {
+  const [updateUser, User] = useMutation(UPDATE_USER_AVATAR, {
     refetchQueries: [IS_LOGGED],
   });
 
@@ -59,7 +71,7 @@ const InvoiceForm = () => {
         },
       });
 
-      if (called && !error) {
+      if (User.called && !User.error) {
         console.log('error');
       }
     },
@@ -75,33 +87,33 @@ const InvoiceForm = () => {
 
   return (
     <Layout>
-      <div className=" w-full px-10 pt-4 ">
+      <div className=" mx-auto w-full max-w-[1000px] px-10 pt-4  ">
         <form onSubmit={handleSubmit} className="flex flex-col  gap-y-8 ">
           <h2 className="font-semi-bold text-2xl">Añade una factura nueva.</h2>
           <Input
             placeholder="Fecha limite de pago"
-            name="limitDay"
-            id="limitDay"
+            name="dueAt"
+            id="dueAt"
             typeInput="date"
-            value={values.limitDay}
-            error={errors.limitDay}
+            value={values.dueAt}
+            error={errors.dueAt}
           />
 
           <Input
             placeholder="Monto a pagar con IVA"
-            name="finalAmount"
-            id="finalAmount"
+            name="amountWithTax"
+            id="amountWithTax"
             typeInput="number"
-            value={values.finalAmount}
-            error={errors.finalAmount}
+            value={values.amountWithTax}
+            error={errors.amountWithTax}
           />
           <Input
             placeholder="concepto de factura"
-            name="typeInvocie"
-            id="typeInvocie"
+            name="concept"
+            id="concept"
             typeInput="Text"
-            value={values.typeInvocie}
-            error={errors.typeInvocie}
+            value={values.concept}
+            error={errors.concept}
           />
           <Drop dz={{ getInputProps, getRootProps, loading }} />
 
