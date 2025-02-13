@@ -1,13 +1,24 @@
 import { useQuery } from '@apollo/client';
-import { GET_PROVIDERS_PAYMENTS } from '../dashboard/queries.gql';
+import { GET_PROVIDERS_PAYMENTS, GET_PROVIDER_PAYMENT } from '../dashboard/queries.gql';
 import currency from 'currency.js';
 import Layout from '@/components/layout/NLayout';
 import { useRouter } from 'next/router';
-const InvoiceList = () => {
+import UseAuth from '@/lib/UseAuth';
+
+const PaymentList = () => {
   const router = useRouter();
-  const { data, loading, error } = useQuery(GET_PROVIDERS_PAYMENTS);
-  console.log('invoices', data);
-  if (loading) {
+  let InfoPayments;
+  const { user } = UseAuth();
+  if (user.isAdmin) {
+    const providersPayments = useQuery(GET_PROVIDERS_PAYMENTS);
+    console.log('soy admin', providersPayments);
+    InfoPayments = providersPayments;
+  } else if (user.isProvider) {
+    const providerPayments = useQuery(GET_PROVIDER_PAYMENT);
+    console.log('soy provider', providerPayments);
+    InfoPayments = providerPayments;
+  }
+  if (InfoPayments?.loading) {
     return;
   }
   return (
@@ -51,18 +62,18 @@ const InvoiceList = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200 [&>*:nth-child(even)]:bg-gray-100 [&>*:nth-child(odd)]:bg-white">
-              {data.providerPayments.map((invoice) => (
-                <tr key={invoice.id} className="hover:bg-gray-500">
+              {InfoPayments?.data.providerPayments.map((payment) => (
+                <tr key={payment.id} className="hover:bg-gray-500">
                   <td className=" px-6 py-4">
-                    {new Date(invoice.dueAt).toLocaleDateString()}
+                    {new Date(payment.dueAt).toLocaleDateString()}
                   </td>
                   <td className=" px-6 py-4">
-                    {currency(invoice.amountWithTax).format()}
+                    {currency(payment.amountWithTax).format()}
                   </td>
-                  <td className=" px-6 py-4">{invoice.concept}</td>
-                  <td className=" px-6 py-4">{invoice.status}</td>
+                  <td className=" px-6 py-4">{payment.concept}</td>
+                  <td className=" px-6 py-4">{payment.status}</td>
                   <td className="flex flex-wrap gap-x-4  px-6 py-4">
-                    {false ? (
+                    {user.isAdmin ? (
                       <>
                         <span className="rounded px-3 py-1 text-red-400 hover:bg-red-400 hover:text-white">
                           Rechazar
@@ -74,7 +85,7 @@ const InvoiceList = () => {
                     ) : (
                       <button
                         className="mr-2 rounded bg-emerald-500 px-3 py-1 text-white hover:bg-green-600"
-                        onClick={() => router.push(`/supplier/invoice-form${invoice.id}`)}
+                        onClick={() => router.push(`/supplier/payment-form${payment.id}`)}
                       >
                         Editar &#9998;
                       </button>
@@ -90,4 +101,4 @@ const InvoiceList = () => {
   );
 };
 
-export default InvoiceList;
+export default PaymentList;

@@ -58,6 +58,7 @@ query IS_LOGGED {
     ... on User {
       id
       isAdmin
+      isProvider
       needsBill
       name
       isVerified
