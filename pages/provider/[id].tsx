@@ -36,6 +36,8 @@ const InvoiceForm = () => {
   );
   const { user } = UseAuth();
   const { id } = useRouter().query;
+  const dropLaoding =
+    id === 'new' ? createProviderPayments.loading : providerPayments.loading;
   const [selectedImage, setSelectedImage] = useState<any>(null);
   const { data, loading, error } = useQuery(GET_PROVIDER_PAYMENT, {
     variables: {
@@ -50,6 +52,8 @@ const InvoiceForm = () => {
     useFormik({
       initialValues: providerGetValue || initialValues,
       validationSchema: schema,
+      // make formik dinamic
+      enableReinitialize: true,
       onSubmit: async (variables, { resetForm }) => {
         if (id === 'new') {
           await createProviderPayment({
@@ -116,7 +120,7 @@ const InvoiceForm = () => {
   });
 
   if (loading) {
-    return;
+    return <h1>Loading...</h1>;
   }
 
   return (
@@ -151,7 +155,7 @@ const InvoiceForm = () => {
             error={errors.concept}
             onChange={handleChange}
           />
-          <Drop dz={{ getInputProps, getRootProps, loading }} />
+          <Drop dz={{ getInputProps, getRootProps, loading: dropLaoding }} />
           <Button title={'Agregar Factura'} />
         </form>
       </div>

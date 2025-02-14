@@ -114,11 +114,17 @@ const NLayout = (props: any) => {
                 <LMenu href="/admin/comon-areas" title="Amenidades" />
                 <LMenu href="/admin/tags" title="Tags" />
                 <LMenu href="/admin/facturacion" title="Facturacion" />
+                <LMenu href="/provider/provider-payments" title="pagos proveedores" />
               </>
-            ) : (
+            ) : !user.isProvider ? (
               <>
                 <LMenu href="/dashboard/cuotas" title="Cuotas" />
                 <LMenu href="/dashboard/descargables" title="Descargables" />
+              </>
+            ) : (
+              <>
+                <LMenu href="/provider/new" title="Agregar factura" />
+                <LMenu href="/provider/provider-payments" title="pagos proveedores" />
               </>
             )}
             <LMenu href="/logout" title="Salir" />
