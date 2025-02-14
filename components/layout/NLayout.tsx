@@ -75,7 +75,7 @@ const NLayout = (props: any) => {
   return (
     <div>
       <div>
-        <nav className="m-0 mb-3 flex max-w-full flex-col items-center border-gray-200 bg-white py-1 sm:flex-row dark:border-gray-600 dark:bg-gray-800">
+        <nav className="m-0 mb-3 flex max-w-full flex-col flex-wrap items-center justify-center border-gray-200 bg-white py-1 sm:flex-row dark:border-gray-600 dark:bg-gray-800">
           <div id="logo" className="w-full py-2 sm:w-2/6">
             {/* burguer button */}
             <button

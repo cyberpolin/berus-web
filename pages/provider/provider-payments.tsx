@@ -26,8 +26,8 @@ const PaymentList = () => {
     <Layout>
       <div className="mx-auto flex w-full max-w-[1400px] flex-col px-4 ">
         <h2 className="font-semi-bold text-2xl">Facturas</h2>
-        <div className="mt-4">
-          <table className="min-w-full divide-y divide-gray-200">
+        <div className="mt-4 overflow-x-scroll">
+          <table className="min-w-full divide-y divide-gray-200 ">
             <thead className="bg-gray-50">
               <tr>
                 <th
@@ -71,33 +71,39 @@ const PaymentList = () => {
             <tbody className="divide-y divide-gray-200 [&>*:nth-child(even)]:bg-gray-100 [&>*:nth-child(odd)]:bg-white">
               {providersPayments?.data.providerPayments.map((payment) => (
                 <tr key={payment.id} className="hover:bg-gray-500">
-                  <td className=" px-6 py-4">{'icon'}</td>
-                  <td className=" px-6 py-4">
+                  <td className="px-6 py-4">
+                    <a href={payment?.image?.publicUrl} target="_blank">
+                      <img alt={'payment'} className="center  w-16" src="/pdfIcon.png" />
+                    </a>
+                  </td>
+                  <td className="px-6 py-4">
                     {new Date(payment.dueAt).toLocaleDateString()}
                   </td>
-                  <td className=" px-6 py-4">
+                  <td className="px-6 py-4 text-right">
                     {currency(payment.amountWithTax).format()}
                   </td>
-                  <td className=" px-6 py-4">{payment.concept}</td>
-                  <td className=" px-6 py-4">{payment.status}</td>
-                  <td className="flex flex-wrap  justify-center  gap-x-4 px-6 py-4">
-                    {user.isAdmin ? (
-                      <>
-                        <span className="w-28 rounded px-3 py-1 text-center text-red-400 hover:bg-red-400 hover:text-white">
-                          Rechazar
-                        </span>
-                        <button className="w-28 rounded bg-green-500 px-3 py-1 text-white hover:bg-green-600">
-                          Aceptar
+                  <td className="px-6 py-4">{payment.concept}</td>
+                  <td className="px-6 py-4">{payment.status}</td>
+                  <td className="px-6 py-4">
+                    <div className="align-center flex flex-wrap justify-center gap-x-4">
+                      {user.isAdmin ? (
+                        <>
+                          <span className="w-28 rounded px-3 py-1 text-center text-red-400 hover:bg-red-400 hover:text-white">
+                            Rechazar
+                          </span>
+                          <button className="w-28 rounded bg-green-500 px-3 py-1 text-white hover:bg-green-600">
+                            Aceptar
+                          </button>
+                        </>
+                      ) : (
+                        <button
+                          className="mr-2 rounded bg-emerald-500 px-3 py-1 text-white hover:bg-green-600"
+                          onClick={() => router.push(`/provider/${payment.id}`)}
+                        >
+                          Editar &#9998;
                         </button>
-                      </>
-                    ) : (
-                      <button
-                        className="mr-2 rounded bg-emerald-500 px-3 py-1 text-white hover:bg-green-600"
-                        onClick={() => router.push(`/provider/${payment.id}`)}
-                      >
-                        Editar &#9998;
-                      </button>
-                    )}
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))}
