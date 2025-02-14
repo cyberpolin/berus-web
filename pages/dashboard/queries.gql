@@ -146,6 +146,9 @@ query GET_PROVIDERS_PAYMENTS($id: ID) {
     dueAt
     amountWithTax
     concept
+    image {
+      publicUrl
+    }
   }
 }
 query GET_PROVIDER_PAYMENT($id: ID!) {
@@ -155,6 +158,54 @@ query GET_PROVIDER_PAYMENT($id: ID!) {
     dueAt
     amountWithTax
     concept
+    image {
+      publicUrl
+    }
+    provider {
+      id
+    }
+  }
+}
+mutation UPDATE_PROVIDER_PAYMENT(
+  $id: ID!
+  $concept: String
+  $amountWithTax: String
+  $dueAt: DateTime
+  $image: Upload
+) {
+  updateProviderPayment(
+    where: { id: $id }
+    data: {
+      concept: $concept
+      amountWithTax: $amountWithTax
+      dueAt: $dueAt
+      image: $image
+    }
+  ) {
+    id
+    image {
+      publicUrl
+    }
+  }
+}
+
+mutation CREATE_PROVIDER_PAYMENT(
+  $concept: String
+  $amountWithTax: String
+  $dueAt: DateTime
+  $providerId: ID
+  $image: Upload
+) {
+  createProviderPayment(
+    data: {
+      concept: $concept
+      amountWithTax: $amountWithTax
+      dueAt: $dueAt
+      image: $image
+      provider: { connect: { id: $providerId } }
+    }
+  ) {
+    id
   }
 }
 

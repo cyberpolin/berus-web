@@ -6,12 +6,16 @@ import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { useDropzone } from 'react-dropzone';
 import { useCallback } from 'react';
-import { UPDATE_USER_AVATAR } from '../../pages/admin/adminQueries.gql';
-import { IS_LOGGED } from '../../pages/login/queries.gql';
+import {
+  CREATE_PROVIDER_PAYMENT,
+  UPDATE_PROVIDER_PAYMENT,
+} from '../dashboard/queries.gql';
 import { useMutation } from '@apollo/client';
 import { useQuery } from '@apollo/client';
 import { GET_PROVIDER_PAYMENT } from '../dashboard/queries.gql';
-// import UseAuth from '@/lib/UseAuth';
+import { useRouter } from 'next/router';
+import { useState } from 'react';
+import UseAuth from '@/lib/UseAuth';
 
 const schema = yup.object().shape({
   dueAt: yup.date().required('La fecha es requerida'),
@@ -25,36 +29,73 @@ const initialValues = {
   concept: '',
 };
 
-// const { user } = UseAuth();
-const id = '21c2df5c-0ccb-4449-97a3-ef91366ac282';
-
 const InvoiceForm = () => {
+  const [updateProviderPayment, providerPayments] = useMutation(UPDATE_PROVIDER_PAYMENT);
+  const [createProviderPayment, createProviderPayments] = useMutation(
+    CREATE_PROVIDER_PAYMENT,
+  );
+  const { user } = UseAuth();
+  const { id } = useRouter().query;
+  const [selectedImage, setSelectedImage] = useState<any>(null);
   const { data, loading, error } = useQuery(GET_PROVIDER_PAYMENT, {
     variables: {
       id,
     },
   });
-  console.log('data', data?.providerPayment);
   const providerGetValue = {
     ...data?.providerPayment,
     dueAt: data?.providerPayment?.dueAt?.toString().split('T')[0],
   };
-  const { values, errors, touched, handleSubmit, setFieldValue } = useFormik({
-    initialValues: providerGetValue || initialValues,
-    validationSchema: schema,
-    onSubmit: async (variables, { resetForm }) => {
-      console.log('variables', variables);
-      resetForm();
-    },
-  });
-
-  const [updateUser, User] = useMutation(UPDATE_USER_AVATAR, {
-    refetchQueries: [IS_LOGGED],
-  });
+  const { values, errors, touched, handleSubmit, setFieldValue, handleChange } =
+    useFormik({
+      initialValues: providerGetValue || initialValues,
+      validationSchema: schema,
+      onSubmit: async (variables, { resetForm }) => {
+        if (id === 'new') {
+          await createProviderPayment({
+            variables: {
+              // @ts-ignore: Unreachable code error
+              ...variables,
+              // @ts-ignore: Unreachable code error
+              providerId: user.id,
+              amountWithTax: variables.amountWithTax.toString(),
+              image: selectedImage,
+              dueAt: new Date(variables.dueAt).toISOString(),
+            },
+          });
+          if (createProviderPayments.called && !createProviderPayments.error) {
+            console.log('error');
+          }
+        } else {
+          await updateProviderPayment({
+            variables: {
+              id,
+              // @ts-ignore: Unreachable code error
+              ...variables,
+              // @ts-ignore: Unreachable code error
+              amountWithTax: variables.amountWithTax.toString(),
+              image: selectedImage,
+              dueAt: new Date(variables.dueAt).toISOString(),
+            },
+          });
+          if (providerPayments.called && !providerPayments.error) {
+            console.log('error');
+          }
+        }
+        resetForm({
+          values: {
+            dueAt: new Date().toISOString().split('T')[0],
+            amountWithTax: '0',
+            concept: '',
+          },
+        });
+        setSelectedImage(null);
+      },
+    });
 
   const onDrop = useCallback(
     //@ts-ignore
-    async (acceptedFiles, i) => {
+    (acceptedFiles, i) => {
       // Do something with the files
       //@ts-ignore
       const image = acceptedFiles.map((file) =>
@@ -62,18 +103,7 @@ const InvoiceForm = () => {
           preview: URL.createObjectURL(file),
         }),
       )[0];
-
-      await updateUser({
-        variables: {
-          id,
-          // @ts-ignore: Unreachable code error
-          image,
-        },
-      });
-
-      if (User.called && !User.error) {
-        console.log('error');
-      }
+      setSelectedImage(image);
     },
     [],
   );
@@ -84,6 +114,10 @@ const InvoiceForm = () => {
     },
     onDrop,
   });
+
+  if (loading) {
+    return;
+  }
 
   return (
     <Layout>
@@ -97,8 +131,8 @@ const InvoiceForm = () => {
             typeInput="date"
             value={values.dueAt}
             error={errors.dueAt}
+            onChange={handleChange}
           />
-
           <Input
             placeholder="Monto a pagar con IVA"
             name="amountWithTax"
@@ -106,6 +140,7 @@ const InvoiceForm = () => {
             typeInput="number"
             value={values.amountWithTax}
             error={errors.amountWithTax}
+            onChange={handleChange}
           />
           <Input
             placeholder="concepto de factura"
@@ -114,9 +149,9 @@ const InvoiceForm = () => {
             typeInput="Text"
             value={values.concept}
             error={errors.concept}
+            onChange={handleChange}
           />
           <Drop dz={{ getInputProps, getRootProps, loading }} />
-
           <Button title={'Agregar Factura'} />
         </form>
       </div>

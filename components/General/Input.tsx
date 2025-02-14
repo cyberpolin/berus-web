@@ -16,8 +16,8 @@ const Input = ({
   name?: string;
   id?: string;
   value?: string;
-  onChange?: () => void;
-  error?: string;
+  onChange?: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>;
+  error?: any;
 }) => (
   <div className="w-full">
     <input
