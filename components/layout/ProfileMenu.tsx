@@ -1,15 +1,12 @@
 import { useMutation } from '@apollo/client';
 import { useRouter } from 'next/router';
-import React, { useCallback, useEffect, useState } from 'react';
-import { useDropzone } from 'react-dropzone';
+import React, { useState } from 'react';
 import { UPDATE_USER } from '../../pages/admin/adminQueries.gql';
 import { IS_LOGGED } from '../../pages/login/queries.gql';
-import useUI from '@/lib/hooks/useUI';
 import Drop from './Drop';
 
 //@ts-ignore
 const ProfileMenu = ({ user }) => {
-  const ui = useUI();
   const router = useRouter();
   const [force, setForce] = useState(false);
 
@@ -19,38 +16,15 @@ const ProfileMenu = ({ user }) => {
     refetchQueries: [IS_LOGGED],
   });
 
-  //@ts-ignore
-  const onDrop = useCallback(
-    //@ts-ignore
-    async (acceptedFiles, i) => {
-      // Do something with the files
-      //@ts-ignore
-      const image = acceptedFiles.map((file) =>
-        Object.assign(file, {
-          preview: URL.createObjectURL(file),
-        }),
-      )[0];
-
-      await updateUser({
-        variables: {
-          id,
-          // @ts-ignore: Unreachable code error
-          image,
-        },
-      });
-
-      if (called && !error) {
-        setForce(false);
-      }
-    },
-    [force],
-  );
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    accept: {
-      'image/png': ['.png', '.pdf', '.jpeg', '.jpg'],
-    },
-    onDrop,
-  });
+  const updateUserRFC = async (image: any) => {
+    await updateUser({
+      variables: {
+        id,
+        // @ts-ignore: Unreachable code error
+        image: image,
+      },
+    });
+  };
 
   return (
     <div>
@@ -112,7 +86,7 @@ const ProfileMenu = ({ user }) => {
                 <b>situación fiscal</b>. .
               </p>
             )}
-            <Drop dz={{ getInputProps, getRootProps, loading }} />
+            <Drop loading={loading} cb={updateUserRFC} />
           </>
         )}
       </div>

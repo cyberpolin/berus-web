@@ -4,8 +4,6 @@ import Drop from '@/components/layout/Drop';
 import Layout from '@/components/layout/NLayout';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
-import { useDropzone } from 'react-dropzone';
-import { useCallback } from 'react';
 import {
   CREATE_PROVIDER_PAYMENT,
   UPDATE_PROVIDER_PAYMENT,
@@ -97,28 +95,6 @@ const InvoiceForm = () => {
       },
     });
 
-  const onDrop = useCallback(
-    //@ts-ignore
-    (acceptedFiles, i) => {
-      // Do something with the files
-      //@ts-ignore
-      const image = acceptedFiles.map((file) =>
-        Object.assign(file, {
-          preview: URL.createObjectURL(file),
-        }),
-      )[0];
-      setSelectedImage(image);
-    },
-    [],
-  );
-
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    accept: {
-      'image/png': ['.png', '.jpeg', '.jpg'],
-    },
-    onDrop,
-  });
-
   if (loading) {
     return <h1>Loading...</h1>;
   }
@@ -155,7 +131,7 @@ const InvoiceForm = () => {
             error={errors.concept}
             onChange={handleChange}
           />
-          <Drop dz={{ getInputProps, getRootProps, loading: dropLaoding }} />
+          <Drop cb={setSelectedImage} loading={dropLaoding} />
           <Button title={'Agregar Factura'} />
         </form>
       </div>

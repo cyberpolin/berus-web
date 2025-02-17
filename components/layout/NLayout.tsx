@@ -7,7 +7,6 @@ import useUI from '@/lib/hooks/useUI';
 import { useRouter } from 'next/router';
 import DropdownMenu from '../DropdownMenu';
 import Avatar from '../Avatar';
-import { useDropzone } from 'react-dropzone';
 import { useMutation } from '@apollo/client';
 import { IS_LOGGED } from '../../pages/login/queries.gql';
 import ProfileMenu from './ProfileMenu';
@@ -30,40 +29,17 @@ const NLayout = (props: any) => {
     refetchQueries: [IS_LOGGED],
   });
 
-  const onDrop = useCallback(
-    //@ts-ignore
-    async (acceptedFiles, i) => {
-      // Do something with the files
-      //@ts-ignore
-      const image = acceptedFiles.map((file) =>
-        Object.assign(file, {
-          preview: URL.createObjectURL(file),
-        }),
-      )[0];
-
-      await updateUser({
-        variables: {
-          id,
-          // @ts-ignore: Unreachable code error
-          image,
-        },
-      });
-
-      if (called && !error) {
-        console.log('error');
-      }
-    },
-    [],
-  );
+  const updateUserAvatar = async (image: any) => {
+    await updateUser({
+      variables: {
+        id,
+        // @ts-ignore: Unreachable code error
+        image: image,
+      },
+    });
+  };
   const [uploadAvatar, setUploadAvatar] = useState(false);
   const [uploadRFC, setUploadRFC] = useState(false);
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    accept: {
-      'image/png': ['.png', '.jpeg', '.jpg'],
-    },
-    onDrop,
-  });
-
   const InfoTag = ({ info, count }: { info: string; count?: number }) => {
     return (
       <Link className="text-gray-500 hover:bg-gray-100" href="">
@@ -164,10 +140,7 @@ const NLayout = (props: any) => {
                 </div>
                 {uploadAvatar && (
                   <div className=" mb-2">
-                    <Drop
-                      dz={{ getInputProps, getRootProps, loading }}
-                      typeOfDoc={true}
-                    />
+                    <Drop typeOfDoc={true} loading={loading} cb={updateUserAvatar} />
                   </div>
                 )}
                 {uploadRFC && (
