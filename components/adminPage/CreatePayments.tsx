@@ -1,149 +1,149 @@
-import _ from "lodash"
-import { useMutation, useQuery } from "@apollo/client"
+import _ from 'lodash';
+import { useMutation, useQuery } from '@apollo/client';
 import {
   GET_PAYMENT,
   GET_CLUSTER,
   CREATE_PAYMENTS,
-} from "../../pages/admin/adminQueries.gql"
-import Loader from "../General/Loader"
-import Link from "next/link"
-import { useRouter } from "next/router"
-import dayjs, { Dayjs } from "dayjs"
-import utc from "dayjs/plugin/utc"
+} from '../../pages/admin/adminQueries.gql';
+import Loader from '../General/Loader';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import dayjs, { Dayjs } from 'dayjs';
+import utc from 'dayjs/plugin/utc';
 
-dayjs.extend(utc)
+dayjs.extend(utc);
 
 type InitialDateProps = {
-  initialDate: string
-  finalDate: string
-}
+  initialDate: string;
+  finalDate: string;
+};
 
 type Payment = {
-  dueAt: string
-  createdAt: string
-  status: string
-}
+  dueAt: string;
+  createdAt: string;
+  status: string;
+};
 
 type Property = {
-  name: string
-  paymentsCount: number
-  payments: Payment[]
-}
+  name: string;
+  paymentsCount: number;
+  payments: Payment[];
+};
 
 const Properties = () => {
-  const clusterId = "46b02cb5-35ec-40b7-81e1-ee91203c749b" // this shouldn't be hardcoded after we implement multiple  clusters
-  const router = useRouter()
-  const { pId } = router.query
+  const clusterId = '46b02cb5-35ec-40b7-81e1-ee91203c749b'; // this shouldn't be hardcoded after we implement multiple  clusters
+  const router = useRouter();
+  const { pId } = router.query;
   const { data, loading, error } = useQuery(GET_PAYMENT, {
     variables: {
       id: pId,
     },
-  })
+  });
 
   const clusterData = useQuery(GET_CLUSTER, {
     variables: {
       id: clusterId,
     },
-  })
+  });
 
   const [createPayments] = useMutation(CREATE_PAYMENTS, {
     refetchQueries: [GET_PAYMENT],
-  })
+  });
 
   const getDatesAry = (initialDate: string, finalDate: string) => {
-    const initial = dayjs(initialDate)
-    const final = dayjs(finalDate)
-    const diff = final.diff(initial, "month") + 1
+    const initial = dayjs(initialDate);
+    const final = dayjs(finalDate);
+    const diff = final.diff(initial, 'month') + 1;
 
-    const datesAry = []
+    const datesAry = [];
     for (let i = 0; i < diff; i++) {
-      datesAry.push(initial.add(i, "month").add(4, "day"))
+      datesAry.push(initial.add(i, 'month').add(4, 'day'));
     }
-    return _.orderBy(datesAry, (d) => d.month(), ["asc"])
-  }
+    return _.orderBy(datesAry, (d) => d.month(), ['asc']);
+  };
 
   const getPaymentsDates = () => {
     return _.orderBy(
       data?.property?.payments?.map(
         (p: Payment) => dayjs(p.dueAt),
         (d: Dayjs) => d.month(),
-        ["asc"]
-      )
-    )
-  }
+        ['asc'],
+      ),
+    );
+  };
 
   const getMissingPayments = (datesAry: Dayjs[], paymentsDates: Dayjs[]) => {
     const result = datesAry.filter((d: Dayjs) => {
       const isIncluded = paymentsDates?.map((p: Dayjs) => {
-        return p.month() === d.month()
-      })
+        return p.month() === d.month();
+      });
 
       if (isIncluded.includes(true)) {
-        return false
+        return false;
       }
-      return true
-    })
-    return result
-  }
+      return true;
+    });
+    return result;
+  };
 
   const generatePayments = () => {
-    const initialDate = clusterData.data.cluster.initialDate
-    const finalDate = dayjs().utc().format()
+    const initialDate = clusterData.data.cluster.initialDate;
+    const finalDate = dayjs().utc().format();
 
-    const datesAry = getDatesAry(initialDate, finalDate)
+    const datesAry = getDatesAry(initialDate, finalDate);
     //@ts-ignore
-    const paymentsDates = getPaymentsDates(data?.property?.payments)
+    const paymentsDates = getPaymentsDates(data?.property?.payments);
 
-    const missingPayments = getMissingPayments(datesAry, paymentsDates)
+    const missingPayments = getMissingPayments(datesAry, paymentsDates);
 
     const paymentObj = {
       property: {
         connect: { id: pId },
       },
-    }
+    };
 
     const data = missingPayments.map((m) => {
-      const dueAt = m.utc().format()
-      const createdAt = dueAt
-      const status = "onTime"
+      const dueAt = m.utc().format();
+      const createdAt = dueAt;
+      const status = 'onTime';
       return {
         ...paymentObj,
         dueAt,
         createdAt,
         status,
-      }
-    })
-    createPayments({ variables: { data } })
-  }
+      };
+    });
+    createPayments({ variables: { data } });
+  };
 
   const getPaymentsErrors = () => {
-    const initialDate = clusterData.data.cluster.initialDate
+    const initialDate = clusterData.data.cluster.initialDate;
 
-    const finalDate = dayjs().utc().format()
-    const datesAry = getDatesAry(initialDate, finalDate)
-    const paymentsDates = getPaymentsDates()
+    const finalDate = dayjs().utc().format();
+    const datesAry = getDatesAry(initialDate, finalDate);
+    const paymentsDates = getPaymentsDates();
 
     const isRepeated = (paymentsDates: Dayjs[]) => {
-      const repeated = []
+      const repeated = [];
       paymentsDates.map((p, i) => {
         if (p.month() === paymentsDates[i + 1]?.month()) {
-          repeated.push(p)
+          repeated.push(p);
         }
-      })
-      return repeated.length > 0
-    }
+      });
+      return repeated.length > 0;
+    };
 
     if (isRepeated(paymentsDates)) {
-      return true
+      return true;
     }
-  }
+  };
 
   if (error || loading) {
-    return <Loader error={error} loading={loading} />
+    return <Loader error={error} loading={loading} />;
   }
   if (data) {
-    const hasError = getPaymentsErrors()
-    const { property } = data
+    const hasError = getPaymentsErrors();
+    const { property } = data;
 
     return (
       <div className="relative mt-8 overflow-x-auto shadow-md sm:rounded-lg">
@@ -194,10 +194,10 @@ const Properties = () => {
           </tbody>
         </table>
       </div>
-    )
+    );
   }
 
-  return <></>
-}
+  return <></>;
+};
 
-export default Properties
+export default Properties;

@@ -1,4 +1,4 @@
-import Link from "next/link"
+import Link from 'next/link';
 
 const DataTable = ({ headers, data }) => {
   return (
@@ -14,8 +14,7 @@ const DataTable = ({ headers, data }) => {
       </thead>
       <tbody>
         {data.map(({ id, name, description, needsAproval, reserve }, i) => {
-          const bg =
-            i % 2 ? "bg-gray-50 dark:bg-gray-900" : "bg-white dark:bg-gray-800"
+          const bg = i % 2 ? 'bg-gray-50 dark:bg-gray-900' : 'bg-white dark:bg-gray-800';
           return (
             <tr
               key={i}
@@ -46,11 +45,11 @@ const DataTable = ({ headers, data }) => {
                 </a>
               </td>
             </tr>
-          )
+          );
         })}
       </tbody>
     </table>
-  )
-}
+  );
+};
 
-export default DataTable
+export default DataTable;

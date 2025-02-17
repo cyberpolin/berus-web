@@ -1,5 +1,5 @@
-import { useQuery } from "@apollo/client";
-import { IS_LOGGED } from "../pages/login/queries.gql";
+import { useQuery } from '@apollo/client';
+import { IS_LOGGED } from '../pages/login/queries.gql';
 
 const Ami = () => {
   const isLogged = useQuery(IS_LOGGED);

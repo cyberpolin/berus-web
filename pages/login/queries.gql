@@ -45,6 +45,9 @@ query IS_LOGGED {
       rfc {
         publicUrl
       }
+      avatar {
+        publicUrl
+      }
     }
   }
 }

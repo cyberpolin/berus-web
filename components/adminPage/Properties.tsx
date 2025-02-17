@@ -1,24 +1,24 @@
-import _ from "lodash"
-import { useQuery } from "@apollo/client"
-import { GET_PROPERTIES } from "../../pages/admin/adminQueries.gql"
-import Loader from "../General/Loader"
-import Link from "next/link"
-import { parse } from "path"
+import _ from 'lodash';
+import { useQuery } from '@apollo/client';
+import { GET_PROPERTIES } from '../../pages/admin/adminQueries.gql';
+import Loader from '../General/Loader';
+import Link from 'next/link';
+import { parse } from 'path';
 
 const Properties = () => {
-  const { data, loading, error } = useQuery(GET_PROPERTIES)
+  const { data, loading, error } = useQuery(GET_PROPERTIES);
 
   if (error || loading) {
-    return <Loader error={error} loading={loading} />
+    return <Loader error={error} loading={loading} />;
   }
 
   if (data) {
-    const { properties } = data
+    const { properties } = data;
     const orderedProperties = _.orderBy(
       properties,
       [({ square }) => parseInt(square), ({ lot }) => parseInt(lot)],
-      ["asc"]
-    )
+      ['asc'],
+    );
 
     return (
       <div className="relative mt-8 overflow-x-auto shadow-md sm:rounded-lg">
@@ -62,15 +62,15 @@ const Properties = () => {
                     <h2>opciones</h2>
                   </td>
                 </tr>
-              )
+              );
             })}
           </tbody>
         </table>
       </div>
-    )
+    );
   }
 
-  return <></>
-}
+  return <></>;
+};
 
-export default Properties
+export default Properties;

@@ -1,8 +1,8 @@
-import Field from "@/components/Field";
-import { Formik, Form, FieldArray } from "formik";
+import Field from '@/components/Field';
+import { Formik, Form, FieldArray } from 'formik';
 
-import { useEffect, useState } from "react";
-import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
+import { useEffect, useState } from 'react';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import {
   CREATE_USER,
   LOG_IN,
@@ -10,12 +10,12 @@ import {
   GENERATE_PAYMENTS,
   USER_EXISTS,
   IS_USER,
-} from "./queries.gql"
+} from './queries.gql';
 
-import { createUser, addProperties, makePayment } from "../schema"
-import Button from "@/components/Button"
-import Layout from "@/components/layout/login"
-import Link from "next/link"
+import { createUser, addProperties, makePayment } from '../schema';
+import Button from '@/components/Button';
+import Layout from '@/components/layout/login';
+import Link from 'next/link';
 
 // @ts-ignore: Unreachable code error
 const CreateUser = ({ goNext, goBack, data, final, haveUser, loading }) => {
@@ -25,7 +25,7 @@ const CreateUser = ({ goNext, goBack, data, final, haveUser, loading }) => {
       validationSchema={createUser}
       onSubmit={(props) => {
         if (!final) {
-          goNext(props)
+          goNext(props);
         }
       }}
     >
@@ -33,19 +33,15 @@ const CreateUser = ({ goNext, goBack, data, final, haveUser, loading }) => {
         <Form>
           <h3>Hola!</h3>
           <p>
-            Si eres residente de Cumbres 7 en Altozano Tabasco, llegaste al
-            lugar indicado para llevar un seguimiento de tus pagos y un
-            historial de los mismos.
+            Si eres residente de Cumbres 7 en Altozano Tabasco, llegaste al lugar indicado
+            para llevar un seguimiento de tus pagos y un historial de los mismos.
           </p>
-          <p>
-            Manten tus aportaciones al día y sigue recibiendo todos los
-            servicios
-          </p>
+          <p>Manten tus aportaciones al día y sigue recibiendo todos los servicios</p>
 
           <h4>1. Crear un usuario</h4>
           <p>
-            Para poder relacionar tus propiedades crea un usuario, por favor usa
-            el celular que tienes en whats app.
+            Para poder relacionar tus propiedades crea un usuario, por favor usa el
+            celular que tienes en whats app.
           </p>
 
           <Field
@@ -65,7 +61,7 @@ const CreateUser = ({ goNext, goBack, data, final, haveUser, loading }) => {
             errors={
               haveUser
                 ? {
-                    email: "Es posible que que éste correo ya haya sido usado.",
+                    email: 'Es posible que que éste correo ya haya sido usado.',
                   }
                 : { ...formik.errors }
             }
@@ -79,8 +75,7 @@ const CreateUser = ({ goNext, goBack, data, final, haveUser, loading }) => {
             errors={
               haveUser
                 ? {
-                    phone:
-                      "Es posible que que éste telefono ya haya sido usado.",
+                    phone: 'Es posible que que éste telefono ya haya sido usado.',
                   }
                 : { ...formik.errors }
             }
@@ -96,15 +91,15 @@ const CreateUser = ({ goNext, goBack, data, final, haveUser, loading }) => {
           {haveUser ? (
             <>
               <p>
-                {" "}
-                Al parecer este usuario ya existe, por favor{" "}
+                {' '}
+                Al parecer este usuario ya existe, por favor{' '}
                 <Link
                   className="font-medium text-teal-700 hover:text-teal-800 hover:underline"
                   href="/login"
                 >
                   ingrese con su usuario y contraseña
-                </Link>{" "}
-                o si olvido su contraseña{" "}
+                </Link>{' '}
+                o si olvido su contraseña{' '}
                 <Link
                   className="font-medium text-teal-700 hover:text-teal-800 hover:underline"
                   href="/login/recovery"
@@ -112,10 +107,7 @@ const CreateUser = ({ goNext, goBack, data, final, haveUser, loading }) => {
                   recuperela aqui.
                 </Link>
               </p>
-              <p>
-                {" "}
-                Si piensa que hay un error, contacte al administrador por favor
-              </p>
+              <p> Si piensa que hay un error, contacte al administrador por favor</p>
 
               <p>O simplemente intente con otro correo y/o celular...</p>
               <Button loading={loading} title="Intentar de nuevo" />
@@ -126,38 +118,38 @@ const CreateUser = ({ goNext, goBack, data, final, haveUser, loading }) => {
         </Form>
       )}
     </Formik>
-  )
-}
+  );
+};
 
 // @ts-ignore: Unreachable code error
 const AddProperties = ({ goNext, data, final }) => {
-  const [signUpMutation, signUpMutationData] = useMutation(CREATE_USER)
+  const [signUpMutation, signUpMutationData] = useMutation(CREATE_USER);
   const [loginMutation, loginMutationData] = useMutation(LOG_IN, {
     refetchQueries: [{ query: IS_LOGGED }, { query: GENERATE_PAYMENTS }],
-  })
+  });
 
   return (
     <div>
       <Formik
-        initialValues={{ ...data, properties: [{ lot: "", square: "" }] }}
+        initialValues={{ ...data, properties: [{ lot: '', square: '' }] }}
         initialErrors={{
-          properties: [{ lot: "required", square: "required" }],
+          properties: [{ lot: 'required', square: 'required' }],
         }}
         validationSchema={addProperties}
         onSubmit={async (props) => {
           if (!final) {
-            goNext(props)
+            goNext(props);
           }
           try {
-            const creation = await signUpMutation({ variables: props })
+            const creation = await signUpMutation({ variables: props });
 
             if (creation.data.createUser) {
               loginMutation({
                 variables: { email: props.email, password: props.password },
-              })
+              });
             }
           } catch (error) {
-            console.log("error ", error)
+            console.log('error ', error);
           }
         }}
       >
@@ -176,7 +168,7 @@ const AddProperties = ({ goNext, data, final }) => {
                     formik?.values.properties.map((property, index) => {
                       const {
                         errors: { properties: errors },
-                      } = arrayProps.form
+                      } = arrayProps.form;
                       return (
                         <div key={index} className="m-4 mb-8">
                           {/*  @ts-ignore */}
@@ -216,7 +208,7 @@ const AddProperties = ({ goNext, data, final }) => {
                             {
                               // @ts-ignore: Unreachable code error
                               [...Array(25).keys()].map((i) => (
-                                <option key={i} value={i ? i : ""}>
+                                <option key={i} value={i ? i : ''}>
                                   {i}
                                 </option>
                               ))
@@ -241,15 +233,12 @@ const AddProperties = ({ goNext, data, final }) => {
                               // @ts-ignore: Unreachable code error
                               !arrayProps.form.errors.properties?.[index] ? (
                                 <Button
-                                  onClick={() =>
-                                    arrayProps.push({ lot: "", square: "" })
-                                  }
+                                  onClick={() => arrayProps.push({ lot: '', square: '' })}
                                   title="Agregar propiedad"
                                 />
                               ) : (
                                 index !== 0 &&
-                                index ===
-                                  formik.values.properties.length - 1 && (
+                                index === formik.values.properties.length - 1 && (
                                   <Button
                                     title="Quitar propiedad"
                                     onClick={() => arrayProps.pop()}
@@ -259,7 +248,7 @@ const AddProperties = ({ goNext, data, final }) => {
                             }
                           </div>
                         </div>
-                      )
+                      );
                     })}
 
                   <Button title="Hacer el primer pago" />
@@ -270,8 +259,8 @@ const AddProperties = ({ goNext, data, final }) => {
         )}
       </Formik>
     </div>
-  )
-}
+  );
+};
 
 // @ts-ignore: Unreachable code error
 const MakePayment = ({ goNext, data, final }) => (
@@ -280,9 +269,9 @@ const MakePayment = ({ goNext, data, final }) => (
     validationSchema={makePayment}
     onSubmit={(props) => {
       if (!final) {
-        goNext(props)
+        goNext(props);
       } else {
-        console.log("submit", data)
+        console.log('submit', data);
       }
     }}
   >
@@ -291,50 +280,47 @@ const MakePayment = ({ goNext, data, final }) => (
         <div className="row">
           <h4>3. Haga su primer pago</h4>
 
-          <p>
-            Si ya ha agregado al menos una propiedad podrá hacer su primer
-            pago...
-          </p>
+          <p>Si ya ha agregado al menos una propiedad podrá hacer su primer pago...</p>
 
           <Button title="Hacer mi primer pagos" />
         </div>
       </Form>
     )}
   </Formik>
-)
+);
 
 const SignUp = () => {
-  const [isLoading, setIsLoading] = useState(false)
-  const [currentStep, setStep] = useState(0)
-  const [userExist, setUserExist] = useState(false)
+  const [isLoading, setIsLoading] = useState(false);
+  const [currentStep, setStep] = useState(0);
+  const [userExist, setUserExist] = useState(false);
 
-  const [form, setData] = useState({})
+  const [form, setData] = useState({});
 
-  const [userExists, { error, data, loading, called }] = useLazyQuery(IS_USER)
+  const [userExists, { error, data, loading, called }] = useLazyQuery(IS_USER);
 
   const goBack = () => {
     if (currentStep >= 1) {
-      setStep(currentStep - 1)
+      setStep(currentStep - 1);
     }
-  }
-  var haveUser = null
+  };
+  var haveUser = null;
   // @ts-ignore: Unreachable code error
   const goNext = async (props) => {
-    const { email, phone } = props
+    const { email, phone } = props;
     haveUser = await userExists({
       variables: {
         email,
         phone,
       },
-    })
+    });
 
-    setUserExist(haveUser.data?.isUser)
+    setUserExist(haveUser.data?.isUser);
     if (haveUser.data?.isUser === false) {
-      setData({ ...form, ...props })
-      setStep(currentStep + 1)
-      return
+      setData({ ...form, ...props });
+      setStep(currentStep + 1);
+      return;
     }
-  }
+  };
 
   const steps = [
     // @ts-ignore: Unreachable code error
@@ -347,18 +333,12 @@ const SignUp = () => {
       haveUser={userExist}
     />,
     <AddProperties key={2} goNext={goNext} data={form} final={true} />,
-  ]
+  ];
 
-  const SVG = ({
-    currentStep,
-    thisStep,
-  }: {
-    currentStep: number
-    thisStep: number
-  }) => {
+  const SVG = ({ currentStep, thisStep }: { currentStep: number; thisStep: number }) => {
     if (currentStep >= thisStep) {
       return (
-        <div className="z-10 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-teal-900 ring-0 ring-white dark:bg-blue-900 dark:ring-gray-900 sm:ring-8">
+        <div className="z-10 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-teal-900 ring-0 ring-white sm:ring-8 dark:bg-blue-900 dark:ring-gray-900">
           <svg
             aria-hidden="true"
             className="h-4 w-4 text-blue-100 dark:text-blue-300"
@@ -373,10 +353,10 @@ const SignUp = () => {
             ></path>
           </svg>
         </div>
-      )
+      );
     }
     return (
-      <div className="z-10 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-gray-200 ring-0 ring-white dark:bg-gray-700 dark:ring-gray-900 sm:ring-8">
+      <div className="z-10 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-gray-200 ring-0 ring-white sm:ring-8 dark:bg-gray-700 dark:ring-gray-900">
         <svg
           aria-hidden="true"
           className="h-3 w-3 text-gray-800 dark:text-gray-300"
@@ -391,8 +371,8 @@ const SignUp = () => {
           ></path>
         </svg>
       </div>
-    )
-  }
+    );
+  };
 
   return (
     // @ts-ignore: Unreachable code error
@@ -405,9 +385,7 @@ const SignUp = () => {
               <div className="flex h-0.5 w-full bg-gray-200 dark:bg-gray-700"></div>
             </div>
             <div className="mt-3">
-              <h3 className="font-medium text-gray-900 dark:text-white">
-                Paso 1
-              </h3>
+              <h3 className="font-medium text-gray-900 dark:text-white">Paso 1</h3>
             </div>
           </li>
 
@@ -416,9 +394,7 @@ const SignUp = () => {
               <SVG currentStep={currentStep + 1} thisStep={2} />
             </div>
             <div className="mt-3">
-              <h3 className="font-medium text-gray-900 dark:text-white">
-                Paso 2
-              </h3>
+              <h3 className="font-medium text-gray-900 dark:text-white">Paso 2</h3>
             </div>
           </li>
         </ol>
@@ -426,7 +402,7 @@ const SignUp = () => {
         <>{steps[currentStep]}</>
       </>
     </Layout>
-  )
-}
+  );
+};
 
 export default SignUp;

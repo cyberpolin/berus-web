@@ -1,5 +1,6 @@
 {
   "typescript.tsdk": "node_modules/typescript/lib",
   "typescript.enablePromptUseWorkspaceTsdk": true,
-  "git-blame.gitWebUrl": ""
+  "git-blame.gitWebUrl": "",
+  "prettier.enable": true
 }

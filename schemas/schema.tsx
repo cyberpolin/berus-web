@@ -1,4 +1,4 @@
-import * as yup from "yup";
+import * as yup from 'yup';
 
 const createUser = yup.object().shape({
   name: yup.string().required(),
@@ -12,10 +12,10 @@ const addProperties = yup.object().shape({
     yup
       .object()
       .shape({
-        square: yup.number().required().positive().integer().label("Manzana"),
-        lot: yup.number().required().positive().integer().label("Lote"),
+        square: yup.number().required().positive().integer().label('Manzana'),
+        lot: yup.number().required().positive().integer().label('Lote'),
       })
-      .required("Por favor elije una propiedad...")
+      .required('Por favor elije una propiedad...'),
   ),
 });
 

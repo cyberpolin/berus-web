@@ -1,9 +1,9 @@
-import { useQuery } from "@apollo/client";
-import { PAYMENT_BY_USER } from "../../pages/admin/adminQueries.gql";
-import Loader from "../General/Loader";
+import { useQuery } from '@apollo/client';
+import { PAYMENT_BY_USER } from '../../pages/admin/adminQueries.gql';
+import Loader from '../General/Loader';
 
-import { flatMap, flatten } from "lodash";
-import currency from "currency.js";
+import { flatMap, flatten } from 'lodash';
+import currency from 'currency.js';
 
 const Debt = ({ ownerId }: { ownerId: string }) => {
   const { data, error, loading } = useQuery(PAYMENT_BY_USER, {
@@ -16,10 +16,7 @@ const Debt = ({ ownerId }: { ownerId: string }) => {
   return (
     <>
       <Loader error={error} loading={loading} />
-      {data &&
-        currency(
-          flatData.reduce((a, b) => a + parseInt(b.dueAmount), 0)
-        ).format()}
+      {data && currency(flatData.reduce((a, b) => a + parseInt(b.dueAmount), 0)).format()}
     </>
   );
 };

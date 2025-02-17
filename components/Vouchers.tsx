@@ -1,22 +1,22 @@
-import { useQuery } from "@apollo/client"
-import dayjs from "dayjs"
-import "dayjs/locale/es"
-import { GET_VOUCHERS } from "../pages/dashboard/queries.gql"
+import { useQuery } from '@apollo/client';
+import dayjs from 'dayjs';
+import 'dayjs/locale/es';
+import { GET_VOUCHERS } from '../pages/dashboard/queries.gql';
 
-dayjs.locale("es")
+dayjs.locale('es');
 
 const Vouchers = ({ date }: { date: string }) => {
-  const from = dayjs(date).startOf("month").toISOString()
-  const to = dayjs(date).endOf("month").toISOString()
+  const from = dayjs(date).startOf('month').toISOString();
+  const to = dayjs(date).endOf('month').toISOString();
   const { data, loading, error } = useQuery(GET_VOUCHERS, {
     variables: {
       from,
       to,
     },
-  })
+  });
 
   if (loading) {
-    return
+    return;
   }
 
   if (data && date) {
@@ -26,23 +26,20 @@ const Vouchers = ({ date }: { date: string }) => {
           //@ts-ignore
           ({ createdAt, bankTransaction, image, notes }, i: number) => {
             return (
-              <div
-                key={i}
-                className="m-2 border-b-2 border-dotted border-slate-400 p-2"
-              >
-                <p>{dayjs(createdAt).format("DD-MMM-YYYY")}</p>
+              <div key={i} className="m-2 border-b-2 border-dotted border-slate-400 p-2">
+                <p>{dayjs(createdAt).format('DD-MMM-YYYY')}</p>
                 <a href={image.publicUrlTransformed} target="_blank">
                   Ver comprobante...
                 </a>
                 <p>{`Notas: ${notes}`}</p>
                 <p>{`Transaccion bancaria: ${bankTransaction.transactionId}`}</p>
               </div>
-            )
-          }
+            );
+          },
         )}
       </div>
-    )
+    );
   }
-}
+};
 
-export default Vouchers
+export default Vouchers;

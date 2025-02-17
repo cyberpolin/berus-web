@@ -1,5 +1,5 @@
-import { useMutation } from "@apollo/client";
-import { LOG_OUT, IS_LOGGED } from "../pages/login/queries.gql";
+import { useMutation } from '@apollo/client';
+import { LOG_OUT, IS_LOGGED } from '../pages/login/queries.gql';
 
 export default () => {
   const [logout] = useMutation(LOG_OUT, {
