@@ -46,6 +46,8 @@ const userResidents = schemaUser.concat(schemaResidents)
 const ResidentTenantsForm = () => {
   const { id } = useRouter().query
   const { user } = UseAuth()
+  const tenant = user.tenant?.properties
+  const getProperties = tenant?.[0]?.id ? tenant : user?.owner?.properties
   const [isTenants, setIsTenants] = useState(false)
   const [create_resident, create_residentProps] = useMutation(CREATE_RESIDENT)
   const [create_tenant, create_tenantProps] = useMutation(CREATE_TENANT)
@@ -65,7 +67,7 @@ const ResidentTenantsForm = () => {
     email: '',
     password: '',
     confirmPassword: '',
-    properties: user?.owner?.properties?.[0]?.id || '',
+    properties: getProperties?.[0]?.id || '',
   }
 
   const { values, errors, touched, handleSubmit, setFieldValue, handleChange } =
@@ -120,6 +122,7 @@ const ResidentTenantsForm = () => {
           </h2>
           {user.isOwner && (
             <Button
+              className={'w-24'}
               title={'Cambiar'}
               onClick={() => setIsTenants(!isTenants)}
             />
@@ -221,7 +224,7 @@ const ResidentTenantsForm = () => {
                 value={values.properties}
                 onChange={handleChange}
               >
-                {user?.owner?.properties?.map((propertie) => (
+                {getProperties?.map((propertie) => (
                   <option key={propertie.id} value={propertie.id}>
                     {propertie.name}
                   </option>

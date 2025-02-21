@@ -52,6 +52,7 @@ query IS_LOGGED {
       tenant {
         properties {
           id
+          name
           theOwner {
             user {
               id

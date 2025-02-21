@@ -160,12 +160,12 @@ query GET_PAYMENTS($id: ID!) {
 query GET_RESIDENTS_TENANTS($id: ID!) {
   user(where: { id: $id }) {
     name
+    phone
     properties {
       residents(where: { isActive: { equals: true } }) {
         id
         name
         phone
-        isActive
       }
       tenants(where: { isActive: { equals: true } }) {
         id
@@ -173,7 +173,27 @@ query GET_RESIDENTS_TENANTS($id: ID!) {
         phone
         status
         address
+        user {
+          properties {
+            residents(where: { isActive: { equals: true } }) {
+              id
+              name
+              phone
+            }
+          }
+        }
       }
+    }
+  }
+}
+
+query GET_RESIDENTS_BY_TENANT($id: ID!) {
+  property(where: { id: $id }) {
+    name
+    residents(where: { isActive: { equals: true } }) {
+      id
+      name
+      phone
     }
   }
 }
@@ -196,6 +216,7 @@ mutation CREATE_RESIDENT(
           phone: $phone
           email: $email
           password: $password
+          properties: { connect: { id: $properties } }
         }
       }
     }
@@ -240,6 +261,7 @@ mutation CREATE_TENANT(
           phone: $phone
           email: $email
           password: $password
+          properties: { connect: { id: $properties } }
         }
       }
     }
