@@ -17,7 +17,7 @@ const TableTenantsResidents = () => {
   const resident = user.resident?.properties?.[0]
   const tenantPropertyID = user.tenant?.properties?.[0]?.id
   let residestTenantsProps
-  let ownerID = user.id
+  let ownerID = user.owner?.properties?.[0]?.id
   const handleDelete = (id: string, type: string) => {
     type === 'tenants'
       ? update_tenant({ variables: { id: id, isActive: false } })
@@ -37,14 +37,10 @@ const TableTenantsResidents = () => {
       },
     })
   }
-
   const { data, loading, error } = residestTenantsProps
-
-  console.log('data', data)
   const people = tenantPropertyID
     ? { resident: data?.property?.residents }
-    : data?.user?.properties?.[0]
-  console.log('people', people)
+    : data?.property
   if (loading) {
     return
   }

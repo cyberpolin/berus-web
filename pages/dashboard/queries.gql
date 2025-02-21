@@ -158,28 +158,24 @@ query GET_PAYMENTS($id: ID!) {
 }
 
 query GET_RESIDENTS_TENANTS($id: ID!) {
-  user(where: { id: $id }) {
-    name
-    phone
-    properties {
-      residents(where: { isActive: { equals: true } }) {
-        id
-        name
-        phone
-      }
-      tenants(where: { isActive: { equals: true } }) {
-        id
-        name
-        phone
-        status
-        address
-        user {
-          properties {
-            residents(where: { isActive: { equals: true } }) {
-              id
-              name
-              phone
-            }
+  property(where: { id: $id }) {
+    residents(where: { isActive: { equals: true } }) {
+      id
+      name
+      phone
+    }
+    tenants(where: { isActive: { equals: true } }) {
+      id
+      name
+      phone
+      status
+      address
+      user {
+        properties {
+          residents(where: { isActive: { equals: true } }) {
+            id
+            name
+            phone
           }
         }
       }
