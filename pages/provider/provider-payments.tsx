@@ -26,6 +26,14 @@ const PaymentList = () => {
     <Layout>
       <div className="mx-auto flex w-full max-w-[1400px] flex-col px-4 ">
         <h2 className="font-semi-bold text-2xl">Facturas</h2>
+        {user.isAdmin && (
+          <button
+            className=" mr-2 mt-3 w-44 rounded bg-emerald-700 px-3 py-1 text-white hover:bg-green-500"
+            onClick={() => router.push(`/provider/create-provider`)}
+          >
+            Agregar proveedor
+          </button>
+        )}
         <div className="mt-4 overflow-x-scroll">
           <table className="min-w-full divide-y divide-gray-200 ">
             <thead className="bg-gray-50">

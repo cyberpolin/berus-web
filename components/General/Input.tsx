@@ -1,10 +1,9 @@
-import { error } from 'console';
-
 const Input = ({
   extraStyles,
   typeInput,
   placeholder,
   name,
+  label,
   id,
   value,
   onChange,
@@ -14,12 +13,16 @@ const Input = ({
   typeInput?: string;
   placeholder?: string;
   name?: string;
+  label?: string;
   id?: string;
   value?: string;
   onChange?: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>;
   error?: any;
 }) => (
   <div className="w-full">
+    <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-300">
+      {label ? label : name}
+    </label>
     <input
       className={`${extraStyles} h-10 w-full`}
       title={placeholder}
@@ -29,7 +32,7 @@ const Input = ({
       value={value}
       onChange={onChange}
     />
-    {error && <span>{error}</span>}
+    {error && <span className="text-sm text-red-400">{error}</span>}
   </div>
 );
 

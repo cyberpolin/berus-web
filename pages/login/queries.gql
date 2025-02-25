@@ -106,6 +106,7 @@ mutation CREATE_USER(
   $email: String!
   $password: String!
   $properties: [PropertyCreateInput!]
+  $isProvider: Boolean
 ) {
   createUser(
     data: {
@@ -113,7 +114,27 @@ mutation CREATE_USER(
       phone: $phone
       email: $email
       password: $password
+      isProvider: $isProvider
       properties: { create: $properties }
+    }
+  ) {
+    name
+  }
+}
+mutation CREATE_PROVIDER(
+  $name: String!
+  $phone: String!
+  $email: String!
+  $password: String!
+  $isProvider: Boolean
+) {
+  createUser(
+    data: {
+      name: $name
+      phone: $phone
+      email: $email
+      password: $password
+      isProvider: $isProvider
     }
   ) {
     name
