@@ -40,6 +40,7 @@ query IS_LOGGED {
       id
       isAdmin
       isProvider
+      isOwner
       needsBill
       name
       isVerified
@@ -48,6 +49,33 @@ query IS_LOGGED {
       }
       avatar {
         publicUrl
+      }
+      tenant {
+        properties {
+          id
+          name
+          theOwner {
+            user {
+              id
+            }
+          }
+        }
+      }
+      resident {
+        properties {
+          id
+          theOwner {
+            user {
+              id
+            }
+          }
+        }
+      }
+      owner {
+        properties {
+          name
+          id
+        }
       }
     }
   }
