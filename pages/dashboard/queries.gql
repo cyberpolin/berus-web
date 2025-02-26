@@ -149,6 +149,11 @@ query GET_PROVIDERS_PAYMENTS($id: ID) {
     image {
       publicUrl
     }
+    bill {
+      factura {
+        publicUrl
+      }
+    }
   }
 }
 query GET_PROVIDER_PAYMENT($id: ID!) {
@@ -186,6 +191,27 @@ mutation UPDATE_PROVIDER_PAYMENT(
     image {
       publicUrl
     }
+  }
+}
+
+mutation UPDATE_PROVIDER_PAYMENT_BILL($id: ID!, $image: Upload) {
+  updateProviderPayment(
+    where: { id: $id }
+    data: {
+      bill: { create: { factura: $image, paymentProvider: { connect: { id: $id } } } }
+    }
+  ) {
+    bill {
+      factura {
+        publicUrl
+      }
+    }
+  }
+}
+
+mutation UPDATE_PROVIDER_PAYMENT_STATUS($id: ID!, $status: ProviderPaymentStatusType) {
+  updateProviderPayment(where: { id: $id }, data: { status: $status }) {
+    status
   }
 }
 
