@@ -70,9 +70,7 @@ const InvoiceForm = () => {
           await updateProviderPayment({
             variables: {
               id,
-              // @ts-ignore: Unreachable code error
               ...variables,
-              // @ts-ignore: Unreachable code error
               amountWithTax: variables.amountWithTax.toString(),
               image: selectedImage,
               dueAt: new Date(variables.dueAt).toISOString(),

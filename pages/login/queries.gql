@@ -172,6 +172,41 @@ mutation CREATE_PROVIDER(
   }
 }
 
+mutation UPDATE_PROVIDER(
+  $id: ID!
+  $name: String!
+  $phone: String!
+  $email: String!
+  $providerType: UserProviderTypeType
+) {
+  updateUser(
+    where: { id: $id }
+    data: { name: $name, phone: $phone, email: $email, providerType: $providerType }
+  ) {
+    name
+  }
+}
+
+query GET_PROVIDERS {
+  users(where: { isProvider: { equals: true } }) {
+    id
+    name
+    email
+    phone
+    providerType
+  }
+}
+
+query GET_PROVIDER($id: ID!) {
+  user(where: { id: $id }) {
+    id
+    name
+    email
+    phone
+    providerType
+  }
+}
+
 query GET_PAYMENTS($id: ID!) {
   user(where: { id: $id }) {
     properties {

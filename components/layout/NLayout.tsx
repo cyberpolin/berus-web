@@ -91,6 +91,7 @@ const NLayout = (props: any) => {
                 <LMenu href="/admin/tags" title="Tags" />
                 <LMenu href="/admin/facturacion" title="Facturacion" />
                 <LMenu href="/provider/provider-payments" title="pagos proveedores" />
+                <LMenu href="/provider/list-providers" title="Proveedores" />
               </>
             ) : !user.isProvider ? (
               <>

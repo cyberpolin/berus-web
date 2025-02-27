@@ -3,12 +3,19 @@ import Input from '@/components/General/Input';
 import Layout from '@/components/layout/NLayout';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
-import { CREATE_PROVIDER } from '../login/queries.gql';
+import {
+  CREATE_PROVIDER,
+  UPDATE_PROVIDER,
+  GET_PROVIDER,
+  GET_PROVIDERS,
+} from '../../login/queries.gql';
 import { useMutation } from '@apollo/client';
 import UseAuth from '@/lib/UseAuth';
 import Select from '@/components/General/Select';
+import { useRouter } from 'next/router';
+import { useQuery } from '@apollo/client';
 
-const schemaProvider = yup.object().shape({
+const schemaProviderBase = yup.object().shape({
   name: yup.string().required('Elnombre es requerido'),
   phone: yup
     .string()
@@ -16,19 +23,35 @@ const schemaProvider = yup.object().shape({
     .required('El telefono es requerido'),
   email: yup.string().email().required('El concepto es requerido'),
   providerType: yup.string().required('El tipo de proveedor es requerido'),
+});
+
+const schemaPassword = yup.object().shape({
   password: yup
     .string()
     .min(4, 'La constrase a debe tener al menos 4 caracteres')
     .required('La constrase a es requerida'),
   confirmPassword: yup
     .string()
-    .oneOf([yup.ref('password'), null], 'Las contraseñas deben coincidir')
-    .required('La confirmación de contraseña es requerida'),
+    .oneOf([yup.ref('password'), null], 'Las contraseñas deben coincidir'),
 });
 
+const schemaProvider = schemaProviderBase.concat(schemaPassword);
+
 const ResidentTenantsForm = () => {
-  const { user } = UseAuth();
-  const [create_provider, { data, loading, error }] = useMutation(CREATE_PROVIDER);
+  const { id } = useRouter().query;
+  const router = useRouter();
+  const [create_provider, create_providerProps] = useMutation(CREATE_PROVIDER);
+  const [update_provider, update_providerProps] = useMutation(UPDATE_PROVIDER);
+  const { data, loading, error } = useQuery(GET_PROVIDER, {
+    variables: {
+      id,
+    },
+  });
+  const ProviderLoading =
+    id === 'new' ? create_providerProps.loading : update_providerProps.loading;
+  const providerGetValue = {
+    ...data?.user,
+  };
   const initialValuesProvider = {
     name: '',
     phone: '',
@@ -40,28 +63,41 @@ const ResidentTenantsForm = () => {
 
   const { values, errors, touched, handleSubmit, setFieldValue, handleChange } =
     useFormik({
-      initialValues: initialValuesProvider,
-      validationSchema: schemaProvider,
+      initialValues: providerGetValue || initialValuesProvider,
+      validationSchema: id === 'new' ? schemaProvider : schemaProviderBase,
       enableReinitialize: true,
       onSubmit: async (variables, { resetForm }) => {
-        await create_provider({
-          variables: {
-            name: variables.name,
-            phone: variables.phone,
-            email: variables.email,
-            password: variables.password,
-            isProvider: true,
-            providerType: variables.providerType,
-          },
-        });
-        if (error) {
-          console.log('error', error);
+        if (id === 'new') {
+          await create_provider({
+            variables: {
+              name: variables.name,
+              phone: variables.phone,
+              email: variables.email,
+              password: variables.password,
+              isProvider: true,
+              providerType: variables.providerType,
+            },
+          });
+        } else {
+          await update_provider({
+            variables: {
+              id,
+              name: variables.name,
+              phone: variables.phone,
+              email: variables.email,
+              providerType: variables.providerType,
+            },
+          });
+        }
+        if (create_providerProps.error || update_providerProps.error) {
+          console.log('error');
         }
         resetForm();
+        router.push('/provider/list-providers');
       },
     });
 
-  if (loading) {
+  if (ProviderLoading) {
     return <h1>Loading...</h1>;
   }
 
@@ -112,26 +148,29 @@ const ResidentTenantsForm = () => {
             <option value="Segurity">Seguridad</option>
             <option value="Gardener">jardinero</option>
           </Select>
-          <Input
-            placeholder="contrasenña"
-            name="password"
-            label="Contraseña"
-            id="password"
-            typeInput="password"
-            value={values.password}
-            error={errors.password}
-            onChange={handleChange}
-          />
-          <Input
-            placeholder="confirmar contrasenña"
-            name="confirmPassword"
-            label="Confirmar Contraseña"
-            id="confirmPassword"
-            typeInput="password"
-            value={values.confirmPassword}
-            error={errors.confirmPassword}
-            onChange={handleChange}
-          />
+          {id === 'new' && (
+            <>
+              <Input
+                placeholder="contrase;a"
+                name="password"
+                label="Contrasena"
+                id="password"
+                typeInput="password"
+                value={values.password}
+                error={errors.password}
+                onChange={handleChange}
+              />
+              <Input
+                placeholder="confirmar contrase;a"
+                name="confirmPassword"
+                label="Confirmar contrase;a"
+                id="confirmPassword"
+                typeInput="password"
+                value={values.confirmPassword}
+                error={errors.confirmPassword}
+              />
+            </>
+          )}
           <Button title="Agregar" type="submit" />
         </form>
       </div>

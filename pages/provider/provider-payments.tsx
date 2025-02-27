@@ -27,6 +27,9 @@ const PaymentList = () => {
   const idRef = useRef('');
   const [updateBill, { loading, data, error }] = useMutation(
     UPDATE_PROVIDER_PAYMENT_BILL,
+    {
+      refetchQueries: [GET_PROVIDERS_PAYMENTS],
+    },
   );
   const [updatestatus, updatestatusProps] = useMutation(UPDATE_PROVIDER_PAYMENT_STATUS, {
     refetchQueries: [GET_PROVIDERS_PAYMENTS],
@@ -35,9 +38,11 @@ const PaymentList = () => {
   if (user.isProvider) {
     providerID = user.id;
   }
+  const [status, setStatus] = useState('onTime');
   const providersPayments = useQuery(GET_PROVIDERS_PAYMENTS, {
     variables: {
       id: providerID,
+      status,
     },
   });
 
@@ -67,21 +72,37 @@ const PaymentList = () => {
     <Layout>
       <div className="mx-auto flex w-full max-w-[1400px] flex-col px-4 ">
         <h2 className="font-semi-bold text-2xl">Facturas</h2>
-        {user.isAdmin ? (
-          <button
-            className=" mr-2 mt-3 w-44 rounded bg-emerald-700 px-3 py-1 text-white hover:bg-green-500"
-            onClick={() => router.push(`/provider/create-provider`)}
-          >
-            Agregar proveedor
-          </button>
-        ) : (
-          <button
-            className=" mr-2 mt-3 w-44 rounded bg-emerald-700 px-3 py-1 text-white hover:bg-green-500"
-            onClick={() => router.push(`/provider/new`)}
-          >
-            Agregar factura
-          </button>
-        )}
+        <div className="flex flex-row gap-5">
+          {user.isAdmin ? (
+            <button
+              className=" mr-2 mt-3 w-44 rounded bg-emerald-700 px-3 py-1 text-white hover:bg-green-500"
+              onClick={() => router.push(`/provider/create-provider/new`)}
+            >
+              Agregar proveedor
+            </button>
+          ) : (
+            <button
+              className=" mr-2 mt-3 w-44 rounded bg-emerald-700 px-3 py-1 text-white hover:bg-green-500"
+              onClick={() => router.push(`/provider/new`)}
+            >
+              Agregar factura
+            </button>
+          )}
+          <div className="mt-4 flex justify-center">
+            <select
+              className="mx-2 rounded bg-gray-100 px-2 py-1"
+              value={status}
+              onChange={(e) => setStatus(e.target.value)}
+            >
+              {statusEnum.map((status) => (
+                <option value={status.value} key={status.value}>
+                  {status.label}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
         <div className="mt-4 overflow-x-scroll">
           <table className="min-w-full divide-y divide-gray-200 ">
             <thead className="bg-gray-50">
@@ -142,9 +163,15 @@ const PaymentList = () => {
               {providersPayments?.data.providerPayments.map((payment) => (
                 <tr key={payment.id} className="hover:bg-gray-500">
                   <td className="px-6 py-4">
-                    <a href={payment?.image?.publicUrl} target="_blank">
-                      <img alt={'payment'} className="center  w-16" src="/pdfIcon.png" />
-                    </a>
+                    {payment?.image?.publicUrl && (
+                      <a href={payment?.image?.publicUrl} target="_blank">
+                        <img
+                          alt={'payment'}
+                          className="center  w-16"
+                          src="/pdfIcon.png"
+                        />
+                      </a>
+                    )}
                   </td>
                   <td className="px-6 py-4">
                     {new Date(payment.dueAt).toLocaleDateString()}
@@ -161,7 +188,14 @@ const PaymentList = () => {
                       {user.isAdmin ? (
                         <span
                           className="w-28 rounded px-3 py-1 text-center text-red-400 hover:bg-gray-200"
-                          onClick={() => updateStatus(payment.id)}
+                          onClick={() => {
+                            const confirmReject = window.confirm(
+                              'Estas seguro de rechazar este cargo?',
+                            );
+                            if (confirmReject) {
+                              updateStatus(payment.id);
+                            }
+                          }}
                         >
                           Rechazar
                         </span>

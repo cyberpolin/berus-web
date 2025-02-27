@@ -155,8 +155,10 @@ query GET_PAYMENTS($id: ID!) {
     }
   }
 }
-query GET_PROVIDERS_PAYMENTS($id: ID) {
-  providerPayments(where: { provider: { id: { equals: $id } } }) {
+query GET_PROVIDERS_PAYMENTS($id: ID, $status: ProviderPaymentStatusType) {
+  providerPayments(
+    where: { provider: { id: { equals: $id } }, status: { equals: $status } }
+  ) {
     id
     status
     dueAt
