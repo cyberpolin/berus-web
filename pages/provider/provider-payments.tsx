@@ -12,6 +12,14 @@ import { useMutation } from '@apollo/client';
 import Drop from '../../components/layout/Drop';
 import { useState, useRef } from 'react';
 
+const statusEnum = [
+  { label: 'A tiempo', value: 'onTime' },
+  { label: 'Vencido', value: 'due' },
+  { label: 'Rechazado', value: 'rejected' },
+  { label: 'En revisión', value: 'pending' },
+  { label: 'Pagado', value: 'payed' },
+];
+
 const PaymentList = () => {
   const router = useRouter();
   const { user } = UseAuth();
@@ -20,7 +28,9 @@ const PaymentList = () => {
   const [updateBill, { loading, data, error }] = useMutation(
     UPDATE_PROVIDER_PAYMENT_BILL,
   );
-  const [updatestatus, updatestatusProps] = useMutation(UPDATE_PROVIDER_PAYMENT_STATUS);
+  const [updatestatus, updatestatusProps] = useMutation(UPDATE_PROVIDER_PAYMENT_STATUS, {
+    refetchQueries: [GET_PROVIDERS_PAYMENTS],
+  });
   let providerID;
   if (user.isProvider) {
     providerID = user.id;
@@ -35,7 +45,6 @@ const PaymentList = () => {
     await updateBill({
       variables: {
         id: idRef.current,
-        // @ts-ignore: Unreachable code error
         image: image,
       },
     });
@@ -58,12 +67,19 @@ const PaymentList = () => {
     <Layout>
       <div className="mx-auto flex w-full max-w-[1400px] flex-col px-4 ">
         <h2 className="font-semi-bold text-2xl">Facturas</h2>
-        {user.isAdmin && (
+        {user.isAdmin ? (
           <button
             className=" mr-2 mt-3 w-44 rounded bg-emerald-700 px-3 py-1 text-white hover:bg-green-500"
             onClick={() => router.push(`/provider/create-provider`)}
           >
             Agregar proveedor
+          </button>
+        ) : (
+          <button
+            className=" mr-2 mt-3 w-44 rounded bg-emerald-700 px-3 py-1 text-white hover:bg-green-500"
+            onClick={() => router.push(`/provider/new`)}
+          >
+            Agregar factura
           </button>
         )}
         <div className="mt-4 overflow-x-scroll">
@@ -74,7 +90,7 @@ const PaymentList = () => {
                   scope="col"
                   className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
                 >
-                  PDF
+                  Ver Documento
                 </th>
                 <th
                   scope="col"
@@ -106,17 +122,19 @@ const PaymentList = () => {
                 >
                   Acciones
                 </th>
+                {user.isAdmin && (
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
+                  >
+                    Subir comprobante
+                  </th>
+                )}
                 <th
                   scope="col"
                   className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
                 >
-                  Subir comprobante
-                </th>
-                <th
-                  scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
-                >
-                  ver comrpobante
+                  ver comprobante
                 </th>
               </tr>
             </thead>
@@ -135,21 +153,18 @@ const PaymentList = () => {
                     {currency(payment.amountWithTax).format()}
                   </td>
                   <td className="px-6 py-4">{payment.concept}</td>
-                  <td className="px-6 py-4">{payment.status}</td>
+                  <td className="whitespace-nowrap px-6 py-4">
+                    {statusEnum.find((status) => status.value === payment.status)?.label}
+                  </td>
                   <td className="px-6 py-4">
                     <div className="align-center flex flex-wrap justify-center gap-x-4">
                       {user.isAdmin ? (
-                        <>
-                          <span
-                            className="w-28 rounded px-3 py-1 text-center text-red-400 hover:bg-red-400 hover:text-white"
-                            onClick={() => updateStatus(payment.id)}
-                          >
-                            Rechazar
-                          </span>
-                          <button className="w-28 rounded bg-green-500 px-3 py-1 text-white hover:bg-green-600">
-                            Aceptar
-                          </button>
-                        </>
+                        <span
+                          className="w-28 rounded px-3 py-1 text-center text-red-400 hover:bg-gray-200"
+                          onClick={() => updateStatus(payment.id)}
+                        >
+                          Rechazar
+                        </span>
                       ) : (
                         <button
                           className="mr-2 rounded bg-emerald-500 px-3 py-1 text-white hover:bg-green-600"
@@ -160,17 +175,21 @@ const PaymentList = () => {
                       )}
                     </div>
                   </td>
-                  <td className="px-6 py-4">
-                    <span
-                      className="w-28 rounded px-3 py-1 text-center text-green-600 hover:bg-green-600 hover:text-white"
-                      onClick={() => {
-                        idRef.current = payment.id;
-                        setOpenBill(!openBill);
-                      }}
-                    >
-                      Subir recibo
-                    </span>
-                  </td>
+                  {user.isAdmin && (
+                    <td className="px-6 py-4">
+                      {payment.status === 'onTime' && (
+                        <button
+                          className="w-full rounded bg-green-500 px-3 py-1 text-white hover:bg-green-600"
+                          onClick={() => {
+                            idRef.current = payment.id;
+                            setOpenBill(!openBill);
+                          }}
+                        >
+                          Subir recibo
+                        </button>
+                      )}
+                    </td>
+                  )}
                   <td className="px-6 py-4">
                     {payment?.bill?.factura?.publicUrl && (
                       <a href={payment?.bill?.factura?.publicUrl} target="_blank">

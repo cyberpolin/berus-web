@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 
 const TypeOfDoc = ({ image }: { image?: boolean }) => {
@@ -22,6 +22,7 @@ const Drop = ({
   cb: (image: any) => void;
   typeOfDoc?: boolean;
 }) => {
+  const [isReady, setIsReady] = useState(false);
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
     // Do something with the files
     const image = acceptedFiles.map((file) =>
@@ -30,6 +31,7 @@ const Drop = ({
       }),
     )[0];
     cb(image);
+    setIsReady(true);
   }, []);
 
   const typeAccept = typeOfDoc
@@ -90,7 +92,13 @@ const Drop = ({
               ></path>
             </svg>
           )}
-          <TypeOfDoc image={typeOfDoc} />
+          {isReady ? (
+            <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+              <span className="font-semibold">Imagen cargada</span>
+            </p>
+          ) : (
+            <TypeOfDoc image={typeOfDoc} />
+          )}
         </div>
         <input id="dropzone-file" type="file" className="hidden" />
       </label>

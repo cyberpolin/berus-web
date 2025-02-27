@@ -6,6 +6,7 @@ import * as yup from 'yup';
 import { CREATE_PROVIDER } from '../login/queries.gql';
 import { useMutation } from '@apollo/client';
 import UseAuth from '@/lib/UseAuth';
+import Select from '@/components/General/Select';
 
 const schemaProvider = yup.object().shape({
   name: yup.string().required('Elnombre es requerido'),
@@ -14,6 +15,7 @@ const schemaProvider = yup.object().shape({
     .matches(/^\d{10}$/, 'El telefono debe ser de 10 digitos')
     .required('El telefono es requerido'),
   email: yup.string().email().required('El concepto es requerido'),
+  providerType: yup.string().required('El tipo de proveedor es requerido'),
   password: yup
     .string()
     .min(4, 'La constrase a debe tener al menos 4 caracteres')
@@ -31,6 +33,7 @@ const ResidentTenantsForm = () => {
     name: '',
     phone: '',
     email: '',
+    providerType: 'pool',
     password: '',
     confirmPassword: '',
   };
@@ -48,6 +51,7 @@ const ResidentTenantsForm = () => {
             email: variables.email,
             password: variables.password,
             isProvider: true,
+            providerType: variables.providerType,
           },
         });
         if (error) {
@@ -97,6 +101,17 @@ const ResidentTenantsForm = () => {
             error={errors.email}
             onChange={handleChange}
           />
+          <Select
+            name="providerType"
+            label="Tipo de proveedor"
+            id="providerType"
+            value={values.providerType}
+            onChange={handleChange}
+          >
+            <option value="Pool">Piscina</option>
+            <option value="Segurity">Seguridad</option>
+            <option value="Gardener">jardinero</option>
+          </Select>
           <Input
             placeholder="contrasenña"
             name="password"

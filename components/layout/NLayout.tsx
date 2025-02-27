@@ -99,8 +99,7 @@ const NLayout = (props: any) => {
               </>
             ) : (
               <>
-                <LMenu href="/provider/new" title="Agregar factura" />
-                <LMenu href="/provider/provider-payments" title="pagos proveedores" />
+                <LMenu href="/provider/provider-payments" title="Pagos Proveedores" />
               </>
             )}
             <LMenu href="/logout" title="Salir" />

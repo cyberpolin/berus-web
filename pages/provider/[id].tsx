@@ -56,9 +56,7 @@ const InvoiceForm = () => {
         if (id === 'new') {
           await createProviderPayment({
             variables: {
-              // @ts-ignore: Unreachable code error
               ...variables,
-              // @ts-ignore: Unreachable code error
               providerId: user.id,
               amountWithTax: variables.amountWithTax.toString(),
               image: selectedImage,
@@ -107,6 +105,7 @@ const InvoiceForm = () => {
           <Input
             placeholder="Fecha limite de pago"
             name="dueAt"
+            label="Fecha limite de pago"
             id="dueAt"
             typeInput="date"
             value={values.dueAt}
@@ -116,6 +115,7 @@ const InvoiceForm = () => {
           <Input
             placeholder="Monto a pagar con IVA"
             name="amountWithTax"
+            label="Monto a pagar con IVA"
             id="amountWithTax"
             typeInput="number"
             value={values.amountWithTax}
@@ -124,6 +124,7 @@ const InvoiceForm = () => {
           />
           <Input
             placeholder="concepto de factura"
+            label="concepto de factura"
             name="concept"
             id="concept"
             typeInput="Text"

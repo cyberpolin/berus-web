@@ -8,7 +8,9 @@ const Layout = (props) => {
   const router = useRouter();
   const { user } = UseAuth();
 
-  if (user.id && user.isVerified) {
+  if (user.isProvider) {
+    router.push('/provider/provider-payments');
+  } else if (user.id && user.isVerified) {
     router.push('/dashboard/cuotas');
     return;
   } else if (user.id) {
