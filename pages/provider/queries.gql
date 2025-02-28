@@ -1,0 +1,147 @@
+query GET_PROVIDERS {
+  users(where: { isProvider: { equals: true } }) {
+    id
+    name
+    email
+    phone
+    providerType
+  }
+}
+
+query GET_PROVIDER($id: ID!) {
+  user(where: { id: $id }) {
+    id
+    name
+    email
+    phone
+    providerType
+  }
+}
+
+mutation UPDATE_PROVIDER(
+  $id: ID!
+  $name: String!
+  $phone: String!
+  $email: String!
+  $providerType: UserProviderTypeType
+) {
+  updateUser(
+    where: { id: $id }
+    data: { name: $name, phone: $phone, email: $email, providerType: $providerType }
+  ) {
+    name
+  }
+}
+
+mutation CREATE_PROVIDER(
+  $name: String!
+  $phone: String!
+  $email: String!
+  $password: String!
+  $isProvider: Boolean
+  $providerType: UserProviderTypeType
+) {
+  createUser(
+    data: {
+      name: $name
+      phone: $phone
+      email: $email
+      password: $password
+      isProvider: $isProvider
+      isVerified: true
+      providerType: $providerType
+    }
+  ) {
+    name
+  }
+}
+
+mutation DELETE_PROVIDER($id: ID!, $email: String!) {
+  updateUser(where: { id: $id }, data: { email: $email, isProvider: false }) {
+    name
+  }
+}
+
+mutation UPDATE_PROVIDER_PAYMENT_STATUS($id: ID!, $status: ProviderPaymentStatusType) {
+  updateProviderPayment(where: { id: $id }, data: { status: $status }) {
+    status
+  }
+}
+
+query GET_PROVIDERS_PAYMENTS($id: ID, $status: ProviderPaymentStatusType) {
+  providerPayments(
+    where: { provider: { id: { equals: $id } }, status: { equals: $status } }
+  ) {
+    id
+    status
+    dueAt
+    amountWithTax
+    concept
+    image {
+      publicUrl
+    }
+    bill {
+      factura {
+        publicUrl
+      }
+    }
+  }
+}
+
+mutation UPDATE_PROVIDER_PAYMENT_BILL($id: ID!, $image: Upload) {
+  updateProviderPayment(
+    where: { id: $id }
+    data: {
+      bill: { create: { factura: $image, paymentProvider: { connect: { id: $id } } } }
+    }
+  ) {
+    bill {
+      factura {
+        publicUrl
+      }
+    }
+  }
+}
+
+mutation CREATE_PROVIDER_PAYMENT(
+  $concept: String
+  $amountWithTax: String
+  $dueAt: DateTime
+  $providerId: ID
+  $image: Upload
+) {
+  createProviderPayment(
+    data: {
+      concept: $concept
+      amountWithTax: $amountWithTax
+      dueAt: $dueAt
+      image: $image
+      provider: { connect: { id: $providerId } }
+    }
+  ) {
+    id
+  }
+}
+
+mutation UPDATE_PROVIDER_PAYMENT(
+  $id: ID!
+  $concept: String
+  $amountWithTax: String
+  $dueAt: DateTime
+  $image: Upload
+) {
+  updateProviderPayment(
+    where: { id: $id }
+    data: {
+      concept: $concept
+      amountWithTax: $amountWithTax
+      dueAt: $dueAt
+      image: $image
+    }
+  ) {
+    id
+    image {
+      publicUrl
+    }
+  }
+}

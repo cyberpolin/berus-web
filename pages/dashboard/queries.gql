@@ -155,25 +155,7 @@ query GET_PAYMENTS($id: ID!) {
     }
   }
 }
-query GET_PROVIDERS_PAYMENTS($id: ID, $status: ProviderPaymentStatusType) {
-  providerPayments(
-    where: { provider: { id: { equals: $id } }, status: { equals: $status } }
-  ) {
-    id
-    status
-    dueAt
-    amountWithTax
-    concept
-    image {
-      publicUrl
-    }
-    bill {
-      factura {
-        publicUrl
-      }
-    }
-  }
-}
+
 query GET_PROVIDER_PAYMENT($id: ID!) {
   providerPayment(where: { id: $id }) {
     id
@@ -187,69 +169,6 @@ query GET_PROVIDER_PAYMENT($id: ID!) {
     provider {
       id
     }
-  }
-}
-mutation UPDATE_PROVIDER_PAYMENT(
-  $id: ID!
-  $concept: String
-  $amountWithTax: String
-  $dueAt: DateTime
-  $image: Upload
-) {
-  updateProviderPayment(
-    where: { id: $id }
-    data: {
-      concept: $concept
-      amountWithTax: $amountWithTax
-      dueAt: $dueAt
-      image: $image
-    }
-  ) {
-    id
-    image {
-      publicUrl
-    }
-  }
-}
-
-mutation UPDATE_PROVIDER_PAYMENT_BILL($id: ID!, $image: Upload) {
-  updateProviderPayment(
-    where: { id: $id }
-    data: {
-      bill: { create: { factura: $image, paymentProvider: { connect: { id: $id } } } }
-    }
-  ) {
-    bill {
-      factura {
-        publicUrl
-      }
-    }
-  }
-}
-
-mutation UPDATE_PROVIDER_PAYMENT_STATUS($id: ID!, $status: ProviderPaymentStatusType) {
-  updateProviderPayment(where: { id: $id }, data: { status: $status }) {
-    status
-  }
-}
-
-mutation CREATE_PROVIDER_PAYMENT(
-  $concept: String
-  $amountWithTax: String
-  $dueAt: DateTime
-  $providerId: ID
-  $image: Upload
-) {
-  createProviderPayment(
-    data: {
-      concept: $concept
-      amountWithTax: $amountWithTax
-      dueAt: $dueAt
-      image: $image
-      provider: { connect: { id: $providerId } }
-    }
-  ) {
-    id
   }
 }
 

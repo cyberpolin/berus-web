@@ -1,5 +1,6 @@
 import { useQuery } from '@apollo/client';
-import { GET_PROVIDERS } from '../login/queries.gql';
+import { useMutation } from '@apollo/client';
+import { DELETE_PROVIDER, GET_PROVIDERS } from './queries.gql';
 import Layout from '@/components/layout/NLayout';
 import { useRouter } from 'next/router';
 
@@ -7,7 +8,17 @@ const ListProviders = () => {
   const router = useRouter();
 
   const { data: providers, loading, error } = useQuery(GET_PROVIDERS);
-
+  const [deleteProvider, deleteProviderProps] = useMutation(DELETE_PROVIDER, {
+    refetchQueries: [GET_PROVIDERS],
+  });
+  const handleDelete = async (id: string, email: string) => {
+    await deleteProvider({
+      variables: {
+        id,
+        email: email.concat('.delete'),
+      },
+    });
+  };
   if (loading) {
     return;
   }
@@ -72,7 +83,7 @@ const ListProviders = () => {
                           if (
                             window.confirm('Seguro que deseas eliminar este proveedor?')
                           )
-                            updateStatus(provider.id);
+                            handleDelete(provider.id, provider.email);
                         }}
                       >
                         Eliminar

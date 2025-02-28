@@ -3,14 +3,8 @@ import Input from '@/components/General/Input';
 import Layout from '@/components/layout/NLayout';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
-import {
-  CREATE_PROVIDER,
-  UPDATE_PROVIDER,
-  GET_PROVIDER,
-  GET_PROVIDERS,
-} from '../../login/queries.gql';
+import { CREATE_PROVIDER, UPDATE_PROVIDER, GET_PROVIDER } from './queries.gql';
 import { useMutation } from '@apollo/client';
-import UseAuth from '@/lib/UseAuth';
 import Select from '@/components/General/Select';
 import { useRouter } from 'next/router';
 import { useQuery } from '@apollo/client';

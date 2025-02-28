@@ -4,10 +4,7 @@ import Drop from '@/components/layout/Drop';
 import Layout from '@/components/layout/NLayout';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
-import {
-  CREATE_PROVIDER_PAYMENT,
-  UPDATE_PROVIDER_PAYMENT,
-} from '../dashboard/queries.gql';
+import { CREATE_PROVIDER_PAYMENT, UPDATE_PROVIDER_PAYMENT } from './queries.gql';
 import { useMutation } from '@apollo/client';
 import { useQuery } from '@apollo/client';
 import { GET_PROVIDER_PAYMENT } from '../dashboard/queries.gql';
