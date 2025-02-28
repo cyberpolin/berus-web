@@ -1,0 +1,92 @@
+mutation CREATE_RESIDENT(
+  $name: String!
+  $phone: String!
+  $email: String!
+  $password: String!
+  $properties: ID
+) {
+  createResident(
+    data: {
+      name: $name
+      phone: $phone
+      properties: { connect: { id: $properties } }
+      user: {
+        create: {
+          name: $name
+          phone: $phone
+          email: $email
+          password: $password
+          properties: { connect: { id: $properties } }
+        }
+      }
+    }
+  ) {
+    id
+    name
+  }
+}
+
+mutation CREATE_TENANT(
+  $name: String
+  $phone: String
+  $email: String
+  $password: String
+  $address: String
+  $status: String
+  $properties: ID
+) {
+  createTenant(
+    data: {
+      name: $name
+      phone: $phone
+      address: $address
+      status: $status
+      properties: { connect: { id: $properties } }
+      user: {
+        create: {
+          name: $name
+          phone: $phone
+          email: $email
+          password: $password
+          properties: { connect: { id: $properties } }
+        }
+      }
+    }
+  ) {
+    id
+    name
+  }
+}
+
+mutation UPDATE_TENANT(
+  $id: ID
+  $name: String
+  $phone: String
+  $address: String
+  $status: String
+  $isActive: Boolean
+) {
+  updateTenant(
+    where: { id: $id }
+    data: {
+      name: $name
+      phone: $phone
+      isActive: $isActive
+      address: $address
+      status: $status
+    }
+  ) {
+    id
+    name
+  }
+}
+
+mutation UPDATE_RESIDENT($id: ID!, $name: String, $phone: String, $isActive: Boolean) {
+  updateResident(
+    where: { id: $id }
+    data: { name: $name, phone: $phone, isActive: $isActive }
+  ) {
+    id
+    name
+  }
+}
