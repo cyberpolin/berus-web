@@ -3,7 +3,7 @@ import Input from '@/components/General/Input';
 import Layout from '@/components/layout/NLayout';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
-import { CREATE_PROVIDER, UPDATE_PROVIDER, GET_PROVIDER } from './queries.gql';
+import { CREATE_PROVIDER, UPDATE_PROVIDER, GET_PROVIDER } from '../queries.gql';
 import { useMutation } from '@apollo/client';
 import Select from '@/components/General/Select';
 import { useRouter } from 'next/router';
@@ -139,7 +139,7 @@ const ResidentTenantsForm = () => {
             onChange={handleChange}
           >
             <option value="Pool">Piscina</option>
-            <option value="Segurity">Seguridad</option>
+            <option value="Security">Seguridad</option>
             <option value="Gardener">jardinero</option>
           </Select>
           {id === 'new' && (

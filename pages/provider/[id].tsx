@@ -31,6 +31,7 @@ const InvoiceForm = () => {
   );
   const { user } = UseAuth();
   const { id } = useRouter().query;
+  const router = useRouter();
   const dropLaoding =
     id === 'new' ? createProviderPayments.loading : providerPayments.loading;
   const [selectedImage, setSelectedImage] = useState<any>(null);
@@ -85,6 +86,7 @@ const InvoiceForm = () => {
           },
         });
         setSelectedImage(null);
+        router.push('/provider/provider-payments');
       },
     });
 
