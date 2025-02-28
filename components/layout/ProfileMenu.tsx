@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import { UPDATE_USER } from '../../pages/admin/adminQueries.gql';
 import { IS_LOGGED } from '../../pages/login/queries.gql';
-import Drop from './Drop';
+import Drop from '../Drop';
 
 //@ts-ignore
 const ProfileMenu = ({ user }) => {

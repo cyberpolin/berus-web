@@ -10,7 +10,7 @@ import Layout from '@/components/layout/NLayout';
 import { useRouter } from 'next/router';
 import UseAuth from '@/lib/UseAuth';
 import { useMutation } from '@apollo/client';
-import Drop from '../../components/layout/Drop';
+import Drop from '../../components/Drop';
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { providerTypeEnum, statusEnum } from '../../enums/provider';

@@ -10,7 +10,7 @@ import Avatar from '../Avatar';
 import { useMutation } from '@apollo/client';
 import { IS_LOGGED } from '../../pages/login/queries.gql';
 import ProfileMenu from './ProfileMenu';
-import Drop from './Drop';
+import Drop from '../Drop';
 import LMenu from '../Menu/LMenu';
 
 const NLayout = (props: any) => {

@@ -1,6 +1,6 @@
 import Button from '@/components/Button';
 import Input from '@/components/General/Input';
-import Drop from '@/components/layout/Drop';
+import Drop from '@/components/Drop';
 import Layout from '@/components/layout/NLayout';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
