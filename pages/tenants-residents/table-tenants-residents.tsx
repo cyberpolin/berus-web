@@ -101,36 +101,44 @@ const TableTenantsResidents = () => {
                 Object?.keys(people).map(
                   (typePerson) =>
                     typePerson !== '__typename' &&
-                    people[typePerson]?.map((person) => {
-                      return (
-                        <tr key={person.id} className="hover:bg-gray-500">
-                          <td className="px-6 py-4">{typePerson}</td>
-                          <td className="px-6 py-4">{person.name}</td>
-                          <td className="px-6 py-4">{person.phone}</td>
-                          <td className="px-6 py-4">{person.address}</td>
-                          <td className="px-6 py-4">{person.status}</td>
-                          <td className="px-6 py-4">
-                            <div className="align-center flex flex-wrap justify-center gap-x-4">
-                              {!resident?.id && (
-                                <button
-                                  className="mr-2 rounded px-3 py-1 text-red-400  hover:bg-red-500 hover:text-white"
-                                  onClick={() => {
-                                    const result = window.confirm(
-                                      `Seguro que deseas eliminar a ${person.name}?`,
-                                    );
-                                    if (result) {
-                                      handleDelete(person.id, typePerson);
-                                    }
-                                  }}
-                                >
-                                  Eliminar
-                                </button>
-                              )}
-                            </div>
-                          </td>
-                        </tr>
-                      );
-                    }),
+                    people[typePerson]?.map(
+                      (person: {
+                        name: string;
+                        phone: string;
+                        address: string;
+                        status: string;
+                        id: string;
+                      }) => {
+                        return (
+                          <tr key={person.id} className="hover:bg-gray-500">
+                            <td className="px-6 py-4">{typePerson}</td>
+                            <td className="px-6 py-4">{person.name}</td>
+                            <td className="px-6 py-4">{person.phone}</td>
+                            <td className="px-6 py-4">{person.address}</td>
+                            <td className="px-6 py-4">{person.status}</td>
+                            <td className="px-6 py-4">
+                              <div className="align-center flex flex-wrap justify-center gap-x-4">
+                                {!resident?.id && (
+                                  <button
+                                    className="mr-2 rounded px-3 py-1 text-red-400  hover:bg-red-500 hover:text-white"
+                                    onClick={() => {
+                                      const result = window.confirm(
+                                        `Seguro que deseas eliminar a ${person.name}?`,
+                                      );
+                                      if (result) {
+                                        handleDelete(person.id, typePerson);
+                                      }
+                                    }}
+                                  >
+                                    Eliminar
+                                  </button>
+                                )}
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      },
+                    ),
                 )}
             </tbody>
           </table>

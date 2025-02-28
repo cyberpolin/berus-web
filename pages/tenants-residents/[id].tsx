@@ -10,6 +10,17 @@ import { useRouter } from 'next/router';
 import { useState } from 'react';
 import UseAuth from '@/lib/UseAuth';
 
+type TenantOrResident = {
+  name: string;
+  phone: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+  address?: string;
+  status?: string;
+  properties?: any;
+};
+
 const schemaUser = yup.object().shape({
   name: yup.string().required('Elnombre es requerido'),
   phone: yup
@@ -71,11 +82,11 @@ const ResidentTenantsForm = () => {
   };
 
   const { values, errors, touched, handleSubmit, setFieldValue, handleChange } =
-    useFormik({
+    useFormik<TenantOrResident>({
       initialValues: isTenants ? initialValuesUserTenants : initialValuesUserResidents,
       validationSchema: isTenants ? userTenants : userResidents,
       enableReinitialize: true,
-      onSubmit: async (variables, { resetForm }) => {
+      onSubmit: async (variables: TenantOrResident, { resetForm }) => {
         isTenants
           ? await create_tenant({
               variables: {
@@ -104,10 +115,6 @@ const ResidentTenantsForm = () => {
         resetForm();
       },
     });
-
-  if (false) {
-    return <h1>Loading...</h1>;
-  }
 
   console.log('error', errors);
 
@@ -206,11 +213,13 @@ const ResidentTenantsForm = () => {
                 value={values.properties}
                 onChange={handleChange}
               >
-                {user?.owner?.properties?.map((propertie) => (
-                  <option key={propertie.id} value={propertie.id}>
-                    {propertie.name}
-                  </option>
-                ))}
+                {user?.owner?.properties?.map(
+                  (propertie: { id: string; name: string }) => (
+                    <option key={propertie.id} value={propertie.id}>
+                      {propertie.name}
+                    </option>
+                  ),
+                )}
               </Select>
             </>
           ) : (
@@ -222,7 +231,7 @@ const ResidentTenantsForm = () => {
                 value={values.properties}
                 onChange={handleChange}
               >
-                {getProperties?.map((propertie) => (
+                {getProperties?.map((propertie: { id: string; name: string }) => (
                   <option key={propertie.id} value={propertie.id}>
                     {propertie.name}
                   </option>
