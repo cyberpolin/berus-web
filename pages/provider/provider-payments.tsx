@@ -11,15 +11,20 @@ import { useRouter } from 'next/router';
 import UseAuth from '@/lib/UseAuth';
 import { useMutation } from '@apollo/client';
 import Drop from '../../components/layout/Drop';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
+import Link from 'next/link';
+import { providerTypeEnum, statusEnum } from '../../enums/Provider';
 
-const statusEnum = [
-  { label: 'A tiempo', value: 'onTime' },
-  { label: 'Vencido', value: 'due' },
-  { label: 'Rechazado', value: 'rejected' },
-  { label: 'En revisión', value: 'pending' },
-  { label: 'Pagado', value: 'payed' },
-];
+type Payment = {
+  id: string;
+  image: { publicUrl: string };
+  dueAt: string;
+  amountWithTax: number;
+  concept: string;
+  status: string;
+  provider: { id: string; name: string; providerType: string };
+  bill: { id: string; factura: { publicUrl: string } };
+};
 
 const PaymentList = () => {
   const router = useRouter();
@@ -52,6 +57,9 @@ const PaymentList = () => {
     },
   });
 
+  useEffect(() => {
+    providersPayments.refetch();
+  }, []);
   const updateBillProvider = async (image: any) => {
     if (thereIsImageRef.current) {
       await updateBill({
@@ -98,7 +106,7 @@ const PaymentList = () => {
           ) : (
             <button
               className=" mr-2 mt-3 w-44 rounded bg-emerald-700 px-3 py-1 text-white hover:bg-green-500"
-              onClick={() => router.push(`/provider/new`)}
+              onClick={() => router.push(`/provider/create-provider/new`)}
             >
               Agregar factura
             </button>
@@ -187,101 +195,99 @@ const PaymentList = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200 [&>*:nth-child(even)]:bg-gray-100 [&>*:nth-child(odd)]:bg-white">
-              {providersPayments?.data.providerPayments.map(
-                (payment: {
-                  id: string;
-                  image: { publicUrl: string };
-                  dueAt: string;
-                  amountWithTax: number;
-                  concept: string;
-                  status: string;
-                  provider: { name: string; providerType: string };
-                  bill: { id: string; factura: { publicUrl: string } };
-                }) => (
-                  <tr key={payment.id} className="hover:bg-gray-500">
-                    <td className="px-6 py-4">{payment.provider.name}</td>
-                    <td className="px-6 py-4">{payment.provider?.providerType}</td>
-                    <td className="px-6 py-4">
-                      {payment?.image?.publicUrl && (
-                        <a href={payment?.image?.publicUrl} target="_blank">
-                          <img
-                            alt={'payment'}
-                            className="center  w-16"
-                            src="/pdfIcon.png"
-                          />
-                        </a>
-                      )}
-                    </td>
-                    <td className="px-6 py-4">
-                      {new Date(payment.dueAt).toLocaleDateString()}
-                    </td>
-                    <td className="px-6 py-4 text-right">
-                      {currency(payment.amountWithTax).format()}
-                    </td>
-                    <td className="px-6 py-4">{payment.concept}</td>
-                    <td className="whitespace-nowrap px-6 py-4">
-                      {
-                        statusEnum.find((status) => status.value === payment.status)
-                          ?.label
-                      }
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="align-center flex flex-wrap justify-center gap-x-4">
-                        {user.isAdmin ? (
-                          <span
-                            className="w-28 rounded px-3 py-1 text-center text-red-400 hover:bg-gray-200"
-                            onClick={() => {
-                              const confirmReject = window.confirm(
-                                'Estas seguro de rechazar este cargo?',
-                              );
-                              if (confirmReject) {
-                                updateStatus(payment.id);
-                              }
-                            }}
-                          >
-                            Rechazar
-                          </span>
-                        ) : payment.status === 'onTime' ? (
-                          <button
-                            className="mr-2 rounded bg-emerald-500 px-3 py-1 text-white hover:bg-green-600"
-                            onClick={() => router.push(`/provider/${payment.id}`)}
-                          >
-                            Editar &#9998;
-                          </button>
-                        ) : null}
-                      </div>
-                    </td>
-                    {user.isAdmin && (
-                      <td className="px-6 py-4">
-                        {payment.status !== 'rejected' && payment?.image?.publicUrl && (
-                          <button
-                            className="w-full rounded bg-green-500 px-3 py-1 text-white hover:bg-green-600"
-                            onClick={() => {
-                              idRef.current = payment.id;
-                              idBillRef.current = payment.bill.id;
-                              thereIsImageRef.current = payment.bill.factura.publicUrl;
-                              setOpenBill(!openBill);
-                            }}
-                          >
-                            Subir recibo
-                          </button>
-                        )}
-                      </td>
+              {providersPayments?.data.providerPayments.map((payment: Payment) => (
+                <tr key={payment.id} className="hover:bg-gray-500">
+                  <td className="px-6 py-4">
+                    <Link href={`/provider/${payment.provider.id}`}>
+                      {payment.provider.name}
+                    </Link>
+                  </td>
+                  <td className="px-6 py-4">
+                    {
+                      providerTypeEnum.find(
+                        (type) => type.value === payment.provider.providerType,
+                      )?.label
+                    }
+                  </td>
+                  <td className="px-6 py-4">
+                    {payment?.image?.publicUrl && (
+                      <a href={payment?.image?.publicUrl} target="_blank">
+                        <img
+                          alt={'payment'}
+                          className="center  w-16"
+                          src="/pdfIcon.png"
+                        />
+                      </a>
                     )}
+                  </td>
+                  <td className="px-6 py-4">
+                    {new Date(payment.dueAt).toLocaleDateString()}
+                  </td>
+                  <td className="px-6 py-4 text-right">
+                    {currency(payment.amountWithTax).format()}
+                  </td>
+                  <td className="px-6 py-4">{payment.concept}</td>
+                  <td className="whitespace-nowrap px-6 py-4">
+                    {statusEnum.find((status) => status.value === payment.status)?.label}
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="align-center flex flex-wrap justify-center gap-x-4">
+                      {user.isAdmin ? (
+                        <span
+                          className="w-28 rounded px-3 py-1 text-center text-red-400 hover:bg-gray-200"
+                          onClick={() => {
+                            const confirmReject = window.confirm(
+                              'Estas seguro de rechazar este cargo?',
+                            );
+                            if (confirmReject) {
+                              updateStatus(payment.id);
+                            }
+                          }}
+                        >
+                          Rechazar
+                        </span>
+                      ) : payment.status === 'onTime' ? (
+                        <button
+                          className="mr-2 rounded bg-emerald-500 px-3 py-1 text-white hover:bg-green-600"
+                          onClick={() =>
+                            router.push(`/provider/create-payment/${payment.id}`)
+                          }
+                        >
+                          Editar &#9998;
+                        </button>
+                      ) : null}
+                    </div>
+                  </td>
+                  {user.isAdmin && (
                     <td className="px-6 py-4">
-                      {payment?.bill?.factura?.publicUrl && (
-                        <a href={payment?.bill?.factura?.publicUrl} target="_blank">
-                          <img
-                            alt={'payment'}
-                            className="center  w-16"
-                            src="/pdfIcon.png"
-                          />
-                        </a>
+                      {payment.status !== 'rejected' && payment?.image?.publicUrl && (
+                        <button
+                          className="w-full rounded bg-green-500 px-3 py-1 text-white hover:bg-green-600"
+                          onClick={() => {
+                            idRef.current = payment.id;
+                            idBillRef.current = payment.bill.id;
+                            thereIsImageRef.current = payment.bill.factura.publicUrl;
+                            setOpenBill(!openBill);
+                          }}
+                        >
+                          Subir recibo
+                        </button>
                       )}
                     </td>
-                  </tr>
-                ),
-              )}
+                  )}
+                  <td className="px-6 py-4">
+                    {payment?.bill?.factura?.publicUrl && (
+                      <a href={payment?.bill?.factura?.publicUrl} target="_blank">
+                        <img
+                          alt={'payment'}
+                          className="center  w-16"
+                          src="/pdfIcon.png"
+                        />
+                      </a>
+                    )}
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>

@@ -156,22 +156,6 @@ query GET_PAYMENTS($id: ID!) {
   }
 }
 
-query GET_PROVIDER_PAYMENT($id: ID!) {
-  providerPayment(where: { id: $id }) {
-    id
-    status
-    dueAt
-    amountWithTax
-    concept
-    image {
-      publicUrl
-    }
-    provider {
-      id
-    }
-  }
-}
-
 query GET_RESIDENTS_TENANTS($id: ID!) {
   property(where: { id: $id }) {
     residents(where: { isActive: { equals: true } }) {

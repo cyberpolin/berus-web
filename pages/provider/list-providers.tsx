@@ -3,6 +3,14 @@ import { useMutation } from '@apollo/client';
 import { DELETE_PROVIDER, GET_PROVIDERS } from './queries.gql';
 import Layout from '@/components/layout/NLayout';
 import { useRouter } from 'next/router';
+import { providerTypeEnum } from '@/enums/Provider';
+type Provider = {
+  id: string;
+  name: string;
+  providerType: string;
+  email: string;
+  phone: string;
+};
 
 const ListProviders = () => {
   const router = useRouter();
@@ -69,10 +77,16 @@ const ListProviders = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200 [&>*:nth-child(even)]:bg-gray-100 [&>*:nth-child(odd)]:bg-white">
-              {providers.users.map((provider) => (
+              {providers.users.map((provider: Provider) => (
                 <tr key={provider.id} className="hover:bg-gray-500">
                   <td className="px-6 py-4">{provider.name}</td>
-                  <td className="px-6 py-4">{provider.providerType}</td>
+                  <td className="px-6 py-4">
+                    {
+                      providerTypeEnum.find(
+                        (type) => type.value === provider.providerType,
+                      )?.label
+                    }
+                  </td>
                   <td className="px-6 py-4">{provider.email}</td>
                   <td className="px-6 py-4">{provider.phone}</td>
                   <td className="px-6 py-4">

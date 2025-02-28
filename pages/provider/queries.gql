@@ -78,6 +78,7 @@ query GET_PROVIDERS_PAYMENTS($id: ID, $status: ProviderPaymentStatusType) {
     amountWithTax
     concept
     provider {
+      id
       name
       providerType
     }
@@ -89,6 +90,22 @@ query GET_PROVIDERS_PAYMENTS($id: ID, $status: ProviderPaymentStatusType) {
       factura {
         publicUrl
       }
+    }
+  }
+}
+
+query GET_PROVIDER_PAYMENT($id: ID!) {
+  providerPayment(where: { id: $id }) {
+    id
+    status
+    dueAt
+    amountWithTax
+    concept
+    image {
+      publicUrl
+    }
+    provider {
+      id
     }
   }
 }

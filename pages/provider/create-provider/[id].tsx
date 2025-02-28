@@ -8,6 +8,7 @@ import { useMutation } from '@apollo/client';
 import Select from '@/components/General/Select';
 import { useRouter } from 'next/router';
 import { useQuery } from '@apollo/client';
+import { providerTypeEnum } from '@/enums/Provider';
 
 const schemaProviderBase = yup.object().shape({
   name: yup.string().required('Elnombre es requerido'),
@@ -50,7 +51,7 @@ const ResidentTenantsForm = () => {
     name: '',
     phone: '',
     email: '',
-    providerType: 'pool',
+    providerType: null,
     password: '',
     confirmPassword: '',
   };
@@ -138,9 +139,14 @@ const ResidentTenantsForm = () => {
             value={values.providerType}
             onChange={handleChange}
           >
-            <option value="Pool">Piscina</option>
-            <option value="Security">Seguridad</option>
-            <option value="Gardener">jardinero</option>
+            <option value="" key="">
+              Seleccionar tipo de proveedor
+            </option>
+            {providerTypeEnum.map((providerType) => (
+              <option value={providerType.value} key={providerType.value}>
+                {providerType.label}
+              </option>
+            ))}
           </Select>
           {id === 'new' && (
             <>
