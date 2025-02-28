@@ -92,6 +92,7 @@ mutation UPDATE_PROVIDER_PAYMENT_BILL($id: ID!, $image: Upload) {
   updateProviderPayment(
     where: { id: $id }
     data: {
+      status: payed
       bill: { create: { factura: $image, paymentProvider: { connect: { id: $id } } } }
     }
   ) {

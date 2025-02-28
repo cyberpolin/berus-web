@@ -92,7 +92,7 @@ const Drop = ({
               ></path>
             </svg>
           )}
-          {isReady ? (
+          {isReady && !loading ? (
             <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
               <span className="font-semibold">Imagen cargada</span>
             </p>
