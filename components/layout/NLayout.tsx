@@ -95,6 +95,10 @@ const NLayout = (props: any) => {
               </>
             ) : !user.isProvider ? (
               <>
+                <LMenu
+                  href="/tenants-residents/table-tenants-residents"
+                  title="Residentes y arrendatarios"
+                />
                 <LMenu href="/dashboard/cuotas" title="Cuotas" />
                 <LMenu href="/dashboard/descargables" title="Descargables" />
               </>
