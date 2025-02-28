@@ -13,7 +13,7 @@ import { useMutation } from '@apollo/client';
 import Drop from '../../components/layout/Drop';
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
-import { providerTypeEnum, statusEnum } from '../../enums/Provider';
+import { providerTypeEnum, statusEnum } from '../../enums/provider';
 
 type Payment = {
   id: string;

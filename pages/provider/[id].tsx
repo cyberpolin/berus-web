@@ -2,7 +2,7 @@ import { useQuery } from '@apollo/client';
 import { GET_PROVIDER } from './queries.gql';
 import Layout from '@/components/layout/NLayout';
 import { useRouter } from 'next/router';
-import { providerTypeEnum } from '@/enums/Provider';
+import { providerTypeEnum } from '@/enums/provider';
 
 const ProviderList = () => {
   const router = useRouter();
@@ -20,7 +20,7 @@ const ProviderList = () => {
   return (
     <Layout>
       <div className="mx-auto flex w-full max-w-[1400px] flex-col px-4 ">
-        <h2 className="font-semi-bold text-2xl">Provedores</h2>
+        <h2 className="font-semi-bold text-2xl">Proveedor</h2>
         <div className="mt-4 overflow-x-scroll">
           <table className="min-w-full divide-y divide-gray-200 ">
             <thead className="bg-gray-50">

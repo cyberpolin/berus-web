@@ -3,7 +3,7 @@ import { useMutation } from '@apollo/client';
 import { DELETE_PROVIDER, GET_PROVIDERS } from './queries.gql';
 import Layout from '@/components/layout/NLayout';
 import { useRouter } from 'next/router';
-import { providerTypeEnum } from '@/enums/Provider';
+import { providerTypeEnum } from '@/enums/provider';
 type Provider = {
   id: string;
   name: string;
@@ -54,7 +54,7 @@ const ListProviders = () => {
                   scope="col"
                   className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
                 >
-                  Tipo de Provedor
+                  Tipo de Proveedor
                 </th>
                 <th
                   scope="col"

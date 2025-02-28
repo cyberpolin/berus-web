@@ -134,7 +134,7 @@ const InvoiceForm = () => {
             onChange={handleChange}
           />
           <Drop cb={setSelectedImage} loading={dropLaoding} />
-          <Button title={'Agregar Factura'} />
+          <Button title={'Agregar Factura'} disabled={Object.keys(errors).length > 0} />
         </form>
       </div>
     </Layout>

@@ -8,7 +8,7 @@ import { useMutation } from '@apollo/client';
 import Select from '@/components/General/Select';
 import { useRouter } from 'next/router';
 import { useQuery } from '@apollo/client';
-import { providerTypeEnum } from '@/enums/Provider';
+import { providerTypeEnum } from '@/enums/provider';
 
 const schemaProvider = yup.object().shape({
   name: yup.string().required('Elnombre es requerido'),
@@ -162,7 +162,11 @@ const ResidentTenantsForm = () => {
             value={values.confirmPassword}
             error={errors.confirmPassword}
           />
-          <Button title="Agregar" type="submit" />
+          <Button
+            title="Agregar"
+            type="submit"
+            disabled={Object.keys(errors).length > 0}
+          />
         </form>
       </div>
     </Layout>
