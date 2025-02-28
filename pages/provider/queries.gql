@@ -77,10 +77,15 @@ query GET_PROVIDERS_PAYMENTS($id: ID, $status: ProviderPaymentStatusType) {
     dueAt
     amountWithTax
     concept
+    provider {
+      name
+      providerType
+    }
     image {
       publicUrl
     }
     bill {
+      id
       factura {
         publicUrl
       }
@@ -89,6 +94,14 @@ query GET_PROVIDERS_PAYMENTS($id: ID, $status: ProviderPaymentStatusType) {
 }
 
 mutation UPDATE_PROVIDER_PAYMENT_BILL($id: ID!, $image: Upload) {
+  updateBill(where: { id: $id }, data: { factura: $image }) {
+    factura {
+      publicUrl
+    }
+  }
+}
+
+mutation UPLOAD_PROVIDER_PAYMENT_BILL($id: ID!, $image: Upload) {
   updateProviderPayment(
     where: { id: $id }
     data: {
