@@ -23,11 +23,18 @@ mutation UPDATE_PROVIDER(
   $name: String!
   $phone: String!
   $email: String!
+  $password: String
   $providerType: UserProviderTypeType
 ) {
   updateUser(
     where: { id: $id }
-    data: { name: $name, phone: $phone, email: $email, providerType: $providerType }
+    data: {
+      name: $name
+      phone: $phone
+      email: $email
+      password: $password
+      providerType: $providerType
+    }
   ) {
     name
   }

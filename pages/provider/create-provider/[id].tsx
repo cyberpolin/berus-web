@@ -10,7 +10,7 @@ import { useRouter } from 'next/router';
 import { useQuery } from '@apollo/client';
 import { providerTypeEnum } from '@/enums/Provider';
 
-const schemaProviderBase = yup.object().shape({
+const schemaProvider = yup.object().shape({
   name: yup.string().required('Elnombre es requerido'),
   phone: yup
     .string()
@@ -18,9 +18,6 @@ const schemaProviderBase = yup.object().shape({
     .required('El telefono es requerido'),
   email: yup.string().email().required('El concepto es requerido'),
   providerType: yup.string().required('El tipo de proveedor es requerido'),
-});
-
-const schemaPassword = yup.object().shape({
   password: yup
     .string()
     .min(4, 'La constrase a debe tener al menos 4 caracteres')
@@ -29,8 +26,6 @@ const schemaPassword = yup.object().shape({
     .string()
     .oneOf([yup.ref('password'), null], 'Las contraseñas deben coincidir'),
 });
-
-const schemaProvider = schemaProviderBase.concat(schemaPassword);
 
 const ResidentTenantsForm = () => {
   const { id } = useRouter().query;
@@ -59,7 +54,7 @@ const ResidentTenantsForm = () => {
   const { values, errors, touched, handleSubmit, setFieldValue, handleChange } =
     useFormik({
       initialValues: providerGetValue || initialValuesProvider,
-      validationSchema: id === 'new' ? schemaProvider : schemaProviderBase,
+      validationSchema: schemaProvider,
       enableReinitialize: true,
       onSubmit: async (variables, { resetForm }) => {
         if (id === 'new') {
@@ -148,29 +143,25 @@ const ResidentTenantsForm = () => {
               </option>
             ))}
           </Select>
-          {id === 'new' && (
-            <>
-              <Input
-                placeholder="contrase;a"
-                name="password"
-                label="Contrasena"
-                id="password"
-                typeInput="password"
-                value={values.password}
-                error={errors.password}
-                onChange={handleChange}
-              />
-              <Input
-                placeholder="confirmar contrase;a"
-                name="confirmPassword"
-                label="Confirmar contrase;a"
-                id="confirmPassword"
-                typeInput="password"
-                value={values.confirmPassword}
-                error={errors.confirmPassword}
-              />
-            </>
-          )}
+          <Input
+            placeholder="contrase;a"
+            name="password"
+            label="Contrasena"
+            id="password"
+            typeInput="password"
+            value={values.password}
+            error={errors.password}
+            onChange={handleChange}
+          />
+          <Input
+            placeholder="confirmar contrase;a"
+            name="confirmPassword"
+            label="Confirmar contrase;a"
+            id="confirmPassword"
+            typeInput="password"
+            value={values.confirmPassword}
+            error={errors.confirmPassword}
+          />
           <Button title="Agregar" type="submit" />
         </form>
       </div>
