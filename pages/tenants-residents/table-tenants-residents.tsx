@@ -5,6 +5,7 @@ import { useRouter } from 'next/router';
 import UseAuth from '@/lib/UseAuth';
 import { UPDATE_RESIDENT, UPDATE_TENANT } from './queries.gql';
 import { useMutation } from '@apollo/client';
+import { statusEnum } from '@/enums/residentTenants';
 
 const TableTenantsResidents = () => {
   const router = useRouter();
@@ -115,7 +116,12 @@ const TableTenantsResidents = () => {
                             <td className="px-6 py-4">{person.name}</td>
                             <td className="px-6 py-4">{person.phone}</td>
                             <td className="px-6 py-4">{person.address}</td>
-                            <td className="px-6 py-4">{person.status}</td>
+                            <td className="px-6 py-4">
+                              {
+                                statusEnum.find((type) => type.value === person.status)
+                                  ?.label
+                              }
+                            </td>
                             <td className="px-6 py-4">
                               <div className="align-center flex flex-wrap justify-center gap-x-4">
                                 {!resident?.id && (

@@ -9,6 +9,7 @@ import { useMutation } from '@apollo/client';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import UseAuth from '@/lib/UseAuth';
+import { statusEnum } from '@/enums/residentTenants';
 
 type TenantOrResident = {
   name: string;
@@ -201,10 +202,11 @@ const ResidentTenantsForm = () => {
                 value={values.status}
                 onChange={handleChange}
               >
-                <option value="ACTIVE">Activo</option>
-                <option value="DELINQUENT">Delicuente</option>
-                <option value="TERMINATED">Terminado</option>
-                <option value="UNDER_REVIEW">Bajo revision</option>
+                {statusEnum.map(({ label, value }) => (
+                  <option key={value} value={value}>
+                    {label}
+                  </option>
+                ))}
               </Select>
               <Select
                 name="properties"
@@ -239,7 +241,11 @@ const ResidentTenantsForm = () => {
               </Select>
             </div>
           )}
-          <Button title="Agregar" type="submit" />
+          <Button
+            title="Agregar"
+            type="submit"
+            disabled={Object.keys(errors).length > 0}
+          />
         </form>
       </div>
     </Layout>
