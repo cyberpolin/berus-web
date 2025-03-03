@@ -175,7 +175,7 @@ const ProviderForm = () => {
             name="password"
             label="Contraseña"
             id="password"
-            // typeInput="password"
+            typeInput="password"
             value={values.password}
             error={errors.password}
             onChange={handleChange}
@@ -185,7 +185,7 @@ const ProviderForm = () => {
             name="confirmPassword"
             label="Confirmar contraseña"
             id="confirmPassword"
-            // typeInput="password"
+            typeInput="password"
             value={values.confirmPassword}
             error={errors.confirmPassword}
             onChange={handleChange}

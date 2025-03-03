@@ -1,12 +1,22 @@
 import _ from 'lodash';
+import { useRef } from 'react';
 import { useQuery } from '@apollo/client';
-import { GET_PROPERTIES } from '../../pages/admin/adminQueries.gql';
+import { useMutation } from '@apollo/client';
+import {
+  GET_PROPERTIES,
+  CHANGE_KIND_OF_PROPERTY,
+} from '../../pages/admin/adminQueries.gql';
 import Loader from '../General/Loader';
 import Link from 'next/link';
-import { parse } from 'path';
+import { propertyTypeEnum } from '../../enums/property';
+import Select from '../General/Select';
 
 const Properties = () => {
+  const PropertyTypeValue = useRef('');
   const { data, loading, error } = useQuery(GET_PROPERTIES);
+  const [changeKindOfProperty] = useMutation(CHANGE_KIND_OF_PROPERTY, {
+    refetchQueries: [GET_PROPERTIES],
+  });
 
   if (error || loading) {
     return <Loader error={error} loading={loading} />;
@@ -37,10 +47,13 @@ const Properties = () => {
               <th scope="col" className="px-6 py-3">
                 Opciones
               </th>
+              <th scope="col" className="px-6 py-3">
+                Tipo de propiedad
+              </th>
             </tr>
           </thead>
           <tbody>
-            {orderedProperties.map(({ name, id }) => {
+            {orderedProperties.map(({ name, id, kindOfProperty }) => {
               return (
                 <tr
                   key={id}
@@ -60,6 +73,39 @@ const Properties = () => {
                   <td className="px-6 py-4"></td>
                   <td className="px-6 py-4">
                     <h2>opciones</h2>
+                  </td>
+                  <td className="px-6 py-4">
+                    <Select
+                      value={kindOfProperty || PropertyTypeValue.current}
+                      onChange={(e) => {
+                        PropertyTypeValue.current = e.target.value;
+                        if (
+                          confirm(
+                            `Estas seguro que deseas cambiar el tipo de propiedad a ${
+                              propertyTypeEnum.find(
+                                ({ value }) => value === PropertyTypeValue.current,
+                              )?.label
+                            }?`,
+                          )
+                        ) {
+                          changeKindOfProperty({
+                            variables: {
+                              id,
+                              kindOfProperty: PropertyTypeValue.current,
+                            },
+                          });
+                        }
+                      }}
+                    >
+                      {!kindOfProperty && (
+                        <option value="">Escoge un tipo de propiedad</option>
+                      )}
+                      {propertyTypeEnum.map(({ label, value }) => (
+                        <option key={value} value={value}>
+                          {label}
+                        </option>
+                      ))}
+                    </Select>
                   </td>
                 </tr>
               );

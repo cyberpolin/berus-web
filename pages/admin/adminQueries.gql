@@ -187,12 +187,19 @@ query GET_PROPERTIES {
     square
     lot
     id
+    kindOfProperty
     owner {
       id
     }
     payments {
       id
     }
+  }
+}
+
+mutation CHANGE_KIND_OF_PROPERTY($id: ID!, $kindOfProperty: PropertyKindOfPropertyType!) {
+  updateProperty(where: { id: $id }, data: { kindOfProperty: $kindOfProperty }) {
+    id
   }
 }
 

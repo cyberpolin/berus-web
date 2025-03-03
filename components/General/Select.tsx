@@ -6,12 +6,12 @@ const Select = ({
   onChange,
   children,
 }: {
-  name: string
-  label?: string
-  id: string
-  value?: string
-  onChange?: React.ChangeEventHandler<HTMLSelectElement>
-  children: React.ReactNode
+  name?: string;
+  label?: string;
+  id?: string;
+  value?: string;
+  onChange?: React.ChangeEventHandler<HTMLSelectElement>;
+  children: React.ReactNode;
 }) => {
   return (
     <div className="flex flex-col">
@@ -28,7 +28,7 @@ const Select = ({
         {children}
       </select>
     </div>
-  )
-}
+  );
+};
 
-export default Select
+export default Select;
