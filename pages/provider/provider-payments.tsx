@@ -85,6 +85,10 @@ const PaymentList = () => {
     });
   };
 
+  useEffect(() => {
+    providersPayments.refetch();
+  }, []);
+
   if (providersPayments?.loading) {
     return;
   }
