@@ -14,7 +14,6 @@ type Provider = {
 
 const ListProviders = () => {
   const router = useRouter();
-
   const { data: providers, loading, error } = useQuery(GET_PROVIDERS);
   const [deleteProvider, deleteProviderProps] = useMutation(DELETE_PROVIDER, {
     refetchQueries: [GET_PROVIDERS],
@@ -27,9 +26,11 @@ const ListProviders = () => {
       },
     });
   };
+
   if (loading) {
     return;
   }
+
   return (
     <Layout>
       <div className="mx-auto flex w-full max-w-[1400px] flex-col px-4 ">

@@ -3,35 +3,62 @@ import Input from '@/components/General/Input';
 import Layout from '@/components/layout/NLayout';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
-import { CREATE_PROVIDER, UPDATE_PROVIDER, GET_PROVIDER } from '../queries.gql';
+import {
+  CREATE_PROVIDER,
+  UPDATE_PROVIDER,
+  GET_PROVIDER,
+  GET_PROVIDERS,
+} from '../queries.gql';
 import { useMutation } from '@apollo/client';
 import Select from '@/components/General/Select';
 import { useRouter } from 'next/router';
 import { useQuery } from '@apollo/client';
 import { providerTypeEnum } from '@/enums/provider';
 
-const schemaProvider = yup.object().shape({
-  name: yup.string().required('Elnombre es requerido'),
-  phone: yup
-    .string()
-    .matches(/^\d{10}$/, 'El telefono debe ser de 10 digitos')
-    .required('El telefono es requerido'),
-  email: yup.string().email().required('El concepto es requerido'),
-  providerType: yup.string().required('El tipo de proveedor es requerido'),
-  password: yup
-    .string()
-    .min(4, 'La constrase a debe tener al menos 4 caracteres')
-    .required('La constrase a es requerida'),
-  confirmPassword: yup
-    .string()
-    .oneOf([yup.ref('password'), null], 'Las contraseñas deben coincidir'),
-});
-
-const ResidentTenantsForm = () => {
+const ProviderForm = () => {
   const { id } = useRouter().query;
+  const schemaProvider = yup.object().shape({
+    name: yup.string().required('El nombre es requerido'),
+    phone: yup
+      .string()
+      .matches(/^\d{10}$/, 'El teléfono debe ser de 10 dígitos')
+      .required('El teléfono es requerido'),
+    email: yup.string().email().required('El correo electrónico es requerido'),
+    providerType: yup.string().required('El tipo de proveedor es requerido'),
+    password: id
+      ? yup.string().min(4, 'La contraseña debe tener al menos 4 caracteres')
+      : yup
+          .string()
+          .min(4, 'La contraseña debe tener al menos 4 caracteres')
+          .required('La contraseña es requerida'),
+    confirmPassword: yup
+      .string()
+      .oneOf([yup.ref('password'), null], 'Las contraseñas deben coincidir')
+      .when('password', {
+        is: (val) => val && val.length > 0,
+        then: yup.string().required('La confirmación de contraseña es requerida'),
+      }),
+  });
+
   const router = useRouter();
-  const [create_provider, create_providerProps] = useMutation(CREATE_PROVIDER);
-  const [update_provider, update_providerProps] = useMutation(UPDATE_PROVIDER);
+  const [create_provider, create_providerProps] = useMutation(CREATE_PROVIDER, {
+    update(cache, { data: { createUser } }) {
+      const { users: providers } = cache.readQuery({ query: GET_PROVIDERS });
+      cache.writeQuery({
+        query: GET_PROVIDERS,
+        data: { users: [providers, createUser] },
+      });
+    },
+  });
+  const [update_provider, update_providerProps] = useMutation(UPDATE_PROVIDER, {
+    update(cache, { data: { updateUser } }) {
+      const { users: providers } = cache.readQuery({ query: GET_PROVIDERS });
+      cache.writeQuery({
+        query: GET_PROVIDERS,
+        data: { users: [providers, updateUser] },
+      });
+    },
+  });
   const { data, loading, error } = useQuery(GET_PROVIDER, {
     variables: {
       id,
@@ -144,23 +171,24 @@ const ResidentTenantsForm = () => {
             ))}
           </Select>
           <Input
-            placeholder="contrase;a"
+            placeholder="contraseña"
             name="password"
-            label="Contrasena"
+            label="Contraseña"
             id="password"
-            typeInput="password"
+            // typeInput="password"
             value={values.password}
             error={errors.password}
             onChange={handleChange}
           />
           <Input
-            placeholder="confirmar contrase;a"
+            placeholder="confirmar contraseña"
             name="confirmPassword"
-            label="Confirmar contrase;a"
+            label="Confirmar contraseña"
             id="confirmPassword"
-            typeInput="password"
+            // typeInput="password"
             value={values.confirmPassword}
             error={errors.confirmPassword}
+            onChange={handleChange}
           />
           <Button
             title="Agregar"
@@ -173,4 +201,4 @@ const ResidentTenantsForm = () => {
   );
 };
 
-export default ResidentTenantsForm;
+export default ProviderForm;

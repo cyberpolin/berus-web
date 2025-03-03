@@ -57,9 +57,6 @@ const PaymentList = () => {
     },
   });
 
-  useEffect(() => {
-    providersPayments.refetch();
-  }, []);
   const updateBillProvider = async (image: any) => {
     if (thereIsImageRef.current) {
       await updateBill({
@@ -106,7 +103,7 @@ const PaymentList = () => {
           ) : (
             <button
               className=" mr-2 mt-3 w-44 rounded bg-emerald-700 px-3 py-1 text-white hover:bg-green-500"
-              onClick={() => router.push(`/provider/create-provider/new`)}
+              onClick={() => router.push(`/provider/create-payment/new`)}
             >
               Agregar factura
             </button>
