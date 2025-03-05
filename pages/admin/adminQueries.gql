@@ -93,9 +93,7 @@ mutation CREATE_TAG_IDS($data: [TagIdCreateInput!]!) {
 
 query GET_PAYMENTS($initialDate: DateTime!, $finalDate: DateTime!) {
   payments(
-    where: {
-      AND: [{ dueAt: { lte: $finalDate } }, { dueAt: { gte: $initialDate } }]
-    }
+    where: { AND: [{ dueAt: { lte: $finalDate } }, { dueAt: { gte: $initialDate } }] }
   ) {
     property {
       owner {
@@ -142,8 +140,8 @@ mutation APROVE_PAYMENT($id: ID) {
   }
 }
 
-mutation UPDATE_PAYMENT_ADMIN($id: ID!, $status:PaymentStatusType!){
-  updatePayment(where:{id:$id}, data:{status:$status}){
+mutation UPDATE_PAYMENT_ADMIN($id: ID!, $status: PaymentStatusType!) {
+  updatePayment(where: { id: $id }, data: { status: $status }) {
     status
     id
   }
@@ -157,12 +155,16 @@ mutation UPDATE_USER($id: ID!, $image: Upload) {
     needsBill
   }
 }
+mutation UPDATE_USER_AVATAR($id: ID!, $image: Upload) {
+  updateUser(where: { id: $id }, data: { avatar: $image }) {
+    avatar {
+      publicUrl
+    }
+  }
+}
 
 mutation UPDATE_PAYMENT($id: ID!, $image: Upload) {
-  updatePayment(
-    where: { id: $id }
-    data: { bill: { create: { factura: $image } } }
-  ) {
+  updatePayment(where: { id: $id }, data: { bill: { create: { factura: $image } } }) {
     id
   }
 }
@@ -173,11 +175,8 @@ mutation DELETE_PAYMENT($id: ID!) {
   }
 }
 
-mutation DELETE_PERMANENT_PAYMENT($paymentId: ID!){
-  deletePayment(where:{
-    id:$paymentId
-  })
-  {
+mutation DELETE_PERMANENT_PAYMENT($paymentId: ID!) {
+  deletePayment(where: { id: $paymentId }) {
     id
   }
 }
@@ -188,12 +187,37 @@ query GET_PROPERTIES {
     square
     lot
     id
+    kindOfProperty
     owner {
       id
     }
     payments {
       id
     }
+  }
+}
+
+query GET_PROPERTY($id: ID) {
+  property(where: { id: $id }) {
+    name
+    square
+    lot
+    id
+    kindOfProperty
+    owner {
+      id
+      name
+      phone
+    }
+    payments {
+      id
+    }
+  }
+}
+
+mutation CHANGE_KIND_OF_PROPERTY($id: ID!, $kindOfProperty: PropertyKindOfPropertyType!) {
+  updateProperty(where: { id: $id }, data: { kindOfProperty: $kindOfProperty }) {
+    id
   }
 }
 
@@ -228,4 +252,72 @@ query CREATE_ALL_PAYMENTS {
 
 query MAKE_IT_DUE {
   makeItDue
+}
+
+mutation CREATE_PROPERTY(
+  $lot: String!
+  $square: String!
+  $kindOfProperty: PropertyKindOfPropertyType!
+  $owner: ID
+) {
+  createProperty(
+    data: {
+      lot: $lot
+      square: $square
+      kindOfProperty: $kindOfProperty
+      owner: { connect: { id: $owner } }
+    }
+  ) {
+    id
+    square
+  }
+}
+
+mutation UPDATE_PROPERTY(
+  $id: ID
+  $lot: String!
+  $square: String!
+  $kindOfProperty: PropertyKindOfPropertyType!
+  $owner: ID
+) {
+  updateProperty(
+    where: { id: $id }
+    data: {
+      lot: $lot
+      square: $square
+      kindOfProperty: $kindOfProperty
+      owner: { connect: { id: $owner } }
+    }
+  ) {
+    id
+    square
+  }
+}
+
+query GET_OWNERS {
+  users(where: { isOwner: { equals: true } }) {
+    id
+    name
+    phone
+  }
+}
+
+mutation CREATE_OWNER(
+  $name: String!
+  $email: String!
+  $password: String!
+  $phone: String
+) {
+  createUser(
+    data: {
+      email: $email
+      password: $password
+      name: $name
+      phone: $phone
+      isVerified: true
+      isOwner: true
+    }
+  ) {
+    name
+  }
 }

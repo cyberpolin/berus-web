@@ -1,18 +1,19 @@
-import _, { get, orderBy } from "lodash";
-import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
+import _, { get, orderBy } from 'lodash';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import {
   GET_PAYMENTS,
   APROVE_PAYMENT,
-  MAKE_IT_DUE, CREATE_ALL_PAYMENTS
-} from "../../pages/admin/adminQueries.gql";
-import Loader from "../General/Loader";
-import Debt from "./Debt";
-import currency from "currency.js";
-import { DateRange, LoaderType } from "@/lib/types";
-import { useState } from "react";
-import Link from "next/link";
-import Button from "../Button";
-import Loading from '../Loading'
+  MAKE_IT_DUE,
+  CREATE_ALL_PAYMENTS,
+} from '../../pages/admin/adminQueries.gql';
+import Loader from '../General/Loader';
+import Debt from './Debt';
+import currency from 'currency.js';
+import { DateRange, LoaderType } from '@/lib/types';
+import { useState } from 'react';
+import Link from 'next/link';
+import Button from '../Button';
+import Loading from '../Loading';
 
 const Status = ({ status }: { status: string }) => {
   if (status === 'onTime') {
@@ -20,7 +21,7 @@ const Status = ({ status }: { status: string }) => {
       <span className="mr-2 rounded bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800 dark:bg-blue-900 dark:text-blue-300">
         A tiempo
       </span>
-    )
+    );
   }
 
   if (status === 'pending') {
@@ -28,62 +29,55 @@ const Status = ({ status }: { status: string }) => {
       <span className="mr-2 rounded bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300">
         Pendiente
       </span>
-    )
+    );
   }
   if (status === 'payed') {
     return (
       <span className="mr-2 rounded bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800 dark:bg-green-900 dark:text-green-300">
         {status}
       </span>
-    )
+    );
   }
   if (status === 'pending') {
     return (
       <span className="mr-2 rounded bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300">
         {status}
       </span>
-    )
+    );
   }
 
-  return <span>{status}</span>
-}
+  return <span>{status}</span>;
+};
 
 const Image = ({ image }: { image: any }) => {
-  const isPdf = image?.publicUrl?.includes('.pdf')
+  const isPdf = image?.publicUrl?.includes('.pdf');
 
-  if (!image) return <></>
+  if (!image) return <></>;
 
   if (isPdf) {
     return (
       <a target="_blank" rel="noreferrer" href={image?.publicUrl}>
         <img src="/pdfIcon.png" alt="pago" width={80} />
       </a>
-    )
+    );
   }
 
   return (
     <a target="_blank" rel="noreferrer" href={image?.publicUrl}>
       <img src={image?.publicUrlTransformed} alt="pago" width={80} />
     </a>
-  )
-}
+  );
+};
 
-const Alert = ({
-  payment,
-  close,
-}: {
-  payment: string | null
-  close: () => void
-}) => {
-  const [aprovePayment, { error, loading, data, reset }] = useMutation(
-    APROVE_PAYMENT,
-    { refetchQueries: [GET_PAYMENTS] }
-  )
+const Alert = ({ payment, close }: { payment: string | null; close: () => void }) => {
+  const [aprovePayment, { error, loading, data, reset }] = useMutation(APROVE_PAYMENT, {
+    refetchQueries: [GET_PAYMENTS],
+  });
 
   //THIS WILL CLOSE THE ALERT...
   if (!error && !loading && data) {
-    close()
-    reset()
+    close();
+    reset();
   }
 
   if (payment) {
@@ -156,60 +150,55 @@ const Alert = ({
           </button>
         </div>
       </div>
-    )
+    );
   } else {
-    return <></>
+    return <></>;
   }
-}
+};
 
 const Payments = ({ initialDate, finalDate, searchTerm }: DateRange) => {
-  const [selectedPayment, setSelectedPayment] = useState(null)
+  const [selectedPayment, setSelectedPayment] = useState(null);
 
   const { data, loading, error } = useQuery(GET_PAYMENTS, {
     variables: { initialDate, finalDate },
-  })
-  const [makeItDue, makeItDueData] = useLazyQuery(MAKE_IT_DUE)
-  const [createPayments, createPaymentsData] = useLazyQuery(CREATE_ALL_PAYMENTS)
+  });
+  const [makeItDue, makeItDueData] = useLazyQuery(MAKE_IT_DUE);
+  const [createPayments, createPaymentsData] = useLazyQuery(CREATE_ALL_PAYMENTS);
 
   if (error || loading) {
-    return <Loader error={error} loading={loading} />
+    return <Loader error={error} loading={loading} />;
   }
 
   if (data) {
     const payments = data.payments.map((x: any) => ({
       ...x,
       ...x.property,
-    }))
-    
-    const orderedPayments = orderBy(payments, ["square", "lot"])
+    }));
+
+    const orderedPayments = orderBy(payments, ['square', 'lot'])
       .filter((x) => !!x.property)
-      .filter((x) => x)
+      .filter((x) => x);
 
     const filteredPayments =
-      searchTerm !== ""
+      searchTerm !== ''
         ? orderedPayments.filter((x) => {
-            const until = searchTerm?.length
+            const until = searchTerm?.length;
             return (
-              x.property.name.toLowerCase().slice(0, until) ==
-              searchTerm?.toLowerCase()
-            )
+              x.property.name.toLowerCase().slice(0, until) == searchTerm?.toLowerCase()
+            );
           })
-        : orderedPayments
+        : orderedPayments;
 
-    const totalBills = filteredPayments.length
-    const ownedBills = filteredPayments.filter((c) => c.property.owner)
-    const ownedBillTotal = ownedBills.length
-    const payedBillsTotal = ownedBills.filter(
-      (b) => b.status === "payed"
-    ).length
-    const pendingBillsTotal = ownedBills.filter(
-      (b) => b.status === "pending"
-    ).length
+    const totalBills = filteredPayments.length;
+    const ownedBills = filteredPayments.filter((c) => c.property.owner);
+    const ownedBillTotal = ownedBills.length;
+    const payedBillsTotal = ownedBills.filter((b) => b.status === 'payed').length;
+    const pendingBillsTotal = ownedBills.filter((b) => b.status === 'pending').length;
 
     const dueProperties = filteredPayments
-      .filter((b) => b.status !== "payed")
-      .map((b) => b.property.name)
-    return ( 
+      .filter((b) => b.status !== 'payed')
+      .map((b) => b.property.name);
+    return (
       <div className="relative mt-8 overflow-x-auto shadow-md sm:rounded-lg">
         <Button
           title={`Crear Pagos`}
@@ -217,22 +206,20 @@ const Payments = ({ initialDate, finalDate, searchTerm }: DateRange) => {
           disabled={createPaymentsData.loading}
           onClick={createPayments}
         />
-        <Button 
+        <Button
           title={`Hacer Vencido`}
           loading={makeItDueData.loading}
           disabled={makeItDueData.loading}
           onClick={makeItDue}
         />
-        
+
         <ul>
           <li>{`Propiedades: ${totalBills}`}</li>
           <li>{`Propiedades Sin Dueno: ${ownedBillTotal - totalBills}`}</li>
           <li>{`Propiedades Con Dueno: ${ownedBillTotal}`}</li>
           <li>{`Propiedades Pagadas: ${payedBillsTotal}`}</li>
           <li>{`Propiedades Con Adeudo: ${dueProperties.length}`}</li>
-          <li>{`Propiedades Con Adeudo: ${dueProperties.map(
-            (b) => `${b}\n`
-          )}`}</li>
+          <li>{`Propiedades Con Adeudo: ${dueProperties.map((b) => `${b}\n`)}`}</li>
         </ul>
         <table className="w-full text-left text-sm text-gray-500 dark:text-gray-400">
           <thead className="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
@@ -253,13 +240,8 @@ const Payments = ({ initialDate, finalDate, searchTerm }: DateRange) => {
           </thead>
           <tbody>
             {filteredPayments.map(
-              ({
-                id,
-                property: { lot, square, owner, name },
-                status,
-                image,
-              }) => {
-                const thisMonth = status !== "payed" ? 1220 : 0
+              ({ id, property: { lot, square, owner, name }, status, image }) => {
+                const thisMonth = status !== 'payed' ? 1220 : 0;
 
                 return (
                   <tr
@@ -272,13 +254,13 @@ const Payments = ({ initialDate, finalDate, searchTerm }: DateRange) => {
                     >
                       <p>{`M${square}L${lot}`}</p>
                       <p>
-                        <Debt ownerId={owner?.id || "0"} />
+                        <Debt ownerId={owner?.id || '0'} />
                       </p>
                     </th>
                     <td className="px-6 py-4">
-                      <p>{owner?.name || ""}</p>
-                      <p>{owner?.phone || ""}</p>
-                      <p>{owner?.email || ""}</p>
+                      <p>{owner?.name || ''}</p>
+                      <p>{owner?.phone || ''}</p>
+                      <p>{owner?.email || ''}</p>
                       <Link href={`dashboard/cuotas?pretend=${owner?.id}`}>
                         <svg
                           className="h-6 w-6 dark:text-white"
@@ -305,11 +287,11 @@ const Payments = ({ initialDate, finalDate, searchTerm }: DateRange) => {
 
                       <Image image={image} />
 
-                      {image && status !== "payed" && (
+                      {image && status !== 'payed' && (
                         <span
                           data-drawer-target="drawer-aprove"
                           onClick={() => {
-                            setSelectedPayment(id)
+                            setSelectedPayment(id);
                           }}
                           className="mr-2 rounded border border-green-400 bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800 dark:bg-gray-700 dark:text-green-400"
                         >
@@ -318,19 +300,16 @@ const Payments = ({ initialDate, finalDate, searchTerm }: DateRange) => {
                       )}
                     </td>
                   </tr>
-                )
-              }
+                );
+              },
             )}
           </tbody>
         </table>
-        <Alert
-          payment={selectedPayment}
-          close={() => setSelectedPayment(null)}
-        />
+        <Alert payment={selectedPayment} close={() => setSelectedPayment(null)} />
       </div>
-    )
+    );
   }
-  return <></>
-}
+  return <></>;
+};
 
 export default Payments;

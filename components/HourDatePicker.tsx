@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
-import { Field } from "formik";
+import { useEffect, useState } from 'react';
+import { Field } from 'formik';
 // @ts-ignore
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-import { range } from "lodash";
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import { range } from 'lodash';
 
 const getHours = () => {
   return range(6, 24, 1);
@@ -11,7 +11,7 @@ const getHours = () => {
 
 const availableHours = getHours().map((x: any) => {
   const isPM = x > 12;
-  const meridian = isPM ? "pm" : "am";
+  const meridian = isPM ? 'pm' : 'am';
   const hour = isPM ? x - 12 : x;
   return {
     value: `${x}:00:00`,
@@ -60,7 +60,7 @@ export default function (props: FieldProps) {
       <div className="flex ">
         <DatePicker
           className={
-            "mr-2 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+            'mr-2 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500'
           }
           selected={initialDate}
           onChange={setInitialDate}

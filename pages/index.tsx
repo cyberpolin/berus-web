@@ -1,7 +1,7 @@
-import Button from "@/components/Button";
-import Image from "next/image";
-import Link from "next/link";
-import styled from "styled-components";
+import Button from '@/components/Button';
+import Image from 'next/image';
+import Link from 'next/link';
+import styled from 'styled-components';
 
 export default function () {
   return (
@@ -14,8 +14,8 @@ export default function () {
             height={250}
             alt="Cumbre Siete, Altozano Tabasco"
             style={{
-              alignSelf: "center",
-              display: "inline",
+              alignSelf: 'center',
+              display: 'inline',
             }}
           />
           <p>Si eres propietario de Cumbre Siete, en este sitio podrás:</p>
@@ -59,11 +59,11 @@ const Item = styled.li`
   margin: 20px;
   padding: 5px 0 10px 50px;
   list-style: none;
-  background-image: url("./checked.png");
+  background-image: url('./checked.png');
   background-repeat: no-repeat;
   background-position: ${(props) =>
     //@ts-ignore
-    !props.checked ? "0px 0px" : "0px -30px"};
+    !props.checked ? '0px 0px' : '0px -30px'};
   background-size: 30px;
   height: 30px;
 `;

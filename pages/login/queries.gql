@@ -39,11 +39,43 @@ query IS_LOGGED {
     ... on User {
       id
       isAdmin
+      isProvider
+      isOwner
       needsBill
       name
       isVerified
       rfc {
         publicUrl
+      }
+      avatar {
+        publicUrl
+      }
+      tenant {
+        properties {
+          id
+          name
+          theOwner {
+            user {
+              id
+            }
+          }
+        }
+      }
+      resident {
+        properties {
+          id
+          theOwner {
+            user {
+              id
+            }
+          }
+        }
+      }
+      owner {
+        properties {
+          name
+          id
+        }
       }
     }
   }
@@ -102,6 +134,7 @@ mutation CREATE_USER(
   $email: String!
   $password: String!
   $properties: [PropertyCreateInput!]
+  $isProvider: Boolean
 ) {
   createUser(
     data: {
@@ -109,6 +142,7 @@ mutation CREATE_USER(
       phone: $phone
       email: $email
       password: $password
+      isProvider: $isProvider
       properties: { create: $properties }
     }
   ) {

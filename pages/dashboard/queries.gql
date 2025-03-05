@@ -9,9 +9,7 @@ query GET_RESERVATION($date: DateTime!) {
 }
 
 query GET_VOUCHERS($from: DateTime!, $to: DateTime) {
-  vouchers(
-    where: { AND: [{ createdAt: { gte: $from } }, { createdAt: { lte: $to } }] }
-  ) {
+  vouchers(where: { AND: [{ createdAt: { gte: $from } }, { createdAt: { lte: $to } }] }) {
     createdAt
     bankTransaction {
       transactionId
@@ -22,7 +20,6 @@ query GET_VOUCHERS($from: DateTime!, $to: DateTime) {
     notes
   }
 }
-
 
 query CREATE_NEXT_PAYMENT_IF_DONT_EXIST($id: ID!) {
   createNextPayment(id: $id)
@@ -61,11 +58,28 @@ query IS_LOGGED {
     ... on User {
       id
       isAdmin
+      isProvider
+      isOwner
       needsBill
       name
       isVerified
       rfc {
         publicUrl
+      }
+      tenants {
+        property {
+          id
+        }
+      }
+      residents {
+        property {
+          id
+        }
+      }
+      owner {
+        property {
+          name
+        }
       }
     }
   }
@@ -138,6 +152,43 @@ query GET_PAYMENTS($id: ID!) {
           mimetype
         }
       }
+    }
+  }
+}
+
+query GET_RESIDENTS_TENANTS($id: ID!) {
+  property(where: { id: $id }) {
+    residents(where: { isActive: { equals: true } }) {
+      id
+      name
+      phone
+    }
+    tenants(where: { isActive: { equals: true } }) {
+      id
+      name
+      phone
+      status
+      address
+      user {
+        properties {
+          residents(where: { isActive: { equals: true } }) {
+            id
+            name
+            phone
+          }
+        }
+      }
+    }
+  }
+}
+
+query GET_RESIDENTS_BY_TENANT($id: ID!) {
+  property(where: { id: $id }) {
+    name
+    residents(where: { isActive: { equals: true } }) {
+      id
+      name
+      phone
     }
   }
 }
