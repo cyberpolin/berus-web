@@ -8,3 +8,25 @@ mutation CREATE_PROPERTY(
     square
   }
 }
+
+mutation CREATE_OWNER(
+  $name: String!
+  $email: String!
+  $password: String!
+  $phone: String
+  $properties: ID
+) {
+  createUser(
+    data: {
+      email: $email
+      password: $password
+      name: $name
+      phone: $phone
+      isVerified: true
+      isOwner: true
+      properties: { connect: { id: $properties } }
+    }
+  ) {
+    name
+  }
+}

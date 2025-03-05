@@ -258,14 +258,14 @@ mutation CREATE_PROPERTY(
   $lot: String!
   $square: String!
   $kindOfProperty: PropertyKindOfPropertyType!
-  $owner: ID
+  $owner: [ID!]
 ) {
   createProperty(
     data: {
       lot: $lot
       square: $square
       kindOfProperty: $kindOfProperty
-      owner: { connect: { id: $owner } }
+      owner: { connect: [{ id: $owner }] }
     }
   ) {
     id

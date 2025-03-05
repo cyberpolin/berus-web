@@ -3,20 +3,15 @@ import Input from '@/components/General/Input';
 import Layout from '@/components/layout/NLayout';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
-import { CREATE_OWNER, GET_PROPERTIES } from '../../adminQueries.gql';
+import { CREATE_OWNER, GET_OWNERS } from '../../adminQueries.gql';
 import { useMutation } from '@apollo/client';
 import { useRouter } from 'next/router';
 import { useQuery } from '@apollo/client';
-import Select from '@/components/General/Select';
 
 const OwnerForm = () => {
   const { slug } = useRouter().query;
-  let slugParse;
-  try {
-    slugParse = JSON.parse(decodeURIComponent(slug as string));
-  } catch (error) {
-    console.error('Error parsing slug:', error);
-  }
+  const slugParse = slug && JSON.parse(decodeURIComponent(slug as string));
+
   const schemaOwner = yup.object().shape({
     name: yup.string().required('El nombre es requerido'),
     email: yup
@@ -35,9 +30,7 @@ const OwnerForm = () => {
       .string()
       .oneOf([yup.ref('password'), null], 'Las contraseñas no coinciden')
       .required('La confirmación de la contraseña es requerida'),
-    properties: yup.string(),
   });
-
   const router = useRouter();
   const initialValues = {
     name: '',
@@ -45,12 +38,9 @@ const OwnerForm = () => {
     phone: '',
     password: '',
     confirmPassword: '',
-    properties: '',
   };
 
   const [createOwner, createOwnerProps] = useMutation(CREATE_OWNER);
-  const { data: properties, loading, error } = useQuery(GET_PROPERTIES);
-  console.log('properties', properties);
 
   const { values, errors, touched, handleSubmit, setFieldValue, handleChange } =
     useFormik({
@@ -132,35 +122,6 @@ const OwnerForm = () => {
             error={errors.confirmPassword}
             onChange={handleChange}
           />
-          <div className="flex flex-col gap-1">
-            <Select
-              name="properties"
-              label="Propiedad"
-              id="properties"
-              value={values.properties}
-              onChange={handleChange}
-            >
-              <option value="">Seleccionar propiedad</option>
-              {properties?.properties.map((property) => (
-                <option value={property.id} key={property.id}>
-                  {property.name}
-                </option>
-              ))}
-            </Select>
-            <span
-              className="cursor-pointer text-sm text-gray-200 hover:underline"
-              onClick={() => {
-                const timestampMs = String(Date.now());
-                const slug = encodeURIComponent(
-                  JSON.stringify({ timestampMs: timestampMs }),
-                );
-                sessionStorage.setItem(timestampMs, JSON.stringify(values));
-                router.push(`/admin/owners/create-property/${slug}`);
-              }}
-            >
-              Agregar una nueva propiedad
-            </span>
-          </div>
           <Button
             title="Agregar"
             type="submit"

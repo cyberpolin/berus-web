@@ -19,7 +19,7 @@ const ListOwner = () => {
       <div className="mx-auto flex w-full max-w-[1400px] flex-col px-4">
         <button
           className=" mr-2 mt-3 w-44 rounded bg-emerald-700 px-3 py-1 text-white hover:bg-green-500"
-          onClick={() => router.push(`/admin/owners/create-owner-view-owner/new`)}
+          onClick={() => router.push(`/admin/owners/create-owner/new`)}
         >
           Crear Propietario
         </button>
@@ -66,9 +66,7 @@ const ListOwner = () => {
                       <div className="align-center flex flex-wrap justify-center gap-x-4">
                         <button
                           className="mr-2 rounded bg-emerald-500 px-3 py-1 text-white hover:bg-green-600"
-                          onClick={() =>
-                            router.push(`/admin/owners/create-owner-view-owner/${id}`)
-                          }
+                          onClick={() => router.push(`/admin/owners/create-owner/${id}`)}
                         >
                           Editar &#9998;
                         </button>
