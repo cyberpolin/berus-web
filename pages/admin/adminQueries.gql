@@ -299,6 +299,11 @@ query GET_OWNERS {
     id
     name
     phone
+    email
+    properties {
+      id
+      name
+    }
   }
 }
 
