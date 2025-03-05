@@ -5,6 +5,7 @@ const Select = ({
   value,
   onChange,
   children,
+  extraStyles,
 }: {
   name?: string;
   label?: string;
@@ -12,9 +13,10 @@ const Select = ({
   value?: string;
   onChange?: React.ChangeEventHandler<HTMLSelectElement>;
   children: React.ReactNode;
+  extraStyles?: string;
 }) => {
   return (
-    <div className="flex flex-col">
+    <div className={`flex flex-col ${extraStyles}`}>
       <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-300">
         {label ? label : name}
       </label>

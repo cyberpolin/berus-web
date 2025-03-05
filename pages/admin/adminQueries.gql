@@ -197,6 +197,24 @@ query GET_PROPERTIES {
   }
 }
 
+query GET_PROPERTY($id: ID) {
+  property(where: { id: $id }) {
+    name
+    square
+    lot
+    id
+    kindOfProperty
+    owner {
+      id
+      name
+      phone
+    }
+    payments {
+      id
+    }
+  }
+}
+
 mutation CHANGE_KIND_OF_PROPERTY($id: ID!, $kindOfProperty: PropertyKindOfPropertyType!) {
   updateProperty(where: { id: $id }, data: { kindOfProperty: $kindOfProperty }) {
     id
@@ -234,4 +252,72 @@ query CREATE_ALL_PAYMENTS {
 
 query MAKE_IT_DUE {
   makeItDue
+}
+
+mutation CREATE_PROPERTY(
+  $lot: String!
+  $square: String!
+  $kindOfProperty: PropertyKindOfPropertyType!
+  $owner: ID
+) {
+  createProperty(
+    data: {
+      lot: $lot
+      square: $square
+      kindOfProperty: $kindOfProperty
+      owner: { connect: { id: $owner } }
+    }
+  ) {
+    id
+    square
+  }
+}
+
+mutation UPDATE_PROPERTY(
+  $id: ID
+  $lot: String!
+  $square: String!
+  $kindOfProperty: PropertyKindOfPropertyType!
+  $owner: ID
+) {
+  updateProperty(
+    where: { id: $id }
+    data: {
+      lot: $lot
+      square: $square
+      kindOfProperty: $kindOfProperty
+      owner: { connect: { id: $owner } }
+    }
+  ) {
+    id
+    square
+  }
+}
+
+query GET_OWNERS {
+  users(where: { isOwner: { equals: true } }) {
+    id
+    name
+    phone
+  }
+}
+
+mutation CREATE_OWNER(
+  $name: String!
+  $email: String!
+  $password: String!
+  $phone: String
+) {
+  createUser(
+    data: {
+      email: $email
+      password: $password
+      name: $name
+      phone: $phone
+      isVerified: true
+      isOwner: true
+    }
+  ) {
+    name
+  }
 }
