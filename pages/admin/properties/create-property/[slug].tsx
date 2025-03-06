@@ -182,7 +182,7 @@ const PropertyForm = () => {
                   JSON.stringify({ timestampMs: timestampMs }),
                 );
                 sessionStorage.setItem(timestampMs, JSON.stringify(values));
-                router.push(`/admin/owners/create-owner/${slug}`);
+                router.push(`/admin/properties/create-owner/${slug}`);
               }}
             >
               Crear un nuevo propietario
