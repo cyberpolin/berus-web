@@ -9,24 +9,41 @@ mutation CREATE_PROPERTY(
   }
 }
 
-mutation CREATE_OWNER(
-  $name: String!
-  $email: String!
-  $password: String!
-  $phone: String
-  $properties: ID
-) {
-  createUser(
-    data: {
-      email: $email
-      password: $password
-      name: $name
-      phone: $phone
-      isVerified: true
-      isOwner: true
-      properties: { connect: { id: $properties } }
-    }
-  ) {
+mutation CREATE_OWNER($data: UserCreateInput!) {
+  createUser(data: $data) {
     name
+  }
+}
+
+mutation UPDATE_OWNER($id: ID, $data: UserUpdateInput!) {
+  updateUser(where: { id: $id }, data: $data) {
+    name
+  }
+}
+
+query GET_PROPERTIES {
+  properties(where: { owner: null }, orderBy: { name: asc }) {
+    name
+    square
+    lot
+    id
+    kindOfProperty
+    owner {
+      id
+    }
+    payments {
+      id
+    }
+  }
+}
+
+query GET_OWNER($id: ID) {
+  user(where: { id: $id }) {
+    name
+    email
+    phone
+    properties {
+      id
+    }
   }
 }

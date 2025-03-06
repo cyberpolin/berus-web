@@ -14,7 +14,7 @@ import { useMutation, useQuery } from '@apollo/client';
 import Select from '@/components/General/Select';
 import { useRouter } from 'next/router';
 import { propertyTypeEnum } from '@/enums/property';
-import { useEffect, useState, useRef, use } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 const PropertyForm = () => {
   const { slug } = useRouter().query;
@@ -23,7 +23,6 @@ const PropertyForm = () => {
   let id = useRef('');
 
   useEffect(() => {
-    console.log('slug', slug, typeof slug);
     if (slug) {
       let slugParse;
       try {
@@ -32,19 +31,15 @@ const PropertyForm = () => {
         console.error('Error parsing slug:', error);
       }
       if (slugParse && 'timestampMs' in slugParse) {
-        console.log('no deveria entrar');
         const storedData = sessionStorage.getItem(slugParse.timestampMs);
         if (storedData) {
           setPrevDataForm(JSON.parse(storedData));
         }
       } else {
-        console.log('here', typeof slug === 'string' ? slug : '');
         id.current = typeof slug === 'string' ? slug : '';
       }
     }
   }, [slug]);
-
-  console.log('id', id.current, id);
 
   const schemaProperty = yup.object().shape({
     square: yup.string().required('La cuadra es requerida'),
@@ -70,6 +65,7 @@ const PropertyForm = () => {
         cache.writeQuery({
           query: GET_PROPERTIES,
           data: {
+            //@ts-ignore
             properties: [...data.properties, createProperty],
           },
         });
@@ -89,8 +85,6 @@ const PropertyForm = () => {
   if (property?.property && !prevDataForm) {
     setPrevDataForm(property.property);
   }
-
-  console.log('property', property);
 
   const { values, errors, touched, handleSubmit, setFieldValue, handleChange } =
     useFormik({
@@ -172,11 +166,13 @@ const PropertyForm = () => {
               onChange={handleChange}
             >
               <option value="">Seleccionar dueño</option>
-              {owners?.users.map((owner) => (
-                <option value={owner.id} key={owner.id}>
-                  {owner.name + ', ' + owner.phone}
-                </option>
-              ))}
+              {owners?.users.map(
+                ({ id, name, phone }: { id: string; name: string; phone: string }) => (
+                  <option value={id} key={id}>
+                    {name + ', ' + phone}
+                  </option>
+                ),
+              )}
             </Select>
             <span
               className="cursor-pointer text-sm text-gray-200 hover:underline"

@@ -4,7 +4,7 @@ import Layout from '@/components/layout/NLayout';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { CREATE_PROPERTY } from '../queries.gql';
-import { useMutation, useQuery } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import Select from '@/components/General/Select';
 import { useRouter } from 'next/router';
 import { propertyTypeEnum } from '@/enums/property';
@@ -41,8 +41,8 @@ const PropertyForm = () => {
             kindOfProperty: variables.kindOfProperty,
           },
         });
-
-        router.replace(`/admin/owners/create-property/${slug}`);
+        resetForm();
+        router.replace(`/admin/owners/create-owner/${slug}`);
       },
     });
 

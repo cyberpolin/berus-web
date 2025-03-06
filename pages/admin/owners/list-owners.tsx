@@ -45,36 +45,52 @@ const ListOwner = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200 [&>*:nth-child(even)]:bg-gray-100 [&>*:nth-child(odd)]:bg-white">
-              {data.users.map(({ name, id, phone, email, properties }) => {
-                return (
-                  <tr
-                    key={id}
-                    className="border-b bg-white dark:border-gray-700 dark:bg-gray-900"
-                  >
-                    <th
-                      scope="row"
-                      className="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white"
+              {data.users.map(
+                ({
+                  name,
+                  id,
+                  phone,
+                  email,
+                  properties,
+                }: {
+                  name: string;
+                  id: string;
+                  phone: string;
+                  email: string;
+                  properties: any;
+                }) => {
+                  return (
+                    <tr
+                      key={id}
+                      className="border-b bg-white dark:border-gray-700 dark:bg-gray-900"
                     >
-                      {name}
-                    </th>
-                    <td className="px-6 py-4">{email}</td>
-                    <td className="px-6 py-4">{phone}</td>
-                    <td className="flex justify-center px-6  py-4">
-                      {properties?.map((p) => p.name).join(', ')}
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="align-center flex flex-wrap justify-center gap-x-4">
-                        <button
-                          className="mr-2 rounded bg-emerald-500 px-3 py-1 text-white hover:bg-green-600"
-                          onClick={() => router.push(`/admin/owners/create-owner/${id}`)}
-                        >
-                          Editar &#9998;
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
+                      <th
+                        scope="row"
+                        className="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white"
+                      >
+                        {name}
+                      </th>
+                      <td className="px-6 py-4">{email}</td>
+                      <td className="px-6 py-4">{phone}</td>
+                      <td className="flex justify-center px-6  py-4">
+                        {properties?.map((p: any) => p.name).join(', ')}
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="align-center flex flex-wrap justify-center gap-x-4">
+                          <button
+                            className="mr-2 rounded bg-emerald-500 px-3 py-1 text-white hover:bg-green-600"
+                            onClick={() =>
+                              router.push(`/admin/owners/create-owner/${id}`)
+                            }
+                          >
+                            Editar &#9998;
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                },
+              )}
             </tbody>
           </table>
         </div>

@@ -3,21 +3,35 @@ import Input from '@/components/General/Input';
 import Layout from '@/components/layout/NLayout';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
-import { GET_PROPERTIES } from '../../adminQueries.gql';
-import { CREATE_OWNER } from '../queries.gql';
-import { useMutation } from '@apollo/client';
+import { CREATE_OWNER, GET_PROPERTIES, UPDATE_OWNER, GET_OWNER } from '../queries.gql';
+import { useMutation, useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
-import { useQuery } from '@apollo/client';
 import Select from '@/components/General/Select';
+import { useEffect, useRef, useState } from 'react';
 
 const OwnerForm = () => {
   const { slug } = useRouter().query;
-  let slugParse;
-  try {
-    slugParse = JSON.parse(decodeURIComponent(slug as string));
-  } catch (error) {
-    console.error('Error parsing slug:', error);
-  }
+  const [prevDataForm, setPrevDataForm] = useState(null);
+  let id = useRef('');
+  useEffect(() => {
+    if (slug) {
+      let slugParse;
+      try {
+        slugParse = JSON.parse(decodeURIComponent(slug as string));
+      } catch (error) {
+        console.error('Error parsing slug:', error);
+      }
+      if (slugParse && 'timestampMs' in slugParse) {
+        const storedData = sessionStorage.getItem(slugParse.timestampMs);
+        if (storedData) {
+          setPrevDataForm(JSON.parse(storedData));
+        }
+      } else {
+        id.current = typeof slug === 'string' ? slug : '';
+      }
+    }
+  }, [slug]);
+
   const schemaOwner = yup.object().shape({
     name: yup.string().required('El nombre es requerido'),
     email: yup
@@ -50,29 +64,53 @@ const OwnerForm = () => {
   };
 
   const [createOwner, createOwnerProps] = useMutation(CREATE_OWNER);
+  const [updateOwner, updateOwnerProps] = useMutation(UPDATE_OWNER);
   const { data: properties, loading, error } = useQuery(GET_PROPERTIES);
-  console.log('properties', properties);
+  const getOwner = useQuery(GET_OWNER, { variables: { id: id.current } });
+  console.log('getowner', getOwner.data?.user);
+  if (getOwner.data?.user && !prevDataForm) {
+    setPrevDataForm({
+      ...getOwner.data?.user,
+      properties: getOwner.data?.user.properties[0],
+    });
+  }
 
   const { values, errors, touched, handleSubmit, setFieldValue, handleChange } =
     useFormik({
-      initialValues: initialValues,
+      initialValues: prevDataForm || initialValues,
       validationSchema: schemaOwner,
       enableReinitialize: true,
       onSubmit: async (variables, { resetForm }) => {
-        await createOwner({
-          variables: {
-            name: variables.name,
-            email: variables.email,
-            password: variables.password,
-            phone: variables.phone,
-            properties: variables.properties,
-          },
-        });
-        resetForm();
-        const slugParseKeys = Object.keys(slugParse || {});
-        if (slugParseKeys.includes('timestampMs')) {
-          router.replace(`/admin/properties/create-property/${slug}`);
+        if (id.current) {
+          await updateOwner({
+            variables: {
+              id: id.current,
+              data: {
+                data: {
+                  name: variables.name,
+                  email: variables.email,
+                  password: variables.password,
+                  phone: variables.phone,
+                  properties: { connect: [{ id: variables.properties }] },
+                },
+              },
+            },
+          });
+        } else {
+          await createOwner({
+            variables: {
+              data: {
+                name: variables.name,
+                email: variables.email,
+                password: variables.password,
+                phone: variables.phone,
+                properties: { connect: [{ id: variables.properties }] },
+              },
+            },
+          });
         }
+        resetForm();
+        router.push('/admin/owners/list-owners');
       },
     });
 
@@ -143,7 +181,7 @@ const OwnerForm = () => {
               onChange={handleChange}
             >
               <option value="">Seleccionar propiedad</option>
-              {properties?.properties.map((property) => (
+              {properties?.properties.map((property: { id: string; name: string }) => (
                 <option value={property.id} key={property.id}>
                   {property.name}
                 </option>
