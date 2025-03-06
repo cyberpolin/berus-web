@@ -8,7 +8,6 @@ import { useRouter } from 'next/router';
 const ListOwner = () => {
   const router = useRouter();
   const { data, loading, error } = useQuery(GET_OWNERS);
-  console.log('data', data);
 
   if (error || loading) {
     return <Loader error={error} loading={loading} />;

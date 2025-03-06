@@ -3,7 +3,13 @@ import Input from '@/components/General/Input';
 import Layout from '@/components/layout/NLayout';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
-import { CREATE_OWNER, GET_PROPERTIES, UPDATE_OWNER, GET_OWNER } from '../queries.gql';
+import {
+  CREATE_OWNER,
+  GET_PROPERTIES,
+  GET_PROPERTIES_WITHOUT_OWNER,
+  UPDATE_OWNER,
+  GET_OWNER,
+} from '../queries.gql';
 import { useMutation, useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
 import Select from '@/components/General/Select';
@@ -66,12 +72,15 @@ const OwnerForm = () => {
   const [createOwner, createOwnerProps] = useMutation(CREATE_OWNER);
   const [updateOwner, updateOwnerProps] = useMutation(UPDATE_OWNER);
   const { data: properties, loading, error } = useQuery(GET_PROPERTIES);
+  const { data: propertiesWithoutOwer } = useQuery(GET_PROPERTIES_WITHOUT_OWNER);
   const getOwner = useQuery(GET_OWNER, { variables: { id: id.current } });
-  console.log('getowner', getOwner.data?.user);
+  const arrayOfproperties = id.current
+    ? properties?.properties
+    : propertiesWithoutOwer?.properties;
   if (getOwner.data?.user && !prevDataForm) {
     setPrevDataForm({
       ...getOwner.data?.user,
-      properties: getOwner.data?.user.properties[0],
+      properties: getOwner.data?.user.properties[0].id,
     });
   }
 
@@ -113,7 +122,6 @@ const OwnerForm = () => {
         router.push('/admin/owners/list-owners');
       },
     });
-
   if (false) {
     return <h1>Loading...</h1>;
   }
@@ -181,7 +189,7 @@ const OwnerForm = () => {
               onChange={handleChange}
             >
               <option value="">Seleccionar propiedad</option>
-              {properties?.properties.map((property: { id: string; name: string }) => (
+              {arrayOfproperties?.map((property: { id: string; name: string }) => (
                 <option value={property.id} key={property.id}>
                   {property.name}
                 </option>

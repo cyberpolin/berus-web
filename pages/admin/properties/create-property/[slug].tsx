@@ -83,7 +83,10 @@ const PropertyForm = () => {
     },
   });
   if (property?.property && !prevDataForm) {
-    setPrevDataForm(property.property);
+    setPrevDataForm({
+      ...property.property,
+      owner: property.property.owner?.id,
+    });
   }
 
   const { values, errors, touched, handleSubmit, setFieldValue, handleChange } =
@@ -112,6 +115,8 @@ const PropertyForm = () => {
             },
           });
         }
+        resetForm();
+        router.push('/admin/properties');
       },
     });
 

@@ -21,8 +21,24 @@ mutation UPDATE_OWNER($id: ID, $data: UserUpdateInput!) {
   }
 }
 
-query GET_PROPERTIES {
+query GET_PROPERTIES_WITHOUT_OWNER {
   properties(where: { owner: null }, orderBy: { name: asc }) {
+    name
+    square
+    lot
+    id
+    kindOfProperty
+    owner {
+      id
+    }
+    payments {
+      id
+    }
+  }
+}
+
+query GET_PROPERTIES {
+  properties(orderBy: { name: asc }) {
     name
     square
     lot
