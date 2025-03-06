@@ -4,10 +4,15 @@ import { useQuery } from '@apollo/client';
 import { GET_OWNERS } from '../adminQueries.gql';
 import Loader from '@/components/General/Loader';
 import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 
 const ListOwner = () => {
   const router = useRouter();
-  const { data, loading, error } = useQuery(GET_OWNERS);
+  const { data, loading, error, refetch } = useQuery(GET_OWNERS);
+
+  useEffect(() => {
+    refetch();
+  }, []);
 
   if (error || loading) {
     return <Loader error={error} loading={loading} />;

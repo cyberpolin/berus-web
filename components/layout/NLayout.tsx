@@ -87,7 +87,7 @@ const NLayout = (props: any) => {
               <>
                 <LMenu href="/admin" title="Pagos" />
                 <LMenu href="/admin/properties" title="Properties" />
-                <LMenu href="/admin/owners/list-owners" title="Owners" />
+                <LMenu href="/admin/owners" title="Owners" />
                 <LMenu href="/admin/comon-areas" title="Amenidades" />
                 <LMenu href="/admin/tags" title="Tags" />
                 <LMenu href="/admin/facturacion" title="Facturacion" />

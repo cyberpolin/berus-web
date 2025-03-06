@@ -48,14 +48,19 @@ const OwnerForm = () => {
       .string()
       .matches(/^\d{10}$/, 'El teléfono debe ser de 10 dígitos')
       .required('El teléfono es requerido'),
-    password: yup
-      .string()
-      .min(4, 'La contraseña debe tener al menos 4 caracteres')
-      .required('La contraseña es requerida'),
+    password: id
+      ? yup.string().min(4, 'La contraseña debe tener al menos 4 caracteres')
+      : yup
+          .string()
+          .min(4, 'La contraseña debe tener al menos 4 caracteres')
+          .required('La contraseña es requerida'),
     confirmPassword: yup
       .string()
-      .oneOf([yup.ref('password'), null], 'Las contraseñas no coinciden')
-      .required('La confirmación de la contraseña es requerida'),
+      .oneOf([yup.ref('password'), null], 'Las contraseñas deben coincidir')
+      .when('password', {
+        is: (val: any) => val && val.length > 0,
+        then: yup.string().required('La confirmación de contraseña es requerida'),
+      }),
     properties: yup.string(),
   });
 
@@ -80,7 +85,7 @@ const OwnerForm = () => {
   if (getOwner.data?.user && !prevDataForm) {
     setPrevDataForm({
       ...getOwner.data?.user,
-      properties: getOwner.data?.user.properties[0].id,
+      properties: getOwner.data?.user?.properties[0]?.id,
     });
   }
 
@@ -95,13 +100,11 @@ const OwnerForm = () => {
             variables: {
               id: id.current,
               data: {
-                data: {
-                  name: variables.name,
-                  email: variables.email,
-                  password: variables.password,
-                  phone: variables.phone,
-                  properties: { connect: [{ id: variables.properties }] },
-                },
+                name: variables.name,
+                email: variables.email,
+                password: variables.password,
+                phone: variables.phone,
+                properties: { connect: [{ id: variables.properties }] },
               },
             },
           });
@@ -119,7 +122,7 @@ const OwnerForm = () => {
           });
         }
         resetForm();
-        router.push('/admin/owners/list-owners');
+        router.push('/admin/owners');
       },
     });
   if (false) {
