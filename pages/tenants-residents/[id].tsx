@@ -4,8 +4,8 @@ import Select from '@/components/General/Select';
 import Layout from '@/components/layout/NLayout';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
-import { CREATE_RESIDENT, CREATE_TENANT } from './queries.gql';
-import { useMutation } from '@apollo/client';
+import { CREATE_RESIDENT, CREATE_TENANT, GET_PROPERTIES } from './queries.gql';
+import { useMutation, useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import UseAuth from '@/lib/UseAuth';
@@ -56,13 +56,18 @@ const userTenants = schemaUser.concat(schemaTenants);
 const userResidents = schemaUser.concat(schemaResidents);
 
 const ResidentTenantsForm = () => {
+  const router = useRouter();
   const { id } = useRouter().query;
   const { user } = UseAuth();
-  const tenant = user.tenant?.properties;
-  const getProperties = tenant?.[0]?.id ? tenant : user?.owner?.properties;
   const [isTenants, setIsTenants] = useState(false);
   const [create_resident, create_residentProps] = useMutation(CREATE_RESIDENT);
   const [create_tenant, create_tenantProps] = useMutation(CREATE_TENANT);
+  const { data: properties, propertiesProps } = useQuery(GET_PROPERTIES, {
+    variables: {
+      id: user.id,
+    },
+  });
+  console.log('get_properties', properties);
   const initialValuesUserTenants = {
     name: '',
     phone: '',
@@ -71,7 +76,7 @@ const ResidentTenantsForm = () => {
     confirmPassword: '',
     address: '',
     status: 'ACTIVE',
-    properties: user?.owner?.properties?.[0]?.id || '',
+    properties: '',
   };
   const initialValuesUserResidents = {
     name: '',
@@ -79,7 +84,7 @@ const ResidentTenantsForm = () => {
     email: '',
     password: '',
     confirmPassword: '',
-    properties: getProperties?.[0]?.id || '',
+    properties: '',
   };
 
   const { values, errors, touched, handleSubmit, setFieldValue, handleChange } =
@@ -97,7 +102,7 @@ const ResidentTenantsForm = () => {
                 password: variables.password,
                 address: variables.address,
                 status: variables.status,
-                properties: variables.properties || user.properties[0].id,
+                properties: variables.properties,
               },
             })
           : await create_resident({
@@ -106,7 +111,7 @@ const ResidentTenantsForm = () => {
                 phone: variables.phone,
                 email: variables.email,
                 password: variables.password,
-                properties: variables.properties || user.properties[0].id,
+                properties: variables.properties,
               },
             });
         console.log(
@@ -114,6 +119,7 @@ const ResidentTenantsForm = () => {
           isTenants ? create_tenantProps.error : create_residentProps.error,
         );
         resetForm();
+        router.push('/tenants-residents/table-tenants-residents');
       },
     });
 
@@ -215,7 +221,7 @@ const ResidentTenantsForm = () => {
                 value={values.properties}
                 onChange={handleChange}
               >
-                {user?.owner?.properties?.map(
+                {properties?.Properties?.map(
                   (propertie: { id: string; name: string }) => (
                     <option key={propertie.id} value={propertie.id}>
                       {propertie.name}
@@ -233,11 +239,13 @@ const ResidentTenantsForm = () => {
                 value={values.properties}
                 onChange={handleChange}
               >
-                {getProperties?.map((propertie: { id: string; name: string }) => (
-                  <option key={propertie.id} value={propertie.id}>
-                    {propertie.name}
-                  </option>
-                ))}
+                {properties?.properties?.map(
+                  (propertie: { id: string; name: string }) => (
+                    <option key={propertie.id} value={propertie.id}>
+                      {propertie.name}
+                    </option>
+                  ),
+                )}
               </Select>
             </div>
           )}

@@ -17,6 +17,7 @@ mutation CREATE_RESIDENT(
           email: $email
           password: $password
           properties: { connect: { id: $properties } }
+          isVerified: true
         }
       }
     }
@@ -49,6 +50,7 @@ mutation CREATE_TENANT(
           email: $email
           password: $password
           properties: { connect: { id: $properties } }
+          isVerified: true
         }
       }
     }
@@ -60,6 +62,7 @@ mutation CREATE_TENANT(
 
 mutation UPDATE_TENANT(
   $id: ID
+  $userId: ID
   $name: String
   $phone: String
   $address: String
@@ -79,6 +82,9 @@ mutation UPDATE_TENANT(
     id
     name
   }
+  updateUser(where: { id: $userId }, data: { name: $name, phone: $phone }) {
+    id
+  }
 }
 
 mutation UPDATE_RESIDENT($id: ID!, $name: String, $phone: String, $isActive: Boolean) {
@@ -86,6 +92,13 @@ mutation UPDATE_RESIDENT($id: ID!, $name: String, $phone: String, $isActive: Boo
     where: { id: $id }
     data: { name: $name, phone: $phone, isActive: $isActive }
   ) {
+    id
+    name
+  }
+}
+
+query GET_PROPERTIES($id: ID!) {
+  properties(where: { owner: { id: { equals: $id } } }) {
     id
     name
   }

@@ -36,6 +36,7 @@ const TableTenantsResidents = () => {
     });
   }
   const { data, loading, error } = residestTenantsProps;
+  console.log('data', data);
   const people = tenantPropertyID
     ? { resident: data?.property?.residents }
     : data?.property;
