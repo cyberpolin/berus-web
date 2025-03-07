@@ -21,6 +21,8 @@ const PropertyForm = () => {
   const [prevDataForm, setPrevDataForm] = useState(null);
   const router = useRouter();
   let id = useRef('');
+  // you need to crea in the db a comodin owner and cahnge the id
+  const OnwerIDComodine = 'b7503b1f-ec56-497b-8092-7637b4019912';
 
   useEffect(() => {
     if (slug) {
@@ -85,24 +87,24 @@ const PropertyForm = () => {
   if (property?.property && !prevDataForm) {
     setPrevDataForm({
       ...property.property,
-      owner: property.property.owner?.id,
+      owner: property.property.owner?.id + ',' + property.property.theOwner?.id,
     });
   }
-
   const { values, errors, touched, handleSubmit, setFieldValue, handleChange } =
     useFormik({
       initialValues: prevDataForm || initialValuesProperty,
       validationSchema: schemaProperty,
       enableReinitialize: true,
       onSubmit: async (variables, { resetForm }) => {
-        if (id.current) {
+        if (id.current !== 'new') {
           await updateProperty({
             variables: {
               id: id.current,
               square: variables.square,
               lot: variables.lot,
               kindOfProperty: variables.kindOfProperty,
-              owner: variables.owner,
+              owner: variables.owner.split(',')[0],
+              theOwner: variables.owner.split(',')[1],
             },
           });
         } else {
@@ -111,7 +113,8 @@ const PropertyForm = () => {
               square: variables.square,
               lot: variables.lot,
               kindOfProperty: variables.kindOfProperty,
-              owner: variables.owner,
+              owner: variables.owner.split(',')[0],
+              theOwner: variables.owner.split(',')[1],
             },
           });
         }
@@ -172,8 +175,18 @@ const PropertyForm = () => {
             >
               <option value="">Seleccionar dueño</option>
               {owners?.users.map(
-                ({ id, name, phone }: { id: string; name: string; phone: string }) => (
-                  <option value={id} key={id}>
+                ({
+                  id,
+                  name,
+                  phone,
+                  owner,
+                }: {
+                  id: string;
+                  name: string;
+                  phone: string;
+                  owner: { id: string };
+                }) => (
+                  <option value={id + ',' + (owner?.id || OnwerIDComodine)} key={id}>
                     {name + ', ' + phone}
                   </option>
                 ),

@@ -15,8 +15,14 @@ mutation CREATE_OWNER($data: UserCreateInput!) {
   }
 }
 
-mutation UPDATE_OWNER($id: ID, $data: UserUpdateInput!) {
+mutation UPDATE_OWNER_USER($id: ID, $data: UserUpdateInput!) {
   updateUser(where: { id: $id }, data: $data) {
+    name
+  }
+}
+
+mutation UPDATE_OWNER($id: ID, $data: OwnerUpdateInput!) {
+  updateOwner(where: { id: $id }, data: $data) {
     name
   }
 }
@@ -59,6 +65,9 @@ query GET_OWNER($id: ID) {
     email
     phone
     properties {
+      id
+    }
+    owner {
       id
     }
   }

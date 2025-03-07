@@ -209,6 +209,9 @@ query GET_PROPERTY($id: ID) {
       name
       phone
     }
+    theOwner {
+      id
+    }
     payments {
       id
     }
@@ -258,14 +261,16 @@ mutation CREATE_PROPERTY(
   $lot: String!
   $square: String!
   $kindOfProperty: PropertyKindOfPropertyType!
-  $owner: [ID!]
+  $owner: ID
+  $theOwner: ID
 ) {
   createProperty(
     data: {
       lot: $lot
       square: $square
       kindOfProperty: $kindOfProperty
-      owner: { connect: [{ id: $owner }] }
+      owner: { connect: { id: $owner } }
+      theOwner: { connect: { id: $theOwner } }
     }
   ) {
     id
@@ -279,6 +284,7 @@ mutation UPDATE_PROPERTY(
   $square: String!
   $kindOfProperty: PropertyKindOfPropertyType!
   $owner: ID
+  $theOwner: ID
 ) {
   updateProperty(
     where: { id: $id }
@@ -287,6 +293,7 @@ mutation UPDATE_PROPERTY(
       square: $square
       kindOfProperty: $kindOfProperty
       owner: { connect: { id: $owner } }
+      theOwner: { connect: { id: $theOwner } }
     }
   ) {
     id
@@ -303,6 +310,9 @@ query GET_OWNERS {
     properties {
       id
       name
+    }
+    owner {
+      id
     }
   }
 }
@@ -321,6 +331,7 @@ mutation CREATE_OWNER(
       phone: $phone
       isVerified: true
       isOwner: true
+      owner: { create: { name: $name, phone: $phone } }
     }
   ) {
     name

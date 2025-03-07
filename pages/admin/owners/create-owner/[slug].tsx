@@ -8,6 +8,7 @@ import {
   GET_PROPERTIES,
   GET_PROPERTIES_WITHOUT_OWNER,
   UPDATE_OWNER,
+  UPDATE_OWNER_USER,
   GET_OWNER,
 } from '../queries.gql';
 import { useMutation, useQuery } from '@apollo/client';
@@ -76,9 +77,11 @@ const OwnerForm = () => {
 
   const [createOwner, createOwnerProps] = useMutation(CREATE_OWNER);
   const [updateOwner, updateOwnerProps] = useMutation(UPDATE_OWNER);
+  const [updateOwnerUser, updateOwnerUserProps] = useMutation(UPDATE_OWNER_USER);
   const { data: properties, loading, error } = useQuery(GET_PROPERTIES);
   const { data: propertiesWithoutOwer } = useQuery(GET_PROPERTIES_WITHOUT_OWNER);
   const getOwner = useQuery(GET_OWNER, { variables: { id: id.current } });
+  const userHasOwnerRelation = getOwner.data?.user?.owner?.id;
   const arrayOfproperties = id.current
     ? properties?.properties
     : propertiesWithoutOwer?.properties;
@@ -95,8 +98,8 @@ const OwnerForm = () => {
       validationSchema: schemaOwner,
       enableReinitialize: true,
       onSubmit: async (variables, { resetForm }) => {
-        if (id.current) {
-          await updateOwner({
+        if (id.current !== 'new') {
+          await updateOwnerUser({
             variables: {
               id: id.current,
               data: {
@@ -108,6 +111,17 @@ const OwnerForm = () => {
               },
             },
           });
+          userHasOwnerRelation &&
+            (await updateOwner({
+              variables: {
+                id: userHasOwnerRelation,
+                data: {
+                  name: variables.name,
+                  phone: variables.phone,
+                  properties: { connect: [{ id: variables.properties }] },
+                },
+              },
+            }));
         } else {
           await createOwner({
             variables: {
@@ -116,7 +130,29 @@ const OwnerForm = () => {
                 email: variables.email,
                 password: variables.password,
                 phone: variables.phone,
-                properties: { connect: [{ id: variables.properties }] },
+                properties: {
+                  connect: [
+                    {
+                      id: variables.properties,
+                    },
+                  ],
+                },
+                isOwner: true,
+                isVerified: true,
+                // owner is temp
+                owner: {
+                  create: {
+                    name: variables.name,
+                    phone: variables.phone,
+                    properties: {
+                      connect: [
+                        {
+                          id: variables.properties,
+                        },
+                      ],
+                    },
+                  },
+                },
               },
             },
           });
