@@ -57,17 +57,27 @@ const userResidents = schemaUser.concat(schemaResidents);
 
 const ResidentTenantsForm = () => {
   const router = useRouter();
-  const { id } = useRouter().query;
   const { user } = UseAuth();
   const [isTenants, setIsTenants] = useState(false);
   const [create_resident, create_residentProps] = useMutation(CREATE_RESIDENT);
   const [create_tenant, create_tenantProps] = useMutation(CREATE_TENANT);
-  const { data: properties, propertiesProps } = useQuery(GET_PROPERTIES, {
-    variables: {
-      id: user.id,
-    },
-  });
-  console.log('get_properties', properties);
+  let get_properties;
+
+  if (user?.tenant) {
+    get_properties = {
+      data: {
+        ...user.tenant,
+      },
+    };
+  } else {
+    get_properties = useQuery(GET_PROPERTIES, {
+      variables: {
+        id: user.id,
+      },
+    });
+  }
+  const { data: properties } = get_properties;
+
   const initialValuesUserTenants = {
     name: '',
     phone: '',
@@ -122,8 +132,6 @@ const ResidentTenantsForm = () => {
         router.push('/tenants-residents/table-tenants-residents');
       },
     });
-
-  console.log('error', errors);
 
   return (
     <Layout>
@@ -221,7 +229,8 @@ const ResidentTenantsForm = () => {
                 value={values.properties}
                 onChange={handleChange}
               >
-                {properties?.Properties?.map(
+                <option value="">Selecione una propiedad</option>
+                {properties?.properties?.map(
                   (propertie: { id: string; name: string }) => (
                     <option key={propertie.id} value={propertie.id}>
                       {propertie.name}
@@ -239,6 +248,7 @@ const ResidentTenantsForm = () => {
                 value={values.properties}
                 onChange={handleChange}
               >
+                <option value="">Selecione una propiedad</option>
                 {properties?.properties?.map(
                   (propertie: { id: string; name: string }) => (
                     <option key={propertie.id} value={propertie.id}>

@@ -1,11 +1,15 @@
-import { useQuery } from '@apollo/client';
-import { GET_RESIDENTS_TENANTS, GET_RESIDENTS_BY_TENANT } from '../dashboard/queries.gql';
+import { useQuery, useMutation } from '@apollo/client';
 import Layout from '@/components/layout/NLayout';
 import { useRouter } from 'next/router';
 import UseAuth from '@/lib/UseAuth';
-import { UPDATE_RESIDENT, UPDATE_TENANT } from './queries.gql';
-import { useMutation } from '@apollo/client';
+import {
+  UPDATE_RESIDENT,
+  UPDATE_TENANT,
+  GET_RESIDENTS_TENANTS,
+  GET_RESIDENTS_BY_TENANT,
+} from './queries.gql';
 import { statusEnum } from '@/enums/residentTenants';
+import { useEffect } from 'react';
 
 const TableTenantsResidents = () => {
   const router = useRouter();
@@ -14,42 +18,46 @@ const TableTenantsResidents = () => {
   const [update_tenant, update_tenantProps] = useMutation(UPDATE_TENANT);
   const resident = user.resident?.properties?.[0];
   const tenantPropertyID = user.tenant?.properties?.[0]?.id;
-  let residestTenantsProps;
   let ownerID = user.owner?.properties?.[0]?.id;
+
   const handleDelete = (id: string, type: string) => {
     type === 'tenants'
       ? update_tenant({ variables: { id: id, isActive: false } })
       : update_resident({ variables: { id: id, isActive: false } });
   };
 
+  let query;
+  let variables;
+
   if (tenantPropertyID) {
-    residestTenantsProps = useQuery(GET_RESIDENTS_BY_TENANT, {
-      variables: {
-        id: tenantPropertyID,
-      },
-    });
+    query = GET_RESIDENTS_BY_TENANT;
+    variables = { id: tenantPropertyID };
   } else {
-    residestTenantsProps = useQuery(GET_RESIDENTS_TENANTS, {
-      variables: {
-        id: ownerID,
-      },
-    });
+    query = GET_RESIDENTS_TENANTS;
+    variables = { id: ownerID };
   }
-  const { data, loading, error } = residestTenantsProps;
-  console.log('data', data);
+
+  const { data, loading, error, refetch } = useQuery(query, { variables });
+
   const people = tenantPropertyID
     ? { resident: data?.property?.residents }
     : data?.property;
+
+  useEffect(() => {
+    refetch();
+  }, []);
+
   if (loading) {
-    return;
+    return <div>Loading...</div>;
   }
+
   return (
     <Layout>
       <div className="mx-auto flex w-full max-w-[1400px] flex-col px-4 ">
         <h2 className="font-semi-bold text-2xl">Residentes y arrendatarios</h2>
         {!resident?.id && (
           <button
-            className=" mr-2 mt-3 w-32 rounded bg-emerald-700 px-3 py-1 text-white hover:bg-green-500"
+            className="mr-2 mt-3 w-32 rounded bg-emerald-700 px-3 py-1 text-white hover:bg-green-500"
             onClick={() => router.push(`/tenants-residents/add-tenant-resident`)}
           >
             {' '}
