@@ -1,0 +1,37 @@
+query GET_SURVEYS {
+  surveys {
+    id
+    state
+    createdAt
+    endDate
+    questions
+  }
+}
+
+query GET_SURVEY($id: ID!) {
+  survey(where: { id: $id }) {
+    id
+    state
+    createdAt
+    endDate
+    questions
+  }
+}
+
+mutation CREATE_SURVEY($data: SurveyCreateInput!) {
+  createSurvey(data: $data) {
+    id
+  }
+}
+
+mutation UPDATE_SURVEY($id: ID!, $data: SurveyUpdateInput!) {
+  updateSurvey(where: { id: $id }, data: $data) {
+    id
+  }
+}
+
+mutation DELETE_SURVEY($id: ID!) {
+  deleteSurvey(where: { id: $id }) {
+    id
+  }
+}
