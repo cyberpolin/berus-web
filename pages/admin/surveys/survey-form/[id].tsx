@@ -11,35 +11,56 @@ const SurveyForm = () => {
   const { id } = useRouter().query
   const router = useRouter()
 
-  const schemaOwner = yup.object().shape({
-    questions: yup.string().required('El nombre de la encuesta es requerido'),
+  const schemaQuestion = yup.object().shape({
+    question: yup.string().required('El nombre de la encuesta es requerido'),
+    endDate: yup.string().required('La fecha de cierre es requerida'),
+    option1: yup.string().required('la opcion  es requerida'),
+    option2: yup.string().required('la opcion  es requerida'),
   })
 
   const initialValues = {
-    questions: '',
+    question: '',
     endDate: '',
+    option1: '',
+    option2: '',
   }
 
   const [createSurvey] = useMutation(CREATE_SURVEY)
   const [updateSurvey] = useMutation(UPDATE_SURVEY)
   const { data: { survey } = {} } = useQuery(GET_SURVEY, { variables: { id } })
+  const { questions, endDate } = survey || {}
+
   const PrevData = {
-    questions: survey?.questions,
-    endDate: survey?.endDate,
+    question: questions ? JSON.parse(questions).question1 : '',
+    option1: questions ? JSON.parse(questions).option1 : '',
+    option2: questions ? JSON.parse(questions).option2 : '',
+    endDate: endDate ? new Date(endDate).toISOString().slice(0, 16) : '',
+  }
+  const handleJson = (question: string, opt1: string, opt2: string) => {
+    return JSON.stringify({
+      question1: question,
+      option1: opt1,
+      option2: opt2,
+    })
   }
 
   const { values, errors, touched, handleSubmit, setFieldValue, handleChange } =
     useFormik({
       initialValues: PrevData || initialValues,
-      validationSchema: schemaOwner,
+      validationSchema: schemaQuestion,
       enableReinitialize: true,
-      onSubmit: async (variables, { resetForm }) => {
+
+      onSubmit: async (
+        { question, option1, option2, endDate },
+        { resetForm }
+      ) => {
         if (id !== 'new') {
           await updateSurvey({
             variables: {
               id: id,
               data: {
-                questions: variables.questions,
+                questions: handleJson(question, option1, option2),
+                endDate: new Date(endDate).toISOString(),
               },
             },
           })
@@ -47,7 +68,8 @@ const SurveyForm = () => {
           await createSurvey({
             variables: {
               data: {
-                questions: variables.questions,
+                questions: handleJson(question, option1, option2),
+                endDate: new Date(endDate).toISOString(),
               },
             },
           })
@@ -68,11 +90,29 @@ const SurveyForm = () => {
           <h2 className="font-semi-bold text-2xl">Añade un nuevo proveedor</h2>
           <Input
             placeholder="pregunta"
-            name="questions"
+            name="question"
             label="pregunta"
             id="questions"
-            value={values.questions}
-            error={errors.questions}
+            value={values.question}
+            error={errors.question}
+            onChange={handleChange}
+          />
+          <Input
+            placeholder="opcion1"
+            name="option1"
+            label="opcion1"
+            id="option1"
+            value={values.option1}
+            error={errors.option1}
+            onChange={handleChange}
+          />
+          <Input
+            placeholder="opcion2"
+            name="option2"
+            label="opcion2"
+            id="option2"
+            value={values.option2}
+            error={errors.option2}
             onChange={handleChange}
           />
           <Input

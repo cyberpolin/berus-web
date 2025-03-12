@@ -70,7 +70,7 @@ const SurveyList = () => {
                 </th>
                 <th
                   scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
+                  className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-500"
                 >
                   Acciones
                 </th>
@@ -92,7 +92,9 @@ const SurveyList = () => {
                   questions: string
                 }) => (
                   <tr key={id} className="hover:bg-gray-500">
-                    <td className="px-6 py-4">{questions}</td>
+                    <td className="px-6 py-4">
+                      {questions ? JSON.parse(questions).question1 : ''}
+                    </td>
                     <td className="px-6 py-4">{state}</td>
                     <td className="px-6 py-4">
                       {new Date(createdAt).toLocaleDateString()}
