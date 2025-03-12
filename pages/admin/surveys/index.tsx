@@ -22,13 +22,14 @@ const SurveyList = () => {
       },
     })
   }
-  if (loading) {
-    return
-  }
 
-  // useEffect(() => {
-  //   refetch()
-  // }, [])
+  useEffect(() => {
+    refetch()
+  }, [])
+
+  if (loading) {
+    return <div>Loading...</div>
+  }
 
   return (
     <Layout>
