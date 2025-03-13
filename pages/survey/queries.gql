@@ -36,3 +36,12 @@ query GET_VOTE($id: ID, $user: ID) {
     vote
   }
 }
+
+query GET_TOTAL_VOTES($id: ID, $option: String, $option2: String) {
+  option1: votesCount(
+    where: { survey: { id: { equals: $id } }, vote: { equals: $option } }
+  )
+  option2: votesCount(
+    where: { survey: { id: { equals: $id } }, vote: { equals: $option2 } }
+  )
+}
