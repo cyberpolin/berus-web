@@ -108,6 +108,13 @@ const NLayout = (props: any) => {
                 >
                   Encuestas
                 </Link>
+                <Link
+                  className="block p-5 text-center text-sm hover:text-gray-800 hover:underline md:mt-0 md:inline-block dark:text-amber-50"
+                  href="/survey"
+                  key="/survey"
+                >
+                  Encuesta
+                </Link>
               </>
             )}
             <Link

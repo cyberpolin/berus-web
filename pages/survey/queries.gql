@@ -1,0 +1,38 @@
+query GET_SURVEYS {
+  surveys {
+    id
+    state
+    createdAt
+    endDate
+    questions
+  }
+}
+
+query GET_SURVEY_RECENT {
+  surveys(
+    where: { state: { equals: ACTIVE } }
+    orderBy: { createdAt: desc }
+    take: 1
+  ) {
+    id
+    state
+    createdAt
+    endDate
+    questions
+  }
+}
+
+mutation VOTE_SURVEY($data: VoteCreateInput!) {
+  createVote(data: $data) {
+    id
+  }
+}
+
+query GET_VOTE($id: ID, $user: ID) {
+  votes(
+    where: { survey: { id: { equals: $id } }, user: { id: { equals: $user } } }
+  ) {
+    id
+    vote
+  }
+}

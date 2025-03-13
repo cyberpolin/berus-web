@@ -78,7 +78,7 @@ const SurveyList = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200 [&>*:nth-child(even)]:bg-gray-100 [&>*:nth-child(odd)]:bg-white">
-              {surveys.map(
+              {surveys?.map(
                 ({
                   id,
                   state,
