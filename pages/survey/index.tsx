@@ -9,6 +9,7 @@ import {
 } from './queries.gql'
 import UseAuth from '@/lib/UseAuth'
 import { useEffect } from 'react'
+import PieChart from '@/components/General/PieChart'
 
 export default function Survey() {
   const [vote, setVote] = useState('')
@@ -41,10 +42,11 @@ export default function Survey() {
     },
   })
 
+  const { option1: voteOPtion1, option2: voteOPtion2 } = totalVotes
   const getWiner = () => {
-    const { option1: value, option2: value2 } = totalVotes
     return {
-      [value > value2 ? option1 : option2]: value > value2 ? value : value2,
+      [voteOPtion1 > voteOPtion2 ? option1 : option2]:
+        voteOPtion1 > voteOPtion2 ? voteOPtion1 : voteOPtion2,
     }
   }
   const [key, value] = Object.entries(getWiner())[0]
@@ -75,6 +77,17 @@ export default function Survey() {
         alert(errorMessage)
       }
     }
+  }
+  const data = {
+    labels: [option1, option2],
+    datasets: [
+      {
+        label: 'Resultados de la encuesta',
+        data: [voteOPtion1, voteOPtion2],
+        backgroundColor: ['#82B366', '#6C8EBF'],
+        hoverOffset: 4,
+      },
+    ],
   }
 
   return (
@@ -128,6 +141,7 @@ export default function Survey() {
                 <span className="mt-2 block text-lg font-semibold text-gray-800">
                   El ganador es {key} con {value} votos
                 </span>
+                <PieChart data={data} />
               </>
             )}
           </div>
