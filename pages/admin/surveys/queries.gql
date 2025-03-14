@@ -1,5 +1,5 @@
 query GET_SURVEYS {
-  surveys {
+  surveys(orderBy: { createdAt: desc }) {
     id
     state
     createdAt

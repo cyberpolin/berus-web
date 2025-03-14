@@ -79,7 +79,7 @@ export default function Survey() {
 
   return (
     <NLayout>
-      <div className="mx-auto flex w-[700px] flex-col items-center rounded-lg bg-gray-100 p-6 shadow-lg">
+      <div className="mx-auto flex w-full flex-col items-center rounded-lg bg-gray-100 shadow-lg md:max-w-[700px]">
         <h1 className="mb-6 text-3xl font-bold text-gray-800">{question1}</h1>
         <div className="mt-4 flex space-x-4">
           <button

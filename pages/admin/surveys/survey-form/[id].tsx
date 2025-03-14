@@ -10,6 +10,7 @@ import { useRouter } from 'next/router'
 const SurveyForm = () => {
   const { id } = useRouter().query
   const router = useRouter()
+  const title = id === 'new' ? 'Crear encuesta' : 'Editar encuesta'
 
   const schemaQuestion = yup.object().shape({
     question: yup.string().required('El nombre de la encuesta es requerido'),
@@ -87,7 +88,7 @@ const SurveyForm = () => {
     <Layout>
       <div className=" mx-auto w-full max-w-[1000px] px-10 pt-4  ">
         <form onSubmit={handleSubmit} className="flex flex-col  gap-y-8 ">
-          <h2 className="font-semi-bold text-2xl">Añade un nuevo proveedor</h2>
+          <h2 className="font-semi-bold text-2xl">{title}</h2>
           <Input
             placeholder="pregunta"
             name="question"
@@ -126,7 +127,7 @@ const SurveyForm = () => {
             typeInput="datetime-local"
           />
           <Button
-            title="Crear encuesta"
+            title={title}
             type="submit"
             disabled={Object.keys(errors).length > 0}
           />

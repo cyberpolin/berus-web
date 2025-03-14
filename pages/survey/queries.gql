@@ -9,11 +9,7 @@ query GET_SURVEYS {
 }
 
 query GET_SURVEY_RECENT {
-  surveys(
-    where: { state: { equals: ACTIVE } }
-    orderBy: { createdAt: desc }
-    take: 1
-  ) {
+  surveys(orderBy: { createdAt: desc }, take: 1) {
     id
     state
     createdAt
