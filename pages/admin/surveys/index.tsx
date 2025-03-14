@@ -22,7 +22,7 @@ const SurveyList = () => {
       },
     })
   }
-
+  console.log('surveys', surveys)
   useEffect(() => {
     refetch()
   }, [])
@@ -91,50 +91,70 @@ const SurveyList = () => {
                   createdAt: string
                   endDate: string
                   questions: string
-                }) => (
-                  <tr key={id} className="hover:bg-gray-500">
-                    <td className="px-6 py-4">
-                      {questions ? JSON.parse(questions).question1 : ''}
-                    </td>
-                    <td className="px-6 py-4">{state}</td>
-                    <td className="px-6 py-4">
-                      {new Date(createdAt).toLocaleDateString()}
-                    </td>
-                    <td className="px-6 py-4">
-                      {`${new Date(endDate).toLocaleDateString()} ${new Date(
-                        endDate
-                      ).toLocaleTimeString()}`}
-                    </td>
-                    <td className="px-6 py-4">
-                      {state === 'ACTIVE' && (
-                        <div className="align-center flex flex-wrap justify-center gap-x-4">
-                          <span
-                            className="w-28 rounded px-3 py-1 text-center text-red-400 hover:bg-gray-200"
-                            onClick={() => {
-                              if (
-                                window.confirm(
-                                  'Seguro que deseas eliminar esta encuesta?'
-                                )
-                              )
-                                handleDelete(id)
-                            }}
-                          >
-                            Eliminar
-                          </span>
+                }) => {
+                  let parsedQuestions = questions ? JSON.parse(questions) : {}
 
+                  const { question1, option1, option2 } = parsedQuestions || {}
+
+                  return (
+                    <tr key={id} className="hover:bg-gray-500">
+                      <td className="px-6 py-4">
+                        {question1 || 'No disponible'}
+                      </td>
+                      <td className="px-6 py-4">{state}</td>
+                      <td className="px-6 py-4">
+                        {new Date(createdAt).toLocaleDateString()}
+                      </td>
+                      <td className="px-6 py-4">
+                        {`${new Date(endDate).toLocaleDateString()} ${new Date(
+                          endDate
+                        ).toLocaleTimeString()}`}
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex flex-col items-center gap-y-2">
+                          {state === 'ACTIVE' && (
+                            <div className="align-center flex flex-wrap justify-center gap-x-4">
+                              <span
+                                className="w-28 rounded px-3 py-1 text-center text-red-400 hover:bg-gray-200"
+                                onClick={() => {
+                                  if (
+                                    window.confirm(
+                                      'Seguro que deseas eliminar esta encuesta?'
+                                    )
+                                  )
+                                    handleDelete(id)
+                                }}
+                              >
+                                Eliminar
+                              </span>
+
+                              <button
+                                className="mr-2 rounded bg-emerald-500 px-3 py-1 text-white hover:bg-green-600"
+                                onClick={() =>
+                                  router.push(
+                                    `/admin/surveys/survey-form/${id}`
+                                  )
+                                }
+                              >
+                                Editar &#9998;
+                              </button>
+                            </div>
+                          )}
                           <button
-                            className="mr-2 rounded bg-emerald-500 px-3 py-1 text-white hover:bg-green-600"
+                            className="mr-2 w-32 rounded bg-gray-400 px-3 py-1 text-white hover:bg-green-600"
                             onClick={() =>
-                              router.push(`/admin/surveys/survey-form/${id}`)
+                              router.push(
+                                `/admin/surveys/votes/${id}/${option1}/${option2}`
+                              )
                             }
                           >
-                            Editar &#9998;
+                            Votaciones
                           </button>
                         </div>
-                      )}
-                    </td>
-                  </tr>
-                )
+                      </td>
+                    </tr>
+                  )
+                }
               )}
             </tbody>
           </table>

@@ -26,7 +26,7 @@ const NLayout = (props: any) => {
       <ProfileMenu user={user} show={ui.profile} />
       <div
         id="setting"
-        className={`${showSettings} absolute right-2 top-20 block w-40  overflow-hidden rounded-md border-2 bg-white transition-opacity  dark:border-gray-600 dark:bg-gray-800`}
+        className={`${showSettings} right-2 top-20 block w-40  overflow-hidden rounded-md border-2 bg-white transition-opacity  dark:border-gray-600 dark:bg-gray-800`}
       >
         <Link href="#" className="block p-2 text-xs hover:bg-slate-200">
           ...
@@ -108,13 +108,6 @@ const NLayout = (props: any) => {
                 >
                   Encuestas
                 </Link>
-                <Link
-                  className="block p-5 text-center text-sm hover:text-gray-800 hover:underline md:mt-0 md:inline-block dark:text-amber-50"
-                  href="/survey"
-                  key="/survey"
-                >
-                  Encuesta
-                </Link>
               </>
             )}
             <Link
@@ -130,6 +123,13 @@ const NLayout = (props: any) => {
               key="/dashboard/descargables"
             >
               Descargables
+            </Link>
+            <Link
+              className="block p-5 text-center text-sm hover:text-gray-800 hover:underline md:mt-0 md:inline-block dark:text-amber-50"
+              href="/survey"
+              key="/survey"
+            >
+              Encuesta
             </Link>
             {/* <Link
               className="block p-5 text-center text-sm hover:text-gray-800 hover:underline dark:text-amber-50 md:mt-0 md:inline-block"

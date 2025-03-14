@@ -1,19 +1,16 @@
 import NLayout from '@/components/layout/NLayout'
 import { useState } from 'react'
 import { useQuery, useMutation } from '@apollo/client'
-import {
-  GET_SURVEY_RECENT,
-  VOTE_SURVEY,
-  GET_VOTE,
-  GET_TOTAL_VOTES,
-} from './queries.gql'
+import { GET_SURVEY_RECENT, VOTE_SURVEY, GET_VOTE } from './queries.gql'
 import UseAuth from '@/lib/UseAuth'
 import { useEffect } from 'react'
 import PieChart from '@/components/General/PieChart'
+import countVotes from '@/lib/utils/countVotes'
 
 export default function Survey() {
   const [vote, setVote] = useState('')
   const user = UseAuth()
+
   const {
     data: { surveys } = {},
     loading,
@@ -28,28 +25,17 @@ export default function Survey() {
     ? JSON.parse(survey.questions)
     : { question1: '', option1: '', option2: '' }
 
-  const { data: totalVotes = {} } = useQuery(GET_TOTAL_VOTES, {
-    variables: {
-      id: survey?.id,
-      option: option1,
-      option2,
-    },
-  })
   const { data: { votes } = {} } = useQuery(GET_VOTE, {
     variables: {
       id: survey?.id,
       user: user.user.id,
     },
   })
-
-  const { option1: voteOPtion1, option2: voteOPtion2 } = totalVotes
-  const getWiner = () => {
-    return {
-      [voteOPtion1 > voteOPtion2 ? option1 : option2]:
-        voteOPtion1 > voteOPtion2 ? voteOPtion1 : voteOPtion2,
-    }
-  }
-  const [key, value] = Object.entries(getWiner())[0]
+  const { winner, votesWinner, totalVotes } = countVotes({
+    surveyID: survey?.id,
+    option1,
+    option2,
+  })
 
   useEffect(() => {
     if (votes && votes.length > 0) {
@@ -83,7 +69,7 @@ export default function Survey() {
     datasets: [
       {
         label: 'Resultados de la encuesta',
-        data: [voteOPtion1, voteOPtion2],
+        data: [totalVotes.option1, totalVotes.option2],
         backgroundColor: ['#82B366', '#6C8EBF'],
         hoverOffset: 4,
       },
@@ -129,7 +115,7 @@ export default function Survey() {
             <span className="block text-lg font-bold text-teal-600">
               Gracias por tu voto
             </span>
-            {survey.state === 'ACTIVE' ? (
+            {survey.state !== 'ACTIVE' ? (
               <span className=" italic text-gray-600">
                 La votación está en proceso
               </span>
@@ -139,7 +125,7 @@ export default function Survey() {
                   La votación ha finalizado
                 </span>
                 <span className="mt-2 block text-lg font-semibold text-gray-800">
-                  El ganador es {key} con {value} votos
+                  El ganador es {winner} con {votesWinner} votos
                 </span>
                 <PieChart data={data} />
               </>

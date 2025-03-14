@@ -35,3 +35,14 @@ mutation DELETE_SURVEY($id: ID!) {
     id
   }
 }
+
+query GET_VOTES($id: ID!) {
+  votes(where: { survey: { id: { equals: $id } } }) {
+    id
+    vote
+    user {
+      id
+      name
+    }
+  }
+}
