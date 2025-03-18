@@ -78,7 +78,7 @@ export default function Survey() {
         <div className="w-full border-b bg-gray-50 text-center">
           <h2 className="font-semi-bold m-2 text-2xl">{question1}</h2>
         </div>
-        {state === 'ACTIVE' && (
+        {!vote && (
           <div className="m-4 flex min-h-60 items-center space-x-4 ">
             <button
               className={`max-h-16 min-w-20 rounded-lg border-2 px-6 py-3 transition-all duration-300 ${

@@ -1,11 +1,11 @@
 import { useQuery } from '@apollo/client'
 import UseAuth from '@/lib/UseAuth'
 import router from 'next/router'
-import { GET_SURVEY_RECENT, GET_VOTE_FROM_LAST_SURVEY } from './queries.gql'
+import { GET_SURVEY_RECENT, GET_VOTE } from './queries.gql'
 const Banner = () => {
   const user = UseAuth()
   const { data: { surveys } = {} } = useQuery(GET_SURVEY_RECENT)
-  const { data: { votes } = {} } = useQuery(GET_VOTE_FROM_LAST_SURVEY, {
+  const { data: { votes } = {} } = useQuery(GET_VOTE, {
     variables: {
       survey: surveys?.[0].id,
       user: user?.user?.id,
