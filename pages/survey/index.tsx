@@ -42,7 +42,6 @@ export default function Survey() {
   if (loading) return <p>Loading...</p>
 
   const handleVote = async (option: string) => {
-    setVote(option)
     try {
       await voteSurvey({
         variables: {
@@ -53,9 +52,10 @@ export default function Survey() {
           },
         },
       })
+      setVote(option)
     } catch (error: any) {
       const errorMessage = error.graphQLErrors[0].extensions.debug[0].message
-      if (errorMessage === 'Ya has votado en esta pregunta') {
+      if (errorMessage === 'La encuesta ya ha finalizado') {
         alert(errorMessage)
       }
     }
