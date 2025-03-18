@@ -32,15 +32,3 @@ query GET_VOTE($id: ID, $user: ID) {
     vote
   }
 }
-
-query GET_VOTE_FROM_LAST_SURVEY($user: ID, $survey: ID) {
-  votes(
-    where: {
-      survey: { id: { equals: $survey } }
-      user: { id: { equals: $user } }
-    }
-  ) {
-    id
-    vote
-  }
-}

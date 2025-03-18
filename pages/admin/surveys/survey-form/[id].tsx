@@ -1,4 +1,4 @@
-import Button from '@/components/Button'
+import Form from '@/components/General/Form'
 import Input from '@/components/General/Input'
 import Layout from '@/components/layout/NLayout'
 import { useMutation, useQuery } from '@apollo/client'
@@ -86,53 +86,45 @@ const SurveyForm = () => {
 
   return (
     <Layout>
-      <div className=" mx-auto w-full max-w-[1000px] px-10 pt-4  ">
-        <form onSubmit={handleSubmit} className="flex flex-col  gap-y-8 ">
-          <h2 className="font-semi-bold text-2xl">{title}</h2>
-          <Input
-            placeholder="pregunta"
-            name="question"
-            label="pregunta"
-            id="questions"
-            value={values.question}
-            error={errors.question}
-            onChange={handleChange}
-          />
-          <Input
-            placeholder="opcion1"
-            name="option1"
-            label="opcion1"
-            id="option1"
-            value={values.option1}
-            error={errors.option1}
-            onChange={handleChange}
-          />
-          <Input
-            placeholder="opcion2"
-            name="option2"
-            label="opcion2"
-            id="option2"
-            value={values.option2}
-            error={errors.option2}
-            onChange={handleChange}
-          />
-          <Input
-            placeholder="fecha finalizacion"
-            name="endDate"
-            label="fecha finalizacion"
-            id="endDate"
-            value={values.endDate}
-            error={errors.endDate}
-            onChange={handleChange}
-            typeInput="datetime-local"
-          />
-          <Button
-            title={title}
-            type="submit"
-            disabled={Object.keys(errors).length > 0}
-          />
-        </form>
-      </div>
+      <Form handleSubmit={handleSubmit} title={title} errors={errors}>
+        <Input
+          placeholder="pregunta"
+          name="question"
+          label="pregunta"
+          id="questions"
+          value={values.question}
+          error={errors.question}
+          onChange={handleChange}
+        />
+        <Input
+          placeholder="opcion1"
+          name="option1"
+          label="opcion1"
+          id="option1"
+          value={values.option1}
+          error={errors.option1}
+          onChange={handleChange}
+        />
+        <Input
+          placeholder="opcion2"
+          name="option2"
+          label="opcion2"
+          id="option2"
+          value={values.option2}
+          error={errors.option2}
+          onChange={handleChange}
+        />
+        <Input
+          placeholder="fecha finalizacion"
+          name="endDate"
+          label="fecha finalizacion"
+          id="endDate"
+          value={values.endDate}
+          error={errors.endDate}
+          onChange={handleChange}
+          typeInput="datetime-local"
+        />
+      </Form>
     </Layout>
   )
 }

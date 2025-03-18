@@ -43,6 +43,12 @@ query GET_VOTES($id: ID!) {
     user {
       id
       name
+      email
+      phone
+      properties {
+        id
+        name
+      }
     }
   }
 }

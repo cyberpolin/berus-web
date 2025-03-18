@@ -48,8 +48,8 @@ const VoteList = () => {
     <Layout>
       <div className="mx-auto flex w-full max-w-[1400px] flex-col px-4 ">
         <h2 className="font-semi-bold text-2xl">Votos</h2>
-        <div className="mt-4 overflow-x-scroll">
-          <table className="min-w-full divide-y divide-gray-200 ">
+        <div className="mt-4 overflow-x-scroll rounded-md">
+          <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
                 <th
@@ -57,6 +57,24 @@ const VoteList = () => {
                   className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
                 >
                   Propietario
+                </th>
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
+                >
+                  Correo
+                </th>
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
+                >
+                  Telefono
+                </th>
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
+                >
+                  Lote
                 </th>
                 <th
                   scope="col"
@@ -70,36 +88,41 @@ const VoteList = () => {
               {votes?.map(
                 ({
                   id,
-                  user: { name },
+                  user: { name, email, phone, properties },
                   vote,
                 }: {
                   id: string
-                  user: { name: string }
+                  user: {
+                    name: string
+                    email: string
+                    phone: string
+                    properties: Array<{ name: string }>
+                  }
                   vote: string
                 }) => (
                   <tr key={id} className="hover:bg-gray-500">
                     <td className="px-6 py-4">{name}</td>
+                    <td className="px-6 py-4">{email}</td>
+                    <td className="px-6 py-4">{phone}</td>
+                    <td className="px-6 py-4">{properties[0]?.name}</td>
                     <td className="px-6 py-4">{vote}</td>
                   </tr>
                 )
               )}
             </tbody>
           </table>
-          <h2 className="my-7 mb-2 text-2xl font-semibold text-gray-800">
+        </div>
+        <div className="mt-7  flex flex-col justify-center rounded-lg bg-white p-4 shadow-md">
+          <h2 className="mb-2 text-2xl font-semibold text-gray-800">
             Resultados
           </h2>
-          <div className="mb-7 flex flex-col justify-center rounded-lg bg-white p-4 shadow-md">
+          <div className="flex max-h-96 flex-col items-center rounded-md bg-gray-50 p-4 pb-14">
             <p className="mb-4 text-gray-600">
               El ganador de la encuesta es:{' '}
               <span className="font-bold">{winner}</span> con{' '}
               <span className="font-bold">{votesWinner}</span> votos
             </p>
-            <h2 className="mb-2 text-2xl font-semibold text-gray-800">
-              Gráfico de votos
-            </h2>
-            <div className="flex max-h-96 justify-center rounded-md bg-gray-50 p-4">
-              <PieChart data={data} />
-            </div>
+            <PieChart data={data} />
           </div>
         </div>
       </div>
