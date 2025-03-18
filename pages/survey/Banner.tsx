@@ -1,10 +1,18 @@
 import { useQuery } from '@apollo/client'
+import UseAuth from '@/lib/UseAuth'
 import router from 'next/router'
-import { GET_SURVEY_RECENT } from './queries.gql'
+import { GET_SURVEY_RECENT, GET_VOTE_FROM_LAST_SURVEY } from './queries.gql'
 const Banner = () => {
+  const user = UseAuth()
   const { data: { surveys } = {} } = useQuery(GET_SURVEY_RECENT)
+  const { data: { votes } = {} } = useQuery(GET_VOTE_FROM_LAST_SURVEY, {
+    variables: {
+      survey: surveys?.[0].id,
+      user: user?.user?.id,
+    },
+  })
   // GET_SURVEY_RECENT
-  if (surveys?.[0].state === 'ACTIVE') {
+  if (surveys?.[0].state === 'ACTIVE' && !votes?.[0]) {
     return (
       <div
         className="m-4 mb-4 cursor-pointer rounded-lg bg-blue-50 p-4 text-sm text-blue-800 transition-all hover:shadow-lg dark:bg-gray-800 dark:text-blue-400"

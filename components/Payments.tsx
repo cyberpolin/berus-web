@@ -339,7 +339,6 @@ const Payments = ({ user }: any) => {
 
   return (
     <div className="m-4">
-      ;
       <Button
         title={`Pagar mes siguiente`}
         loading={nextPaymentLoading}
