@@ -111,7 +111,7 @@ const SurveyList = () => {
                 }) => {
                   let parsedQuestions = questions ? JSON.parse(questions) : {}
 
-                  const { question1, option1, option2 } = parsedQuestions || {}
+                  const { question1 } = parsedQuestions || {}
 
                   return (
                     <tr key={id} className="hover:bg-gray-500">
@@ -174,7 +174,7 @@ const SurveyList = () => {
                             className="mr-2 rounded bg-emerald-500 px-3 py-1 text-white hover:bg-green-600"
                             onClick={() =>
                               router.push(
-                                `/admin/surveys/votes/${id}/${option1}/${option2}`
+                                `/admin/surveys/votes/${id}/${questions}`
                               )
                             }
                           >

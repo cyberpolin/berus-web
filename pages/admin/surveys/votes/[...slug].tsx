@@ -1,13 +1,15 @@
 import Layout from '@/components/layout/NLayout'
 import { useRouter } from 'next/router'
 import { useQuery } from '@apollo/client'
-import { GET_VOTES } from '../queries.gql'
+import { GET_VOTES, GET_TOTAL_VOTES } from '../queries.gql'
 import { useEffect } from 'react'
-import countVotes from '@/lib/utils/countVotes'
 import PieChart from '@/components/General/PieChart'
 const VoteList = () => {
   const { slug } = useRouter().query
-  const [id, option1, option2] = Array.isArray(slug) ? slug : []
+  const [id, questions] = Array.isArray(slug) ? slug : []
+  let parsedQuestions = questions ? JSON.parse(questions) : {}
+
+  const { options } = parsedQuestions || {}
 
   const {
     loading,
@@ -19,18 +21,22 @@ const VoteList = () => {
       id,
     },
   })
-  const { winner, votesWinner, totalVotes } = countVotes({
-    surveyID: id,
-    option1,
-    option2,
+  const { data: { getCountVotes } = {} } = useQuery(GET_TOTAL_VOTES, {
+    variables: {
+      surveyId: id,
+      options,
+    },
   })
+
   const data = {
-    labels: [option1, option2],
+    labels: options?.map((option) => option.option),
     datasets: [
       {
         label: 'Resultados de la encuesta',
-        data: [totalVotes.option1, totalVotes.option2],
-        backgroundColor: ['#82B366', '#6C8EBF'],
+        data: getCountVotes?.countVotes.map((count) => count.count),
+        backgroundColor: Array.from({ length: options?.length }).map(
+          () => `#${Math.floor(Math.random() * 16777215).toString(16)}`
+        ),
         hoverOffset: 4,
       },
     ],
@@ -119,8 +125,14 @@ const VoteList = () => {
           <div className="flex max-h-96 flex-col items-center rounded-md bg-gray-50 p-4 pb-14">
             <p className="mb-4 text-gray-600">
               El ganador de la encuesta es:{' '}
-              <span className="font-bold">{winner}</span> con{' '}
-              <span className="font-bold">{votesWinner}</span> votos
+              <span className="font-bold">
+                {getCountVotes?.maxVotes[0].option}
+              </span>{' '}
+              con{' '}
+              <span className="font-bold">
+                {getCountVotes?.maxVotes[0].count}
+              </span>{' '}
+              votos
             </p>
             <PieChart data={data} />
           </div>

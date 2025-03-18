@@ -1,5 +1,15 @@
 query GET_SURVEYS {
-  surveys {
+  surveys(orderBy: { createdAt: desc }) {
+    id
+    state
+    createdAt
+    endDate
+    questions
+  }
+}
+
+query GET_SURVEY($id: ID!) {
+  survey(where: { id: $id }) {
     id
     state
     createdAt
@@ -30,5 +40,18 @@ query GET_VOTE($id: ID, $user: ID) {
   ) {
     id
     vote
+  }
+}
+
+query GET_TOTAL_VOTES($surveyId: ID!, $options: [OptionInput]) {
+  getCountVotes(surveyId: $surveyId, options: $options) {
+    maxVotes {
+      count
+      option
+    }
+    countVotes {
+      option
+      count
+    }
   }
 }
