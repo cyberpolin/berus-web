@@ -1,19 +1,33 @@
 import NLayout from '@/components/layout/NLayout'
 import { useState } from 'react'
 import { useQuery, useMutation } from '@apollo/client'
-import { GET_SURVEY_RECENT, VOTE_SURVEY, GET_VOTE } from './queries.gql'
+import {
+  GET_SURVEY_RECENT,
+  VOTE_SURVEY,
+  GET_VOTE,
+  GET_SURVEY,
+} from './queries.gql'
 import UseAuth from '@/lib/UseAuth'
 import { useEffect } from 'react'
 import PieChart from '@/components/General/PieChart'
 import countVotes from '@/lib/utils/countVotes'
 import dayjs from 'dayjs'
+import { useRouter } from 'next/router'
 
 export default function Survey() {
+  const router = useRouter()
+  const { id } = router.query
   const [vote, setVote] = useState('')
   const user = UseAuth()
-
-  const { data: { surveys } = {}, loading, error } = useQuery(GET_SURVEY_RECENT)
-  const survey = surveys?.[0]
+  const {
+    data: surveyData,
+    loading,
+    refetch,
+    error,
+  } = useQuery(id !== 'new' ? GET_SURVEY : GET_SURVEY_RECENT, {
+    variables: id !== 'new' ? { id: id } : {},
+  })
+  const survey = id !== 'new' ? surveyData?.survey : surveyData?.surveys?.[0]
   const [voteSurvey, { loading: voteLoading, error: voteError }] =
     useMutation(VOTE_SURVEY)
   const { question1, option1, option2 } = survey?.questions
@@ -34,10 +48,12 @@ export default function Survey() {
   })
 
   useEffect(() => {
+    refetch()
+    setVote('')
     if (votes && votes.length > 0) {
       setVote(votes[0].vote)
     }
-  }, [votes])
+  }, [refetch])
 
   if (loading) return <p>Loading...</p>
 
@@ -79,35 +95,43 @@ export default function Survey() {
           <h2 className="font-semi-bold m-2 text-2xl">{question1}</h2>
         </div>
         {!vote && (
-          <div className="m-4 flex min-h-60 items-center space-x-4 ">
-            <button
-              className={`max-h-16 min-w-20 rounded-lg border-2 px-6 py-3 transition-all duration-300 ${
-                vote === option1
-                  ? 'bg-green-500 text-white'
-                  : 'bg-white text-green-500 hover:bg-green-100'
-              }`}
-              disabled={!!vote}
-              onClick={() =>
-                confirm(`Seguro que deseas votar por ${option1}?`) &&
-                handleVote(option1)
-              }
+          <div className="m-4 flex min-h-60 flex-col items-center justify-center ">
+            <div className="flex space-x-4">
+              <button
+                className={`max-h-16 min-w-20 rounded-lg border-2 px-6 py-3 transition-all duration-300 ${
+                  vote === option1
+                    ? 'bg-green-500 text-white'
+                    : 'bg-white text-green-500 hover:bg-green-100'
+                }`}
+                disabled={!!vote}
+                onClick={() =>
+                  confirm(`Seguro que deseas votar por ${option1}?`) &&
+                  handleVote(option1)
+                }
+              >
+                {option1}
+              </button>
+              <button
+                className={`max-h-16 min-w-20 rounded-lg border-2 px-6 py-3 transition-all duration-300 ${
+                  vote === option2
+                    ? 'bg-green-500 text-white'
+                    : 'bg-white text-green-500 hover:bg-green-100'
+                }`}
+                disabled={!!vote}
+                onClick={() =>
+                  confirm(`Seguro que deseas votar por ${option2}?`) &&
+                  handleVote(option2)
+                }
+              >
+                {option2}
+              </button>
+            </div>
+            <span
+              className="mt-4 cursor-pointer text-sm text-gray-500 hover:underline"
+              onClick={() => router.push('/survey/list-surveys')}
             >
-              {option1}
-            </button>
-            <button
-              className={`max-h-16 min-w-20 rounded-lg border-2 px-6 py-3 transition-all duration-300 ${
-                vote === option2
-                  ? 'bg-green-500 text-white'
-                  : 'bg-white text-green-500 hover:bg-green-100'
-              }`}
-              disabled={!!vote}
-              onClick={() =>
-                confirm(`Seguro que deseas votar por ${option2}?`) &&
-                handleVote(option2)
-              }
-            >
-              {option2}
-            </button>
+              ver otras encuestas
+            </span>
           </div>
         )}
         {vote && (
@@ -115,7 +139,7 @@ export default function Survey() {
             <span className="block text-lg font-bold text-teal-600">
               Gracias por tu voto
             </span>
-            {survey.state !== 'FINISHED' ? (
+            {survey?.state !== 'FINISHED' ? (
               <>
                 <p className=" italic text-gray-600">
                   La votación está en proceso, termina el{' '}
@@ -124,6 +148,12 @@ export default function Survey() {
                 <p className=" italic text-gray-600">
                   Ese día podrás ver los resultados aqui mismo.
                 </p>
+                <span
+                  className="mt-4 cursor-pointer text-sm text-gray-500 hover:underline"
+                  onClick={() => router.push('/survey/list-surveys')}
+                >
+                  ver otras encuestas
+                </span>
               </>
             ) : (
               <>

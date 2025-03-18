@@ -1,5 +1,15 @@
 query GET_SURVEYS {
-  surveys {
+  surveys(orderBy: { createdAt: desc }) {
+    id
+    state
+    createdAt
+    endDate
+    questions
+  }
+}
+
+query GET_SURVEY($id: ID!) {
+  survey(where: { id: $id }) {
     id
     state
     createdAt
