@@ -2,6 +2,7 @@ import Payments from '@/components/Payments'
 import UseAuth from '@/lib/UseAuth'
 import { useRouter } from 'next/router'
 import Layout from '../../components/layout/NLayout'
+import Banner from '../survey/Banner'
 
 const Cuotas = () => {
   const router = useRouter()
@@ -13,15 +14,10 @@ const Cuotas = () => {
 
   return (
     <Layout>
-      <div className="">
-        <div
-          className=" mb-6 flex h-8 w-full cursor-pointer items-center justify-center rounded-sm border border-teal-600 bg-teal-800 px-6 text-white"
-          onClick={() => router.push('/survey')}
-        >
-          Nueva encuesta vota aqui
-        </div>
+      <>
+        <Banner />
         <Payments user={user} />
-      </div>
+      </>
     </Layout>
   )
 }

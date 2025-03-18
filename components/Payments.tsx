@@ -1,37 +1,41 @@
-import { useLazyQuery, useMutation, useQuery } from "@apollo/client"
-import currency from "currency.js"
-import dayjs from "dayjs"
-import es from "dayjs/locale/es-mx"
-import utc from "dayjs/plugin/utc"
-import {GET_PAYMENTS} from "../pages/login/queries.gql"
-import { CREATE_NEXT_PAYMENT_IF_DONT_EXIST, UPDATE_PAYMENT_ADMIN, DELETE_PERMANENT_PAYMENT } from "../pages/admin/adminQueries.gql"
-import Image from "next/image"
-import PayForm from "../pages/dashboard/pagar-cuota"
-import { useEffect, useState } from "react"
-import Button from "./Button"
-import { useRouter } from "next/router"
-import _ from "lodash"
-import UseAuth from "@/lib/UseAuth"
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client'
+import currency from 'currency.js'
+import dayjs from 'dayjs'
+import es from 'dayjs/locale/es-mx'
+import utc from 'dayjs/plugin/utc'
+import { GET_PAYMENTS } from '../pages/login/queries.gql'
+import {
+  CREATE_NEXT_PAYMENT_IF_DONT_EXIST,
+  UPDATE_PAYMENT_ADMIN,
+  DELETE_PERMANENT_PAYMENT,
+} from '../pages/admin/adminQueries.gql'
+import Image from 'next/image'
+import PayForm from '../pages/dashboard/pagar-cuota'
+import { useEffect, useState } from 'react'
+import Button from './Button'
+import { useRouter } from 'next/router'
+import _ from 'lodash'
+import UseAuth from '@/lib/UseAuth'
 
 dayjs.locale(es)
 dayjs.extend(utc)
 
 const Status = ({ value }: { value: string }) => {
   const statusOption = {
-    pending: "En revisión",
-    due: "Vencido",
-    onTime: "A tiempo",
-    payed: "Pagado",
+    pending: 'En revisión',
+    due: 'Vencido',
+    onTime: 'A tiempo',
+    payed: 'Pagado',
   }
 
   const colors = {
     onTime:
-      "bg-blue-100 px-2.5 py-0.5 text-sm font-medium text-blue-800 dark:bg-blue-900 dark:text-blue-300",
-    due: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300",
+      'bg-blue-100 px-2.5 py-0.5 text-sm font-medium text-blue-800 dark:bg-blue-900 dark:text-blue-300',
+    due: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300',
     pending:
-      "bg-blue-100 px-2.5 py-0.5 text-sm font-medium text-blue-800 dark:bg-blue-900 dark:text-blue-300",
+      'bg-blue-100 px-2.5 py-0.5 text-sm font-medium text-blue-800 dark:bg-blue-900 dark:text-blue-300',
     payed:
-      "bg-green-100 text-green-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300",
+      'bg-green-100 text-green-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300',
   }
   return (
     <span
@@ -59,7 +63,7 @@ const Action = ({ status, show }: { status: any; show: () => void }) => {
       />
     ),
   }
-  
+
   // @ts-ignore: Unreachable code error
   return options[status] || null
 }
@@ -67,111 +71,125 @@ const Action = ({ status, show }: { status: any; show: () => void }) => {
 const SinglePayment = ({ payment }: { payment: any }) => {
   const [form, setForm] = useState({})
   const { dueAt, dueAmount, status, image } = payment
-  const formattedDueAt = dayjs(dueAt).format("DD-MMM-YYYY")
+  const formattedDueAt = dayjs(dueAt).format('DD-MMM-YYYY')
   const formattedDueAmount = currency(dueAmount).format()
   const statusOption = {
-    due: "Vencido",
-    onTime: "A tiempo",
-    payed: "Pagado",
-    pending: "En revisión",
+    due: 'Vencido',
+    onTime: 'A tiempo',
+    payed: 'Pagado',
+    pending: 'En revisión',
   }
 
   const [updatePayment, { error, loading, data, reset }] = useMutation(
-    UPDATE_PAYMENT_ADMIN, {
-      refetchQueries: [GET_PAYMENTS]
+    UPDATE_PAYMENT_ADMIN,
+    {
+      refetchQueries: [GET_PAYMENTS],
     }
   )
-  
-  const [deletePayment, { error: deleteError, loading: deleteLoading, data: deleteData, reset: deleteReset }] = useMutation(
-    DELETE_PERMANENT_PAYMENT, {
-      refetchQueries: [GET_PAYMENTS]
-    }
-  )
+
+  const [
+    deletePayment,
+    {
+      error: deleteError,
+      loading: deleteLoading,
+      data: deleteData,
+      reset: deleteReset,
+    },
+  ] = useMutation(DELETE_PERMANENT_PAYMENT, {
+    refetchQueries: [GET_PAYMENTS],
+  })
 
   const user = UseAuth()
   const isAdmin = user.user.isAdmin
-return (
-  <li key={payment.id} className="border-b-2 p-2">
-    {`Vence: ${formattedDueAt} - Cantidad: ${formattedDueAmount} - Estatus: `}
-    <Status value={status} />
+  return (
+    <li key={payment.id} className="border-b-2 p-2">
+      {`Vence: ${formattedDueAt} - Cantidad: ${formattedDueAmount} - Estatus: `}
+      <Status value={status} />
 
-    {image?.publicUrl && (
-      <>
-        <a target="_blank" href={image?.publicUrl}>
-          <img
-            alt={"payment"}
-            className="center m-4 w-24"
-            src={
-              image?.mimetype === "application/pdf"
-                ? "/pdfIcon.png"
-                : image?.publicUrlTransformed
-            }
-          />
-        </a>
-        {image?.mimetype === "application/pdf" && (
-          <a target="_blank" href={payment?.image?.publicUrl}>
-            <i>Ver comprobante...</i>
-          </a>
-        )}
-      </>
-    )}
-
-    {
-      /* If isn't payed display Form */
-      // @ts-ignore: Unreachable code error
-      form === payment.id && <PayForm payment={payment} />
-    }
-    <Action status={status} show={() => setForm(payment.id)} />
-    { isAdmin && <div className="w-40 text-xs">
-          <span>Admin Options</span>
-          <select onChange={(e)=>{
-            updatePayment({
-              variables: {
-                id: payment.id,
-                status: e.target.value
+      {image?.publicUrl && (
+        <>
+          <a target="_blank" href={image?.publicUrl}>
+            <img
+              alt={'payment'}
+              className="center m-4 w-24"
+              src={
+                image?.mimetype === 'application/pdf'
+                  ? '/pdfIcon.png'
+                  : image?.publicUrlTransformed
               }
-            })
-          }}>
+            />
+          </a>
+          {image?.mimetype === 'application/pdf' && (
+            <a target="_blank" href={payment?.image?.publicUrl}>
+              <i>Ver comprobante...</i>
+            </a>
+          )}
+        </>
+      )}
+
+      {
+        /* If isn't payed display Form */
+        // @ts-ignore: Unreachable code error
+        form === payment.id && <PayForm payment={payment} />
+      }
+      <Action status={status} show={() => setForm(payment.id)} />
+      {isAdmin && (
+        <div className="w-40 text-xs">
+          <span>Admin Options</span>
+          <select
+            onChange={(e) => {
+              updatePayment({
+                variables: {
+                  id: payment.id,
+                  status: e.target.value,
+                },
+              })
+            }}
+          >
             <option value="0">---</option>
             {Object.keys(statusOption).map((key) => (
-              <option value={key} key={key}>{statusOption[key as keyof typeof statusOption]}</option>
+              <option value={key} key={key}>
+                {statusOption[key as keyof typeof statusOption]}
+              </option>
             ))}
           </select>
-        <span>Delete duplicated payment</span>
-        <Button 
-          loading={deleteLoading}
-          disabled={deleteLoading} 
-          title={`Delete`} onClick={() => {
-            window.confirm('Are you sure you want to delete this payment?') &&
-          deletePayment({
-            variables: {
-              paymentId: payment.id
-            }
-          })
-        }}/>
-        </div>
-    }
-    {!!payment?.bill?.factura?.publicUrl && (
-      <>
-        <br />
-        <a
-          className="hover:opacity-50"
-          target="_blank"
-          href={payment?.bill?.factura?.publicUrl}
-        >
-          <img
-            height={100}
-            alt={"payment"}
-            className="center m-4 w-12 "
-            src={"/pdfIcon.png"}
+          <span>Delete duplicated payment</span>
+          <Button
+            loading={deleteLoading}
+            disabled={deleteLoading}
+            title={`Delete`}
+            onClick={() => {
+              window.confirm('Are you sure you want to delete this payment?') &&
+                deletePayment({
+                  variables: {
+                    paymentId: payment.id,
+                  },
+                })
+            }}
           />
-          <i>Ver o descargar factura</i>
-        </a>
-        <br />
-      </>
-    )}
-  </li>
-)
+        </div>
+      )}
+      {!!payment?.bill?.factura?.publicUrl && (
+        <>
+          <br />
+          <a
+            className="hover:opacity-50"
+            target="_blank"
+            href={payment?.bill?.factura?.publicUrl}
+          >
+            <img
+              height={100}
+              alt={'payment'}
+              className="center m-4 w-12 "
+              src={'/pdfIcon.png'}
+            />
+            <i>Ver o descargar factura</i>
+          </a>
+          <br />
+        </>
+      )}
+    </li>
+  )
 }
 
 const Caret = ({ isOpen }: { isOpen: boolean }) => {
@@ -180,9 +198,9 @@ const Caret = ({ isOpen }: { isOpen: boolean }) => {
       alt="caretUp"
       src="/assets/Icons/caretUp.svg"
       style={{
-        transform: !isOpen ? "rotate(-180deg)" : "rotate(0deg)",
-        color: "white",
-        transition: "transform 0.3s ease-in-out",
+        transform: !isOpen ? 'rotate(-180deg)' : 'rotate(0deg)',
+        color: 'white',
+        transition: 'transform 0.3s ease-in-out',
       }}
       width={12}
       height={12}
@@ -197,7 +215,7 @@ const PaymentsByYear = ({
   yearsAry: string[]
   payments: any
 }) => {
-  const currentYear = dayjs().format("YYYY")
+  const currentYear = dayjs().format('YYYY')
   const [showAry, setShowAry] = useState([currentYear])
   const toggleYear = (year: string) => {
     setShowAry(
@@ -224,7 +242,7 @@ const PaymentsByYear = ({
           <Caret isOpen={isOpen} />
         </div>
         {isOpen &&
-          _.orderBy(payments, "dueAt", "desc")
+          _.orderBy(payments, 'dueAt', 'desc')
             .filter((p) => p.dueAtYear === year)
             .map((payment, i) => {
               return <SinglePayment key={i} payment={payment} />
@@ -245,11 +263,11 @@ const PropertyInfo = ({
 }) => {
   // all years inside this property will be shown
 
-  const paymentsByYear = _.groupBy(payments, "dueAtYear")
+  const paymentsByYear = _.groupBy(payments, 'dueAtYear')
   const yearsAry = Object.keys(paymentsByYear).reverse()
 
   return (
-    <li key={`${lot}${square}`} className="relative m-2 w-full rounded border">
+    <li key={`${lot}${square}`} className="relative  rounded border">
       <h4 className="mb-2 block rounded bg-black bg-opacity-60 p-2 text-white">{`Manzana ${square} Lote ${lot}`}</h4>
       <ul className="m-4 border-t-2">
         {/* @ts-ignore: Unreachable code error*/}
@@ -266,24 +284,24 @@ const PropertyInfo = ({
 const Payments = ({ user }: any) => {
   const router = useRouter()
 
-  const nextMonth = dayjs(new Date()).add(1, "M").format("MMMM")
+  const nextMonth = dayjs(new Date()).add(1, 'M').format('MMMM')
 
   const id =
     user.user.isAdmin && router?.query.pretend
       ? router?.query.pretend
       : user.user.id
 
-  const [createNextPayment, {error: nextPaymentError, loading: nextPaymentLoading }] = useLazyQuery(
-    CREATE_NEXT_PAYMENT_IF_DONT_EXIST,
-    {
-      //@ts-ignore
-      refetchQueries: [GET_PAYMENTS],
-      fetchPolicy: "cache-and-network",
-      onCompleted: (data) => {
-        // console.log(data)
-      },
-    }
-  )
+  const [
+    createNextPayment,
+    { error: nextPaymentError, loading: nextPaymentLoading },
+  ] = useLazyQuery(CREATE_NEXT_PAYMENT_IF_DONT_EXIST, {
+    //@ts-ignore
+    refetchQueries: [GET_PAYMENTS],
+    fetchPolicy: 'cache-and-network',
+    onCompleted: (data) => {
+      // console.log(data)
+    },
+  })
 
   const { data, loading, error, stopPolling } = useQuery(GET_PAYMENTS, {
     pollInterval: parseInt(process?.env?.NEXT_PUBLIC_POLL_INTERVAL || '10000'),
@@ -307,10 +325,10 @@ const Payments = ({ user }: any) => {
   } = data
 
   const allPayments = properties
-    .map((p:any) =>
-      p.payments.map((payment:any) => ({
+    .map((p: any) =>
+      p.payments.map((payment: any) => ({
         ...payment,
-        dueAtYear: dayjs(payment.dueAt).format("YYYY"),
+        dueAtYear: dayjs(payment.dueAt).format('YYYY'),
         propertyName: p.name,
         propertyId: p.id,
       }))
@@ -320,7 +338,8 @@ const Payments = ({ user }: any) => {
   // @ts-ignore: Unreachable code error
 
   return (
-    <div>
+    <div className="m-4">
+      ;
       <Button
         title={`Pagar mes siguiente`}
         loading={nextPaymentLoading}
@@ -328,17 +347,17 @@ const Payments = ({ user }: any) => {
         onClick={() => {
           createNextPayment({
             variables: {
-              id
+              id,
             },
           })
         }}
       />
-      
-      
-      {properties.map((p:any) => {
+      {properties.map((p: any) => {
         const { lot, square, id } = p
 
-        const propertyPayments = allPayments.filter((p:any) => p.propertyId === id)
+        const propertyPayments = allPayments.filter(
+          (p: any) => p.propertyId === id
+        )
 
         return (
           <PropertyInfo

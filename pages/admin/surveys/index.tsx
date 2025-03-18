@@ -1,7 +1,7 @@
 import Layout from '@/components/layout/NLayout'
 import { useRouter } from 'next/router'
 import { useQuery, useMutation } from '@apollo/client'
-import { GET_SURVEYS, DELETE_SURVEY } from './queries.gql'
+import { GET_SURVEYS, DELETE_SURVEY, UPDATE_SURVEY } from './queries.gql'
 import { useEffect } from 'react'
 
 const SurveyList = () => {
@@ -12,9 +12,15 @@ const SurveyList = () => {
     data: { surveys } = {},
     refetch,
   } = useQuery(GET_SURVEYS)
+
   const [deleteSurvey] = useMutation(DELETE_SURVEY, {
     refetchQueries: [GET_SURVEYS],
   })
+
+  const [closeSurvey] = useMutation(UPDATE_SURVEY, {
+    refetchQueries: [GET_SURVEYS],
+  })
+
   const handleDelete = async (id: string) => {
     await deleteSurvey({
       variables: {
@@ -22,7 +28,18 @@ const SurveyList = () => {
       },
     })
   }
-  console.log('surveys', surveys)
+
+  const handleClose = async (id: string) => {
+    await closeSurvey({
+      variables: {
+        id,
+        data: {
+          state: 'FINISHED',
+        },
+      },
+    })
+  }
+
   useEffect(() => {
     refetch()
   }, [])
@@ -115,17 +132,30 @@ const SurveyList = () => {
                           {state === 'ACTIVE' && (
                             <div className="align-center flex flex-wrap justify-center gap-x-4">
                               <span
-                                className="w-28 rounded px-3 py-1 text-center text-red-400 hover:bg-gray-200"
+                                className=" cursor-pointer text-center text-sm text-red-300 hover:underline"
                                 onClick={() => {
                                   if (
                                     window.confirm(
-                                      'Seguro que deseas eliminar esta encuesta?'
+                                      `Seguro que deseas eliminar esta encuesta?`
                                     )
                                   )
                                     handleDelete(id)
                                 }}
                               >
                                 Eliminar
+                              </span>
+                              <span
+                                className=" cursor-pointer text-center text-sm text-slate-500 hover:underline"
+                                onClick={() => {
+                                  if (
+                                    window.confirm(
+                                      `Seguro que deseas terminar la encuesta?  ${id}`
+                                    )
+                                  )
+                                    handleClose(id)
+                                }}
+                              >
+                                Cerrar encuesta
                               </span>
 
                               <button
@@ -141,14 +171,14 @@ const SurveyList = () => {
                             </div>
                           )}
                           <button
-                            className="mr-2 w-32 rounded bg-gray-400 px-3 py-1 text-white hover:bg-green-600"
+                            className="mr-2 rounded bg-emerald-500 px-3 py-1 text-white hover:bg-green-600"
                             onClick={() =>
                               router.push(
                                 `/admin/surveys/votes/${id}/${option1}/${option2}`
                               )
                             }
                           >
-                            Votaciones
+                            Ver Resultados
                           </button>
                         </div>
                       </td>
