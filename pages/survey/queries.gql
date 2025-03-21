@@ -43,15 +43,21 @@ query GET_VOTE($id: ID, $user: ID) {
   }
 }
 
-query GET_TOTAL_VOTES($surveyId: ID!, $options: [OptionInput]) {
-  getCountVotes(surveyId: $surveyId, options: $options) {
+query GET_TOTAL_VOTES($surveyId: ID!) {
+  getCountVotes(surveyId: $surveyId) {
     maxVotes {
-      count
-      option
+      question
+      maxResults {
+        option
+        count
+      }
     }
     countVotes {
-      option
-      count
+      question
+      results {
+        option
+        count
+      }
     }
   }
 }

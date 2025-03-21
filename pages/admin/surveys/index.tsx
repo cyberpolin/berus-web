@@ -110,13 +110,11 @@ const SurveyList = () => {
                   questions: string
                 }) => {
                   let parsedQuestions = questions ? JSON.parse(questions) : {}
-
-                  const { question1 } = parsedQuestions || {}
-
+                  const { question } = parsedQuestions[0] || {}
                   return (
                     <tr key={id} className="hover:bg-gray-500">
                       <td className="px-6 py-4">
-                        {question1 || 'No disponible'}
+                        {question || 'No disponible'}
                       </td>
                       <td className="px-6 py-4">{state}</td>
                       <td className="px-6 py-4">

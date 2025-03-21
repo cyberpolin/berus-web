@@ -31,10 +31,10 @@ const listSurveys = () => {
             }) => {
               let parsedQuestions = questions ? JSON.parse(questions) : {}
 
-              const { question1 } = parsedQuestions || {}
+              const { question } = parsedQuestions || {}
               return (
                 <tr key={id}>
-                  <td className=" px-6 py-4">{question1}</td>
+                  <td className=" px-6 py-4">{question}</td>
                   <td className=" px-6 py-4">{state}</td>
                   <td className="px-6 py-4">{`${new Date(
                     endDate
@@ -49,7 +49,7 @@ const listSurveys = () => {
                           router.push(
                             state === 'ACTIVE'
                               ? `/survey/${id}`
-                              : `/survey/vote/${id}/${questions}`
+                              : `/survey/vote/${id}`
                           )
                         }
                       >

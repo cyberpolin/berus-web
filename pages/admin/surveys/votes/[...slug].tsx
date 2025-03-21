@@ -6,10 +6,7 @@ import { useEffect } from 'react'
 import PieChart from '@/components/General/PieChart'
 const VoteList = () => {
   const { slug } = useRouter().query
-  const [id, questions] = Array.isArray(slug) ? slug : []
-  let parsedQuestions = questions ? JSON.parse(questions) : {}
-
-  const { options } = parsedQuestions || {}
+  const [id] = Array.isArray(slug) ? slug : []
 
   const {
     loading,
@@ -24,23 +21,23 @@ const VoteList = () => {
   const { data: { getCountVotes } = {} } = useQuery(GET_TOTAL_VOTES, {
     variables: {
       surveyId: id,
-      options,
     },
   })
 
-  const data = {
-    labels: options?.map((option) => option.option),
-    datasets: [
-      {
-        label: 'Resultados de la encuesta',
-        data: getCountVotes?.countVotes.map((count) => count.count),
-        backgroundColor: Array.from({ length: options?.length }).map(
-          () => `#${Math.floor(Math.random() * 16777215).toString(16)}`
-        ),
-        hoverOffset: 4,
-      },
-    ],
-  }
+  const data =
+    getCountVotes.countVotes?.map((question: any, index: number) => ({
+      labels: question.results.map((result: any) => result.option),
+      datasets: [
+        {
+          label: 'Resultados de la encuesta',
+          data: question.results.map((result: any) => result.count),
+          backgroundColor: Array.from({ length: question.results?.length }).map(
+            () => `#${Math.floor(Math.random() * 16777215).toString(16)}`
+          ),
+          hoverOffset: 4,
+        },
+      ],
+    })) ?? []
 
   useEffect(() => {
     refetch()
@@ -105,15 +102,19 @@ const VoteList = () => {
                     properties: Array<{ name: string }>
                   }
                   vote: string
-                }) => (
-                  <tr key={id} className="hover:bg-gray-500">
-                    <td className="px-6 py-4">{name}</td>
-                    <td className="px-6 py-4">{email}</td>
-                    <td className="px-6 py-4">{phone}</td>
-                    <td className="px-6 py-4">{properties[0]?.name}</td>
-                    <td className="px-6 py-4">{vote}</td>
-                  </tr>
-                )
+                }) => {
+                  const ListOptions = JSON.parse(vote).join(', ')
+
+                  return (
+                    <tr key={id} className="hover:bg-gray-500">
+                      <td className="px-6 py-4">{name}</td>
+                      <td className="px-6 py-4">{email}</td>
+                      <td className="px-6 py-4">{phone}</td>
+                      <td className="px-6 py-4">{properties[0]?.name}</td>
+                      <td className="px-6 py-4">{ListOptions}</td>
+                    </tr>
+                  )
+                }
               )}
             </tbody>
           </table>
@@ -122,20 +123,24 @@ const VoteList = () => {
           <h2 className="mb-2 text-2xl font-semibold text-gray-800">
             Resultados
           </h2>
-          <div className="flex max-h-96 flex-col items-center rounded-md bg-gray-50 p-4 pb-14">
-            <p className="mb-4 text-gray-600">
-              El ganador de la encuesta es:{' '}
-              <span className="font-bold">
-                {getCountVotes?.maxVotes[0].option}
-              </span>{' '}
-              con{' '}
-              <span className="font-bold">
-                {getCountVotes?.maxVotes[0].count}
-              </span>{' '}
-              votos
-            </p>
-            <PieChart data={data} />
-          </div>
+          {getCountVotes.maxVotes.map((question: any, index: number) => (
+            <>
+              <div className="flex max-h-96 flex-col items-center rounded-md bg-gray-50 p-4 pb-14">
+                <p className="mb-4 text-gray-600">
+                  El ganador de la encuesta es:{' '}
+                  <span className="font-bold">
+                    {getCountVotes?.maxVotes[index].maxResults[0]?.option}
+                  </span>{' '}
+                  con{' '}
+                  <span className="font-bold">
+                    {getCountVotes?.maxVotes[index].maxResults[0]?.count}
+                  </span>{' '}
+                  votos
+                </p>
+                <PieChart data={data[index]} />
+              </div>
+            </>
+          ))}
         </div>
       </div>
     </Layout>
