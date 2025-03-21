@@ -152,6 +152,7 @@ const SurveyForm = () => {
         {values.questions.map((question: Question, questionIndex: number) => (
           <div key={questionIndex}>
             <Input
+              extraStylesContainer="mb-3"
               placeholder="Pregunta"
               name={`questions[${questionIndex}].question`}
               label={`Pregunta ${questionIndex + 1}`}
@@ -162,6 +163,7 @@ const SurveyForm = () => {
             />
             {question.options.map((option, optionIndex) => (
               <Input
+                extraStylesContainer="mb-3"
                 key={optionIndex}
                 placeholder={`Opción ${optionIndex + 1}`}
                 name={`questions[${questionIndex}].options[${optionIndex}].option`}

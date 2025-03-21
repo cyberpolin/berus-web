@@ -58,7 +58,7 @@ export default function Survey() {
       )
       setVote(formatedVotes)
     }
-  }, [refetch])
+  }, [])
 
   useEffect(() => {
     const voted = async () => {
@@ -87,6 +87,7 @@ export default function Survey() {
     }
     voted()
   }, [vote])
+  console.log('vote', vote)
 
   if (loading) return <p>Loading...</p>
 

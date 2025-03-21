@@ -31,7 +31,7 @@ const listSurveys = () => {
             }) => {
               let parsedQuestions = questions ? JSON.parse(questions) : {}
 
-              const { question } = parsedQuestions || {}
+              const { question } = parsedQuestions[0] || {}
               return (
                 <tr key={id}>
                   <td className=" px-6 py-4">{question}</td>

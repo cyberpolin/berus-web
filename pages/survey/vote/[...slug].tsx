@@ -14,7 +14,7 @@ const VoteList = () => {
   })
 
   const data =
-    getCountVotes.countVotes?.map((question: any, index: number) => ({
+    getCountVotes?.countVotes?.map((question: any, index: number) => ({
       labels: question.results.map((result: any) => result.option),
       datasets: [
         {
@@ -37,7 +37,7 @@ const VoteList = () => {
           <h2 className="mb-2 text-2xl font-semibold text-gray-800">
             Resultados
           </h2>
-          {getCountVotes.maxVotes.map((question: any, index: number) => (
+          {getCountVotes?.maxVotes.map((question: any, index: number) => (
             <>
               <div className="flex max-h-96 flex-col items-center rounded-md bg-gray-50 p-4 pb-14">
                 <p className="mb-4 text-gray-600">
