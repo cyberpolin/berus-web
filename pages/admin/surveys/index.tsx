@@ -3,6 +3,7 @@ import { useRouter } from 'next/router'
 import { useQuery, useMutation } from '@apollo/client'
 import { GET_SURVEYS, DELETE_SURVEY, UPDATE_SURVEY } from './queries.gql'
 import { useEffect } from 'react'
+import Table from '@/components/General/Table'
 
 const SurveyList = () => {
   const router = useRouter()
@@ -58,135 +59,99 @@ const SurveyList = () => {
         >
           Crear encuesta
         </button>
-        <div className="mt-4 overflow-x-scroll">
-          <table className="min-w-full divide-y divide-gray-200 ">
-            <thead className="bg-gray-50">
-              <tr>
-                <th
-                  scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
-                >
-                  Pregunta
-                </th>
-                <th
-                  scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
-                >
-                  Estado
-                </th>
-                <th
-                  scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
-                >
-                  Fecha de creacion
-                </th>
-                <th
-                  scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
-                >
-                  Fecha de finalizacion
-                </th>
-                <th
-                  scope="col"
-                  className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-500"
-                >
-                  Acciones
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200 [&>*:nth-child(even)]:bg-gray-100 [&>*:nth-child(odd)]:bg-white">
-              {surveys?.map(
-                ({
-                  id,
-                  state,
-                  createdAt,
-                  endDate,
-                  questions,
-                }: {
-                  id: string
-                  state: string
-                  createdAt: string
-                  endDate: string
-                  questions: string
-                }) => {
-                  let parsedQuestions = questions ? JSON.parse(questions) : {}
-                  const { question } = parsedQuestions[0] || {}
-                  return (
-                    <tr key={id} className="hover:bg-gray-500">
-                      <td className="px-6 py-4">
-                        {question || 'No disponible'}
-                      </td>
-                      <td className="px-6 py-4">{state}</td>
-                      <td className="px-6 py-4">
-                        {new Date(createdAt).toLocaleDateString()}
-                      </td>
-                      <td className="px-6 py-4">
-                        {`${new Date(endDate).toLocaleDateString()} ${new Date(
-                          endDate
-                        ).toLocaleTimeString()}`}
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex flex-col items-center gap-y-2">
-                          {state === 'ACTIVE' && (
-                            <div className="align-center flex flex-wrap justify-center gap-x-4">
-                              <span
-                                className=" cursor-pointer text-center text-sm text-red-300 hover:underline"
-                                onClick={() => {
-                                  if (
-                                    window.confirm(
-                                      `Seguro que deseas eliminar esta encuesta?`
-                                    )
-                                  )
-                                    handleDelete(id)
-                                }}
-                              >
-                                Eliminar
-                              </span>
-                              <span
-                                className=" cursor-pointer text-center text-sm text-slate-500 hover:underline"
-                                onClick={() => {
-                                  if (
-                                    window.confirm(
-                                      `Seguro que deseas terminar la encuesta?  ${id}`
-                                    )
-                                  )
-                                    handleClose(id)
-                                }}
-                              >
-                                Cerrar encuesta
-                              </span>
+        <Table
+          headers={[
+            { title: 'Pregunta' },
+            { title: 'Estado' },
+            { title: 'Fecha de creacion' },
+            { title: 'Fecha de finalizacion' },
+            { title: 'Acciones' },
+          ]}
+        >
+          {surveys?.map(
+            ({
+              id,
+              state,
+              createdAt,
+              endDate,
+              questions,
+            }: {
+              id: string
+              state: string
+              createdAt: string
+              endDate: string
+              questions: string
+            }) => {
+              let parsedQuestions = questions ? JSON.parse(questions) : {}
+              const { question } = parsedQuestions[0] || {}
+              return (
+                <tr key={id} className="hover:bg-gray-500">
+                  <td className="px-6 py-4">{question || 'No disponible'}</td>
+                  <td className="px-6 py-4">{state}</td>
+                  <td className="px-6 py-4">
+                    {new Date(createdAt).toLocaleDateString()}
+                  </td>
+                  <td className="px-6 py-4">
+                    {`${new Date(endDate).toLocaleDateString()} ${new Date(
+                      endDate
+                    ).toLocaleTimeString()}`}
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="flex flex-col items-center gap-y-2">
+                      {state === 'ACTIVE' && (
+                        <div className="align-center flex flex-wrap justify-center gap-x-4">
+                          <span
+                            className=" cursor-pointer text-center text-sm text-red-300 hover:underline"
+                            onClick={() => {
+                              if (
+                                window.confirm(
+                                  `Seguro que deseas eliminar esta encuesta?`
+                                )
+                              )
+                                handleDelete(id)
+                            }}
+                          >
+                            Eliminar
+                          </span>
+                          <span
+                            className=" cursor-pointer text-center text-sm text-slate-500 hover:underline"
+                            onClick={() => {
+                              if (
+                                window.confirm(
+                                  `Seguro que deseas terminar la encuesta?  ${id}`
+                                )
+                              )
+                                handleClose(id)
+                            }}
+                          >
+                            Cerrar encuesta
+                          </span>
 
-                              <button
-                                className="mr-2 rounded bg-emerald-500 px-3 py-1 text-white hover:bg-green-600"
-                                onClick={() =>
-                                  router.push(
-                                    `/admin/surveys/survey-form/${id}`
-                                  )
-                                }
-                              >
-                                Editar &#9998;
-                              </button>
-                            </div>
-                          )}
                           <button
                             className="mr-2 rounded bg-emerald-500 px-3 py-1 text-white hover:bg-green-600"
                             onClick={() =>
-                              router.push(
-                                `/admin/surveys/votes/${id}/${questions}`
-                              )
+                              router.push(`/admin/surveys/survey-form/${id}`)
                             }
                           >
-                            Ver Resultados
+                            Editar &#9998;
                           </button>
                         </div>
-                      </td>
-                    </tr>
-                  )
-                }
-              )}
-            </tbody>
-          </table>
-        </div>
+                      )}
+                      <button
+                        className="mr-2 rounded bg-emerald-500 px-3 py-1 text-white hover:bg-green-600"
+                        onClick={() =>
+                          router.push(`/admin/surveys/votes/${id}/${questions}`)
+                        }
+                      >
+                        Ver Resultados
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              )
+            }
+          )}
+        </Table>
       </div>
     </Layout>
   )
