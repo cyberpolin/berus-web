@@ -4,7 +4,7 @@ import { useQuery, useMutation } from '@apollo/client'
 import { GET_SURVEYS, DELETE_SURVEY, UPDATE_SURVEY } from './queries.gql'
 import { useEffect } from 'react'
 import Table from '@/components/General/Table'
-
+import Button from '@/components/Button'
 const SurveyList = () => {
   const router = useRouter()
   const {
@@ -126,25 +126,20 @@ const SurveyList = () => {
                           >
                             Cerrar encuesta
                           </span>
-
-                          <button
-                            className="mr-2 rounded bg-emerald-500 px-3 py-1 text-white hover:bg-green-600"
+                          <Button
                             onClick={() =>
                               router.push(`/admin/surveys/survey-form/${id}`)
                             }
-                          >
-                            Editar &#9998;
-                          </button>
+                            title=" Editar &#9998;"
+                          />
                         </div>
                       )}
-                      <button
-                        className="mr-2 rounded bg-emerald-500 px-3 py-1 text-white hover:bg-green-600"
+                      <Button
                         onClick={() =>
                           router.push(`/admin/surveys/votes/${id}`)
                         }
-                      >
-                        Ver Resultados
-                      </button>
+                        title="Ver Resultados"
+                      />
                     </div>
                   </td>
                 </tr>

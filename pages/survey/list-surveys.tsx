@@ -3,6 +3,7 @@ import Table from '@/components/General/Table'
 import { useQuery } from '@apollo/client'
 import { GET_SURVEYS } from '../admin/surveys/queries.gql'
 import router from 'next/router'
+import Button from '@/components/Button'
 const listSurveys = () => {
   const { data: { surveys } = {} } = useQuery(GET_SURVEYS)
   return (
@@ -43,8 +44,8 @@ const listSurveys = () => {
                   ).toLocaleTimeString()}`}</td>
                   <td className=" px-6 py-4">
                     <div className="flex flex-col items-center gap-y-2">
-                      <button
-                        className="mr-2 rounded bg-emerald-500 px-3 py-1 text-white hover:bg-green-600"
+                      <Button
+                        title={state === 'ACTIVE' ? 'Votar' : 'Resultados'}
                         onClick={() =>
                           router.push(
                             state === 'ACTIVE'
@@ -52,9 +53,7 @@ const listSurveys = () => {
                               : `/survey/vote/${id}`
                           )
                         }
-                      >
-                        {state === 'ACTIVE' ? 'Votar' : 'Resultados'}
-                      </button>
+                      />
                     </div>
                   </td>
                 </tr>
