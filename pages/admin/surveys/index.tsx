@@ -140,7 +140,7 @@ const SurveyList = () => {
                       <button
                         className="mr-2 rounded bg-emerald-500 px-3 py-1 text-white hover:bg-green-600"
                         onClick={() =>
-                          router.push(`/admin/surveys/votes/${id}/${questions}`)
+                          router.push(`/admin/surveys/votes/${id}`)
                         }
                       >
                         Ver Resultados

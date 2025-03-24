@@ -1,24 +1,10 @@
 import Layout from '@/components/layout/NLayout'
 import { useRouter } from 'next/router'
-import { useQuery } from '@apollo/client'
-import { GET_VOTES, GET_TOTAL_VOTES } from '../queries.gql'
-import { useEffect } from 'react'
 import PieChart from '@/components/General/PieChart'
-import Table from '@/components/General/Table'
+import { useQuery } from '@apollo/client'
+import { GET_TOTAL_VOTES } from '../queries.gql'
 const VoteList = () => {
-  const { slug } = useRouter().query
-  const [id] = Array.isArray(slug) ? slug : []
-
-  const {
-    loading,
-    error,
-    data: { votes } = {},
-    refetch,
-  } = useQuery(GET_VOTES, {
-    variables: {
-      id,
-    },
-  })
+  const { id } = useRouter().query
   const { data: { getCountVotes } = {} } = useQuery(GET_TOTAL_VOTES, {
     variables: {
       surveyId: id,
@@ -40,61 +26,16 @@ const VoteList = () => {
       ],
     })) ?? []
 
-  useEffect(() => {
-    refetch()
-  }, [])
-
-  if (loading) {
-    return <div>Loading...</div>
-  }
-
   return (
     <Layout>
       <div className="mx-auto flex w-full max-w-[1400px] flex-col px-4 ">
         <h2 className="font-semi-bold text-2xl">Votos</h2>
-        <Table
-          headers={[
-            { title: 'Propietario' },
-            { title: 'Correo' },
-            { title: 'Telefono' },
-            { title: 'Lote' },
-            { title: 'Voto por' },
-          ]}
-        >
-          {votes?.map(
-            ({
-              id,
-              user: { name, email, phone, properties },
-              vote,
-            }: {
-              id: string
-              user: {
-                name: string
-                email: string
-                phone: string
-                properties: Array<{ name: string }>
-              }
-              vote: string
-            }) => {
-              const ListOptions = JSON.parse(vote).join(', ')
 
-              return (
-                <tr key={id} className="hover:bg-gray-500">
-                  <td className="px-6 py-4">{name}</td>
-                  <td className="px-6 py-4">{email}</td>
-                  <td className="px-6 py-4">{phone}</td>
-                  <td className="px-6 py-4">{properties[0]?.name}</td>
-                  <td className="px-6 py-4">{ListOptions}</td>
-                </tr>
-              )
-            }
-          )}
-        </Table>
         <div className="mt-7  flex flex-col justify-center rounded-lg bg-white p-4 shadow-md">
           <h2 className="mb-2 text-2xl font-semibold text-gray-800">
             Resultados
           </h2>
-          {getCountVotes.maxVotes.map((question: any, index: number) => (
+          {getCountVotes?.maxVotes.map((question: any, index: number) => (
             <>
               <div className="flex max-h-96 flex-col items-center rounded-md bg-gray-50 p-4 pb-14">
                 <p className="mb-4 text-gray-600">
