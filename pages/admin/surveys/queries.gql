@@ -52,22 +52,3 @@ query GET_VOTES($id: ID!) {
     }
   }
 }
-
-query GET_TOTAL_VOTES($surveyId: ID!) {
-  getCountVotes(surveyId: $surveyId) {
-    maxVotes {
-      question
-      maxResults {
-        option
-        count
-      }
-    }
-    countVotes {
-      question
-      results {
-        option
-        count
-      }
-    }
-  }
-}
