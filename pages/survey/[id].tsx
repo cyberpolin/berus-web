@@ -16,7 +16,7 @@ import { useRouter } from 'next/router'
 export default function Survey() {
   const router = useRouter()
   const { id } = router.query
-  const [vote, setVote] = useState({})
+  const [vote, setVote] = useState<Record<string, string>>({})
   const user = UseAuth()
   const {
     data: surveyData,
@@ -58,7 +58,7 @@ export default function Survey() {
       )
       setVote(formatedVotes)
     }
-  }, [])
+  }, [survey])
 
   useEffect(() => {
     const voted = async () => {
@@ -87,7 +87,6 @@ export default function Survey() {
     }
     voted()
   }, [vote])
-  console.log('vote', vote)
 
   if (loading) return <p>Loading...</p>
 

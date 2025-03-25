@@ -158,6 +158,7 @@ const SurveyForm = () => {
               label={`Pregunta ${questionIndex + 1}`}
               id={`questions[${questionIndex}].question`}
               value={question.question}
+              // @ts-ignore
               error={errors.questions?.[questionIndex]?.question}
               onChange={handleChange}
             />
@@ -171,6 +172,7 @@ const SurveyForm = () => {
                 id={`questions[${questionIndex}].options[${optionIndex}].option`}
                 value={option.option}
                 error={
+                  // @ts-ignore
                   errors.questions?.[questionIndex]?.options?.[optionIndex]
                     ?.option
                 }
