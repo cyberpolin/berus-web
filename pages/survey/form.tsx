@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { useRouter } from 'next/router'
 import { useMutation } from '@apollo/client'
-import { CREATE_SURVEY } from './queries.gql'
+import { CREATE_SURVEY, CREATEADMIN } from './queries.gql'
+import { LOG_IN, IS_LOGGED } from '../login/queries.gql'
 import SurveyForm, {
   FormValues,
   Question,
@@ -11,11 +12,17 @@ import Input from '@/components/General/Input'
 import Form from '@/components/General/Form'
 import { useFormik } from 'formik'
 import * as yup from 'yup'
+import React from 'react'
 
 const FormSubdivision = () => {
-  const [step, setStep] = useState(2)
+  const router = useRouter()
+  const [step, setStep] = useState(1)
   const [surveyData, setSurveyData] = useState({})
   const [createSurvey, { loading }] = useMutation(CREATE_SURVEY)
+  const [CreateAdmin] = useMutation(CREATEADMIN)
+  const [loginMutation] = useMutation(LOG_IN, {
+    refetchQueries: [IS_LOGGED],
+  })
 
   const schema = yup
     .object()
@@ -56,13 +63,15 @@ const FormSubdivision = () => {
     setSurveyData(formattedData)
     setStep(2)
   }
-  const handleSubmitUser = async () => {
-    // await createSurvey({
-    //   variables: {
-    //     data: surveyData,
-    //   },
-    // })
-    console.log('data', surveyData)
+  const handleSubmitUser = async (hoaId: string) => {
+    await createSurvey({
+      variables: {
+        data: {
+          ...surveyData,
+          hoa: { connect: { id: hoaId } },
+        },
+      },
+    })
   }
 
   const { values, errors, touched, handleSubmit, setFieldValue, handleChange } =
@@ -71,14 +80,41 @@ const FormSubdivision = () => {
       validationSchema: schema,
       enableReinitialize: true,
       onSubmit: async (values, { resetForm }) => {
-        handleSubmitUser()
-        resetForm()
+        const randomPassword = Math.floor(
+          Math.random() * 9000 + 1000
+        ).toString()
+        const createAdmin = await CreateAdmin({
+          variables: {
+            data: {
+              email: values.email,
+              name: values.nameofDivision,
+              password: randomPassword,
+              isAdmin: true,
+              isVerified: true,
+              hoa: {
+                create: {
+                  name: values.nameofDivision,
+                  description: values.nameofDivision,
+                  listResidents: values.listResidents,
+                },
+              },
+            },
+          },
+        })
+        const hoaId = createAdmin?.data?.createUser?.hoa?.id
+        if (hoaId) {
+          handleSubmitUser(hoaId)
+        }
         setStep(3)
+        setTimeout(async () => {
+          await loginMutation({
+            variables: { email: values.email, password: randomPassword },
+          })
+          router.push('/dashboard/cuotas')
+        }, 3000)
+        resetForm()
       },
     })
-
-  console.log('values', values)
-  console.log('errors', errors)
 
   return (
     <>

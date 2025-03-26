@@ -67,3 +67,11 @@ mutation CREATE_SURVEY($data: SurveyCreateInput!) {
     id
   }
 }
+
+mutation CREATEADMIN($data: UserCreateInput!) {
+  createUser(data: $data) {
+    hoa {
+      id
+    }
+  }
+}
