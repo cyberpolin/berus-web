@@ -35,8 +35,8 @@ const FormSubdivision = () => {
           'email-list',
           'Debe ser un correo o correos separados por coma u espacios',
           (value) => {
-            const emails = value.split(/[ ,]+/)
-            return emails.every((email) =>
+            const emails = value?.split(/[ ]+/)
+            return emails?.every((email) =>
               yup.string().email().isValidSync(email)
             )
           }
