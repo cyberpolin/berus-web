@@ -10,11 +10,12 @@ import {
 import UseAuth from '@/lib/UseAuth'
 import { useEffect } from 'react'
 import PieChart from '@/components/General/PieChart'
-import countVotes from '@/lib/utils/countVotes'
+import useUtils from '@/lib/utils/useUtils'
 import dayjs from 'dayjs'
 import { useRouter } from 'next/router'
 
 export default function Survey() {
+  const { countVotes } = useUtils()
   const router = useRouter()
   const { id } = router.query
   const [vote, setVote] = useState('')

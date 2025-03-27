@@ -3,9 +3,11 @@ import { useRouter } from 'next/router'
 import { useQuery } from '@apollo/client'
 import { GET_VOTES } from '../queries.gql'
 import { useEffect } from 'react'
-import countVotes from '@/lib/utils/countVotes'
 import PieChart from '@/components/General/PieChart'
+import useUtils from '@/lib/utils/useUtils'
+
 const VoteList = () => {
+  const { countVotes } = useUtils()
   const { slug } = useRouter().query
   const [id, option1, option2] = Array.isArray(slug) ? slug : []
 
@@ -19,6 +21,7 @@ const VoteList = () => {
       id,
     },
   })
+
   const { winner, votesWinner, totalVotes } = countVotes({
     surveyID: id,
     option1,

@@ -1,8 +1,9 @@
 import Layout from '@/components/layout/NLayout'
 import { useRouter } from 'next/router'
-import countVotes from '@/lib/utils/countVotes'
+import useUtils from '@/lib/utils/useUtils'
 import PieChart from '@/components/General/PieChart'
 const VoteList = () => {
+  const { countVotes } = useUtils()
   const { slug } = useRouter().query
   const [id, option1, option2] = Array.isArray(slug) ? slug : []
 
