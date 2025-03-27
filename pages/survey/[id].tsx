@@ -11,6 +11,7 @@ import UseAuth from '@/lib/UseAuth'
 import { useEffect } from 'react'
 import PieChart from '@/components/General/PieChart'
 import useUtils from '@/lib/utils/useUtils'
+import CountVotes from '@/lib/utils/countVotes'
 import dayjs from 'dayjs'
 import { useRouter } from 'next/router'
 
@@ -42,7 +43,7 @@ export default function Survey() {
       user: user.user.id,
     },
   })
-  const { winner, votesWinner, totalVotes } = countVotes({
+  const { winner, votesWinner, totalVotes } = CountVotes({
     surveyID: survey?.id,
     option1,
     option2,

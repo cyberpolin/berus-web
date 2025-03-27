@@ -3,6 +3,7 @@ import { useRouter } from 'next/router'
 import { useQuery } from '@apollo/client'
 import { GET_VOTES } from '../queries.gql'
 import { useEffect } from 'react'
+import CountVotes from '@/lib/utils/countVotes'
 import PieChart from '@/components/General/PieChart'
 import useUtils from '@/lib/utils/useUtils'
 
@@ -21,8 +22,7 @@ const VoteList = () => {
       id,
     },
   })
-
-  const { winner, votesWinner, totalVotes } = countVotes({
+  const { winner, votesWinner, totalVotes } = CountVotes({
     surveyID: id,
     option1,
     option2,
