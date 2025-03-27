@@ -3,7 +3,7 @@ import Table from '@/components/General/Table'
 import { useQuery } from '@apollo/client'
 import { GET_SURVEYS } from '../admin/surveys/queries.gql'
 import router from 'next/router'
-const listSurveys = () => {
+const ListSurveys = () => {
   const { data: { surveys } = {} } = useQuery(GET_SURVEYS)
   return (
     <Layout>
@@ -67,4 +67,4 @@ const listSurveys = () => {
   )
 }
 
-export default listSurveys
+export default ListSurveys

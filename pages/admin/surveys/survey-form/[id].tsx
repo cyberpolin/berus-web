@@ -86,7 +86,11 @@ const SurveyForm = () => {
 
   return (
     <Layout>
-      <Form handleSubmit={handleSubmit} title={title} errors={errors}>
+      <Form
+        handleSubmit={handleSubmit}
+        title={title}
+        errors={Object.keys(errors) as string[]}
+      >
         <Input
           placeholder="pregunta"
           name="question"

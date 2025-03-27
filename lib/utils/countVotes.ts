@@ -1,6 +1,6 @@
 import { useQuery } from '@apollo/client'
 import { GET_TOTAL_VOTES } from './queries.gql'
-export default function countVotes({
+export default function CountVotes({
   surveyID,
   option1,
   option2,

@@ -1,12 +1,12 @@
 import Layout from '@/components/layout/NLayout'
 import { useRouter } from 'next/router'
-import countVotes from '@/lib/utils/countVotes'
+import CountVotes from '@/lib/utils/countVotes'
 import PieChart from '@/components/General/PieChart'
 const VoteList = () => {
   const { slug } = useRouter().query
   const [id, option1, option2] = Array.isArray(slug) ? slug : []
 
-  const { winner, votesWinner, totalVotes } = countVotes({
+  const { winner, votesWinner, totalVotes } = CountVotes({
     surveyID: id,
     option1,
     option2,
