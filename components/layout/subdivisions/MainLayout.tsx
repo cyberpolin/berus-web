@@ -271,10 +271,10 @@ const MainLayout = ({ children }: MainLayoutProps) => {
     <div className="flex min-h-screen w-full flex-col bg-slate-100">
       <Header menuOpen={menuOpen} toggleMenu={toggleMenu} />
       <div
-        className={`mt-15 flex${menuOpen ? 'ml-52' : 'ml-20'} transition-all`}
+        className={`mt-16 flex ${menuOpen ? 'ml-52' : 'ml-20'} transition-all`}
       >
         <Sidebar menuOpen={menuOpen} toggleMenu={toggleMenu} />
-        <div className="w-full flex-grow ">{children}</div>
+        <div className=" w-full flex-grow ">{children}</div>
       </div>
     </div>
   )
