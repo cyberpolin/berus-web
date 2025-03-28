@@ -1,0 +1,77 @@
+query GET_SURVEYS {
+  surveys(orderBy: { createdAt: desc }) {
+    id
+    state
+    createdAt
+    endDate
+    questions
+  }
+}
+
+query GET_SURVEY($id: ID!) {
+  survey(where: { id: $id }) {
+    id
+    state
+    createdAt
+    endDate
+    questions
+  }
+}
+
+query GET_SURVEY_RECENT {
+  surveys(orderBy: { createdAt: desc }, take: 1) {
+    id
+    state
+    createdAt
+    endDate
+    questions
+  }
+}
+
+mutation VOTE_SURVEY($data: VoteCreateInput!) {
+  createVote(data: $data) {
+    id
+  }
+}
+
+query GET_VOTE($id: ID, $user: ID) {
+  votes(
+    where: { survey: { id: { equals: $id } }, user: { id: { equals: $user } } }
+  ) {
+    id
+    vote
+  }
+}
+
+query GET_TOTAL_VOTES($surveyId: ID!) {
+  getCountVotes(surveyId: $surveyId) {
+    maxVotes {
+      question
+      maxResults {
+        option
+        count
+      }
+    }
+    countVotes {
+      question
+      results {
+        option
+        count
+      }
+    }
+  }
+}
+
+mutation CREATE_SURVEY($data: SurveyCreateInput!) {
+  createSurvey(data: $data) {
+    id
+  }
+}
+
+mutation CREATEADMIN($data: UserCreateInput!) {
+  createUser(data: $data) {
+    hoa {
+      id
+    }
+  }
+}

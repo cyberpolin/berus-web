@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
   CashOutline,
   ChevronBack,
@@ -12,6 +12,9 @@ import {
   Person,
 } from 'react-ionicons'
 import Link from 'next/link'
+import UseAuth from '@/lib/UseAuth'
+import { useRouter } from 'next/router'
+import path from 'path'
 
 type MenuProps = {
   menuOpen: boolean
@@ -166,7 +169,7 @@ const Sidebar = ({ menuOpen, toggleMenu }: MenuProps) => {
           }
         />
       ),
-      link: '/logout',
+      link: '/subdivisions/logout',
     },
   ]
 
@@ -266,6 +269,21 @@ type MainLayoutProps = {
 const MainLayout = ({ children }: MainLayoutProps) => {
   const [menuOpen, setMenuOpen] = useState(false)
   const toggleMenu = () => setMenuOpen(!menuOpen)
+  const router = useRouter()
+  const { user, loading } = UseAuth()
+
+  useEffect(() => {
+    if (loading) {
+      if (
+        !user.id &&
+        router.pathname !== '/subdivisions/survey/form' &&
+        router.pathname !== '/subdivisions/recovery'
+      ) {
+        router?.push('/subdivisions/login')
+      }
+    }
+  }, [loading, user])
+  console.log('loading', loading, 'user', user)
 
   return (
     <div className="flex min-h-screen w-full flex-col bg-slate-100">

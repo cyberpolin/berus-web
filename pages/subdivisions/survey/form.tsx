@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/router'
 import { useMutation } from '@apollo/client'
 import { CREATE_SURVEY, CREATEADMIN } from './queries.gql'
-import { LOG_IN, IS_LOGGED } from '../login/queries.gql'
+import { LOG_IN, IS_LOGGED } from '../../login/queries.gql'
 import SurveyForm, {
   FormValues,
   Question,
@@ -34,9 +34,9 @@ const FormSubdivision = () => {
         .test(
           'email-list',
           'Debe ser un correo o correos separados por coma u espacios',
-          (value) => {
+          (value: any) => {
             const emails = value?.split(/[ ]+/)
-            return emails?.every((email) =>
+            return emails?.every((email: string) =>
               yup.string().email().isValidSync(email)
             )
           }
@@ -110,7 +110,7 @@ const FormSubdivision = () => {
           await loginMutation({
             variables: { email: values.email, password: randomPassword },
           })
-          router.push('/dashboard/cuotas')
+          router.push('/subdivisions')
         }, 3000)
         resetForm()
       },
@@ -126,7 +126,7 @@ const FormSubdivision = () => {
           <Form
             handleSubmit={handleSubmit}
             title={'Crear encuesta2'}
-            errors={errors}
+            errors={Object.values(errors) as string[]}
           >
             <Input
               placeholder="Correo electrónico"

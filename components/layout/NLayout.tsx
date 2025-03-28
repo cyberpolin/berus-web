@@ -12,7 +12,7 @@ const NLayout = (props: any) => {
   const ui = useUI()
 
   useEffect(() => {
-    if (!user && router.pathname !== '/survey/form') {
+    if (!user && router.pathname !== '/subdivisions/survey/form') {
       router?.push('/login')
     }
   }, [])
