@@ -1,14 +1,14 @@
-import Payments from "@/components/Payments"
-import UseAuth from "@/lib/UseAuth"
-import { useRouter } from "next/router"
-import Layout from "../../components/layout/NLayout"
+import Payments from '@/components/Payments';
+import UseAuth from '@/lib/UseAuth';
+import { useRouter } from 'next/router';
+import Layout from '../../components/layout/NLayout';
 
 const Cuotas = () => {
-  const router = useRouter()
-  const user = UseAuth()
+  const router = useRouter();
+  const user = UseAuth();
 
   if (router.isFallback) {
-    return <h1>Data is loading</h1>
+    return <h1>Data is loading</h1>;
   }
 
   return (
@@ -17,7 +17,7 @@ const Cuotas = () => {
         <Payments user={user} />
       </div>
     </Layout>
-  )
-}
+  );
+};
 
-export default Cuotas
+export default Cuotas;

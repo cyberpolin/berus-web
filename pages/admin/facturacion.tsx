@@ -1,38 +1,38 @@
-import { useEffect, useState } from "react"
-import { months } from "../../lib/utils/date"
+import { useEffect, useState } from 'react';
+import { months } from '../../lib/utils/date';
 
-import Layout from "../../components/layout/NLayout"
-import dayjs from "dayjs"
-import { useMutation, useQuery } from "@apollo/client"
-import { GET_BILLS, UPDATE_PAYMENT, DELETE_PAYMENT } from "./adminQueries.gql"
-import { Loader } from "@/components/Button"
-import MonthSelect from '@/components/MonthSelect'
+import Layout from '../../components/layout/NLayout';
+import dayjs from 'dayjs';
+import { useMutation, useQuery } from '@apollo/client';
+import { GET_BILLS, UPDATE_PAYMENT, DELETE_PAYMENT } from './adminQueries.gql';
+import { Loader } from '@/components/Button';
+import MonthSelect from '@/components/MonthSelect';
 
 export default function () {
-  const today = dayjs()
-  const year = today.format('YYYY')
+  const today = dayjs();
+  const year = today.format('YYYY');
 
   type Image = {
-    id?: string[]
-    image?: any
-  }
+    id?: string[];
+    image?: any;
+  };
 
-  const [image, setImage] = useState<Image>({})
-  const [deleteImage, setDeleteImage] = useState<string[]>()
+  const [image, setImage] = useState<Image>({});
+  const [deleteImage, setDeleteImage] = useState<string[]>();
   const [updatePayment, paymentMutation] = useMutation(UPDATE_PAYMENT, {
     refetchQueries: ['GET_BILLS'],
-  })
+  });
 
   const [deletePayment, deletePaymentMutation] = useMutation(DELETE_PAYMENT, {
     refetchQueries: ['GET_BILLS'],
-  })
+  });
 
   const getPNames = (name: string) => {
     // get M and convert it to Manzana, get L and convert it to Lote, add space between Manzana y Lote
-    name = name.replace('M', 'Manzana ')
-    name = name.replace('L', ' Lote ')
-    return name
-  }
+    name = name.replace('M', 'Manzana ');
+    name = name.replace('L', ' Lote ');
+    return name;
+  };
 
   useEffect(() => {
     //@ts-ignore
@@ -45,18 +45,18 @@ export default function () {
             //@ts-ignore
             image: image.image,
           },
-        })
-      })
+        });
+      });
 
       Promise.all(updates)
         .then(() => {
-          setImage({})
+          setImage({});
         })
         .catch((e) => {
-          console.log('e', e)
-        })
+          console.log('e', e);
+        });
     }
-  }, [image])
+  }, [image]);
 
   useEffect(() => {
     if (!!deleteImage) {
@@ -65,71 +65,69 @@ export default function () {
           variables: {
             id,
           },
-        })
-      )
+        }),
+      );
 
       Promise.all(images).then(() => {
-        setDeleteImage(undefined)
-      })
+        setDeleteImage(undefined);
+      });
     }
-  })
+  });
 
   const [selectedMonth, setSelectedMonth] = useState(
-    today.startOf('month').toISOString()
-  )
+    today.startOf('month').toISOString(),
+  );
 
   const { data, loading, error } = useQuery(GET_BILLS, {
     variables: {
       selectedDate: selectedMonth,
     },
-  })
+  });
 
   const onlyPaid =
-    data?.getBills.filter(
-      ({ status }: { status: string }) => status === 'payed'
-    ) || []
+    data?.getBills.filter(({ status }: { status: string }) => status === 'payed') || [];
   const pendingBills =
     //@ts-ignore
-    onlyPaid.filter((b) => !b.bill?.factura?.publicUrl) || []
+    onlyPaid.filter((b) => !b.bill?.factura?.publicUrl) || [];
 
   //@ts-ignore
-  const billed = onlyPaid.filter((b) => !!b.bill?.factura?.publicUrl) || []
+  const billed = onlyPaid.filter((b) => !!b.bill?.factura?.publicUrl) || [];
 
   // bills grouped by ownerid
   const pendingBillsGrouped =
     pendingBills != 0
       ? pendingBills.reduce((acc: any, b: any) => {
           if (!acc[b?.property?.owner?.id]) {
-            acc[b?.property?.owner?.id] = []
+            acc[b?.property?.owner?.id] = [];
           }
-          acc[b?.property?.owner?.id].push(b)
-          return acc
+          acc[b?.property?.owner?.id].push(b);
+          return acc;
         }, {})
-      : []
+      : [];
 
   const billedGrouped =
     billed.length != 0
       ? billed.reduce((acc: any, b: any) => {
           if (!acc[b?.property?.owner?.id]) {
-            acc[b?.property?.owner?.id] = []
+            acc[b?.property?.owner?.id] = [];
           }
-          acc[b?.property?.owner?.id].push(b)
-          return acc
+          acc[b?.property?.owner?.id].push(b);
+          return acc;
         }, {})
-      : []
+      : [];
 
   //@ts-ignore
   const updateBill = (e, id) => {
     setImage({
       id,
       image: e.target.files[0],
-    })
-  }
+    });
+  };
 
   //@ts-ignore
   const deleteBill = (ids) => {
-    setDeleteImage(ids)
-  }
+    setDeleteImage(ids);
+  };
 
   return (
     <Layout loading={loading || paymentMutation.loading}>
@@ -139,30 +137,25 @@ export default function () {
           selectedMonth={selectedMonth}
           setSelectedMonth={setSelectedMonth}
         />
-        <h2 className="my-4 border-b pb-6 pt-4 text-2xl ">
-          Facturas Pendientes
-        </h2>
+        <h2 className="my-4 border-b pb-6 pt-4 text-2xl ">Facturas Pendientes</h2>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
           {Object.keys(pendingBillsGrouped).map((key: any) => {
-            const name = pendingBillsGrouped[key][0].property.owner.name
-            const rfc =
-              pendingBillsGrouped[key][0].property?.owner?.rfc?.publicUrl
-            const properties = pendingBillsGrouped[key].map(
-              (b: any) => b.property.name
-            )
+            const name = pendingBillsGrouped[key][0].property.owner.name;
+            const rfc = pendingBillsGrouped[key][0].property?.owner?.rfc?.publicUrl;
+            const properties = pendingBillsGrouped[key].map((b: any) => b.property.name);
             const properyIds = pendingBillsGrouped[key].map((p: any) => {
-              return p.id
-            })
+              return p.id;
+            });
             const pnames = pendingBillsGrouped[key].map((b: any) =>
-              getPNames(b.property.name)
-            )
-            const propertiesAmount = properties.length
+              getPNames(b.property.name),
+            );
+            const propertiesAmount = properties.length;
             const billText = `Aportación por cuota de mantenimiento para ${
               propertiesAmount > 1 ? 'los lotes' : 'el lote'
             } ${pnames.join(', ')} correspondiente al mes de ${dayjs(
-              selectedMonth
-            ).format('MMMM YYYY')}`
-            const b = pendingBillsGrouped[key]
+              selectedMonth,
+            ).format('MMMM YYYY')}`;
+            const b = pendingBillsGrouped[key];
             return (
               <div
                 key={key}
@@ -178,14 +171,12 @@ export default function () {
                     </li>
                   ))}
                 </ul>
-                <div className="m-2 rounded-md border p-2 text-sm">
-                  {billText}
-                </div>
+                <div className="m-2 rounded-md border p-2 text-sm">{billText}</div>
                 <button
                   className="my-2 rounded-md bg-green-700 p-2 text-sm text-white"
                   onClick={async () => {
-                    await navigator.clipboard.writeText(billText)
-                    alert('Copiado')
+                    await navigator.clipboard.writeText(billText);
+                    alert('Copiado');
                   }}
                 >
                   Copy
@@ -212,29 +203,25 @@ export default function () {
                   )
                 }
               </div>
-            )
+            );
           })}
         </div>
         <h2 className="my-4 border-b pb-6 pt-4 text-2xl ">Facturas Listas</h2>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
           {Object.keys(billedGrouped).map((key: any) => {
-            const name = billedGrouped[key]?.[0].property.owner.name
-            const properties = billedGrouped[key].map(
-              (b: any) => b.property.name
-            )
+            const name = billedGrouped[key]?.[0].property.owner.name;
+            const properties = billedGrouped[key].map((b: any) => b.property.name);
             const properyIds = billedGrouped[key].map((p: { id: string }) => {
-              return p.id
-            })
-            const pnames = billedGrouped[key].map((b: any) =>
-              getPNames(b.property.name)
-            )
-            const propertiesAmount = properties.length
+              return p.id;
+            });
+            const pnames = billedGrouped[key].map((b: any) => getPNames(b.property.name));
+            const propertiesAmount = properties.length;
             const billText = `Aportación por cuota de mantenimiento para ${
               propertiesAmount > 1 ? 'los lotes' : 'el lote'
             } ${pnames.join(', ')} correspondiente al mes de ${dayjs(
-              selectedMonth
-            ).format('MMMM YYYY')}`
-            const b = billedGrouped[key]
+              selectedMonth,
+            ).format('MMMM YYYY')}`;
+            const b = billedGrouped[key];
             return (
               <div
                 key={key}
@@ -250,22 +237,20 @@ export default function () {
                     </li>
                   ))}
                 </ul>
-                <div className="m-2 rounded-md border p-2 text-sm">
-                  {billText}
-                </div>
+                <div className="m-2 rounded-md border p-2 text-sm">{billText}</div>
                 <button
                   className="my-2 rounded-md bg-green-700 p-2 text-sm text-white"
                   onClick={async () => {
-                    deleteBill(properyIds)
+                    deleteBill(properyIds);
                   }}
                 >
                   Borrar Factura
                 </button>
               </div>
-            )
+            );
           })}
         </div>
       </div>
     </Layout>
-  )
+  );
 }

@@ -1,33 +1,30 @@
-import Button from "@/components/Button";
-import Field from "@/components/Field";
-import Layout from "@/components/layout/NLayout";
-import { Form, Formik, useFormikContext } from "formik";
-import * as yup from "yup";
-import { GET_AREAS, ADD_AREA, UPDATE_AREA } from "../admin/adminQueries.gql";
+import Button from '@/components/Button';
+import Field from '@/components/Field';
+import Layout from '@/components/layout/NLayout';
+import { Form, Formik, useFormikContext } from 'formik';
+import * as yup from 'yup';
+import { GET_AREAS, ADD_AREA, UPDATE_AREA } from '../admin/adminQueries.gql';
 
-import DataTable from "../../components/DataTable";
-import { useMutation, useQuery } from "@apollo/client";
-import Loading from "@/components/Loading";
-import { useRouter } from "next/router";
-import { useContext, useState } from "react";
-import { uiCTX } from "../_app"
+import DataTable from '../../components/DataTable';
+import { useMutation, useQuery } from '@apollo/client';
+import Loading from '@/components/Loading';
+import { useRouter } from 'next/router';
+import { useContext, useState } from 'react';
+import { uiCTX } from '../_app';
 
 const headers = [
-  "Nombre",
-  "Descripción",
-  "Puede aprtarse",
-  "Necesita aprovación",
-  "Acciones",
+  'Nombre',
+  'Descripción',
+  'Puede aprtarse',
+  'Necesita aprovación',
+  'Acciones',
 ];
 
 const schema = yup.object().shape({
   phone: yup
     .string()
-    .required("Por favor ingresa un celular valido")
-    .matches(
-      /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/,
-      "Solo numeros..."
-    ),
+    .required('Por favor ingresa un celular valido')
+    .matches(/^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/, 'Solo numeros...'),
   initialDate: yup.string().required(),
   property: yup.string().required(),
   area: yup.string().required(),
@@ -38,10 +35,10 @@ const CommonAreas = (props) => {
   const { query, push } = useRouter();
   const { error, data, loading, called } = useQuery(GET_AREAS);
   const initialValues = {
-    phone: "",
-    initialDate: "",
+    phone: '',
+    initialDate: '',
     property: query.property,
-    area: "",
+    area: '',
   };
 
   const selectedArea =
@@ -67,27 +64,27 @@ const CommonAreas = (props) => {
               initialValues={{ ...selectedArea }}
               onSubmit={async (variables, { resetForm }) => {
                 if (query.edit) {
-                  const editVariables = { ...variables, id: query.edit }
+                  const editVariables = { ...variables, id: query.edit };
                   try {
                     const { data } = await updateArea({
                       variables: editVariables,
-                    })
+                    });
                   } catch (error) {
-                    console.log("error >> ", error)
+                    console.log('error >> ', error);
                   }
                   if (data) {
-                    push("./comon-areas")
+                    push('./comon-areas');
                     //@ts-ignore
-                    resetForm(initialValues)
+                    resetForm(initialValues);
                   }
-                  return
+                  return;
                 }
 
                 try {
-                  const { data } = await createArea({ variables })
+                  const { data } = await createArea({ variables });
 
                   //@ts-ignore
-                  if (data) resetForm(initialValues)
+                  if (data) resetForm(initialValues);
                 } catch {}
               }}
             >
@@ -122,12 +119,12 @@ const CommonAreas = (props) => {
 
                   <Button title="Enviar Código" />
                   <p>
-                    Enviaremos un QR al whatsapp al celular de tu visita, este
-                    deberá mostrarlo en caseta para que le den acceso.
+                    Enviaremos un QR al whatsapp al celular de tu visita, este deberá
+                    mostrarlo en caseta para que le den acceso.
                   </p>
                   <p>
-                    Te recordamos que tus visitas son tu responsabilidad, por lo
-                    que te pedimos les compartas los lineamientos del cluster...
+                    Te recordamos que tus visitas son tu responsabilidad, por lo que te
+                    pedimos les compartas los lineamientos del cluster...
                   </p>
                 </Form>
               )}
@@ -137,14 +134,12 @@ const CommonAreas = (props) => {
         <div className="w-4/6 p-2">
           <div className="text-sm font-semibold uppercase tracking-wide text-indigo-500">
             {loading && <Loading />}
-            {data && called && (
-              <DataTable data={data.areas} headers={headers} />
-            )}
+            {data && called && <DataTable data={data.areas} headers={headers} />}
           </div>
         </div>
       </>
     </Layout>
-  )
+  );
 };
 
 export default CommonAreas;

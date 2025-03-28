@@ -1,9 +1,9 @@
-import { useDropzone } from "react-dropzone";
-import { useState, useCallback, useEffect } from "react";
-import { useMutation } from "@apollo/client";
-import { UPDATE_PAYMENT, GET_PAYMENTS } from "../login/queries.gql";
-import { PaymentType } from "@/lib/types";
-import Loading from "@/components/Loading";
+import { useDropzone } from 'react-dropzone';
+import { useState, useCallback, useEffect } from 'react';
+import { useMutation } from '@apollo/client';
+import { UPDATE_PAYMENT, GET_PAYMENTS } from '../login/queries.gql';
+import { PaymentType } from '@/lib/types';
+import Loading from '@/components/Loading';
 
 const data = {
   square: 3,
@@ -20,12 +20,9 @@ export default function ({
   const [images, setImages] = useState();
   const [countDown, setcountDown] = useState(8);
 
-  const [updatePayment, { loading, data, error, called }] = useMutation(
-    UPDATE_PAYMENT,
-    {
-      refetchQueries: [GET_PAYMENTS],
-    }
-  );
+  const [updatePayment, { loading, data, error, called }] = useMutation(UPDATE_PAYMENT, {
+    refetchQueries: [GET_PAYMENTS],
+  });
   // @ts-ignore: Unreachable code error
   const onDrop = useCallback((acceptedFiles, i) => {
     // Do something with the files
@@ -34,8 +31,8 @@ export default function ({
       acceptedFiles.map((file) =>
         Object.assign(file, {
           preview: URL.createObjectURL(file),
-        })
-      )
+        }),
+      ),
     );
 
     updatePayment({
@@ -45,7 +42,7 @@ export default function ({
         image: acceptedFiles.map((file) =>
           Object.assign(file, {
             preview: URL.createObjectURL(file),
-          })
+          }),
         )[0],
       },
     });
@@ -53,13 +50,13 @@ export default function ({
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     accept: {
-      "image/png": [".png", ".pdf", ".jpeg", ".jpg"],
+      'image/png': ['.png', '.pdf', '.jpeg', '.jpg'],
     },
     onDrop,
   });
 
   // @ts-ignore: Unreachable code error
-  const isPdf = images?.[0]?.type === "application/pdf";
+  const isPdf = images?.[0]?.type === 'application/pdf';
 
   return (
     <div
@@ -80,12 +77,10 @@ export default function ({
                 )} */}
                 <img
                   // @ts-ignore: Unreachable code error
-                  src={isPdf ? "/pdfIcon.png" : images[0].preview}
-                  className={loading ? "preview" : "previewDone"}
+                  src={isPdf ? '/pdfIcon.png' : images[0].preview}
+                  className={loading ? 'preview' : 'previewDone'}
                 />
-                {!loading && (
-                  <h3 className=" text-xl">Hemos recibido el pago...</h3>
-                )}
+                {!loading && <h3 className=" text-xl">Hemos recibido el pago...</h3>}
               </div>
             </>
           ) : (
@@ -108,9 +103,7 @@ export default function ({
               <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
                 <span className="font-semibold">Sube tu comprobante aqui</span>
               </p>
-              <p className="text-xs text-gray-500 dark:text-gray-400">
-                PDF o imágen
-              </p>
+              <p className="text-xs text-gray-500 dark:text-gray-400">PDF o imágen</p>
             </>
           )}
         </>

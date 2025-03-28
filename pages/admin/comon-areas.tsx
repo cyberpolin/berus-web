@@ -1,24 +1,24 @@
-import Button from "@/components/Button";
-import Field from "@/components/Field";
-import Layout from "@/components/layout/NLayout";
-import { Form, Formik, useFormikContext } from "formik";
-import * as yup from "yup";
-import { GET_AREAS, ADD_AREA, UPDATE_AREA } from "../admin/adminQueries.gql";
+import Button from '@/components/Button';
+import Field from '@/components/Field';
+import Layout from '@/components/layout/NLayout';
+import { Form, Formik, useFormikContext } from 'formik';
+import * as yup from 'yup';
+import { GET_AREAS, ADD_AREA, UPDATE_AREA } from '../admin/adminQueries.gql';
 
-import DataTable from "../../components/DataTable";
-import { useMutation, useQuery } from "@apollo/client";
-import Loading from "@/components/Loading";
-import { useRouter } from "next/router";
-import { useContext } from "react";
-import { uiCTX } from "../_app";
-import { StringIterator } from "lodash";
+import DataTable from '../../components/DataTable';
+import { useMutation, useQuery } from '@apollo/client';
+import Loading from '@/components/Loading';
+import { useRouter } from 'next/router';
+import { useContext } from 'react';
+import { uiCTX } from '../_app';
+import { StringIterator } from 'lodash';
 
 const headers = [
-  "Nombre",
-  "Descripción",
-  "Puede aprtarse",
-  "Necesita aprovación",
-  "Acciones",
+  'Nombre',
+  'Descripción',
+  'Puede aprtarse',
+  'Necesita aprovación',
+  'Acciones',
 ];
 
 const schema = yup.object().shape({
@@ -33,8 +33,8 @@ type areasType = {
   needsAproval: boolean;
 };
 const initialValues = {
-  name: "",
-  description: "",
+  name: '',
+  description: '',
   reserve: false,
   needsAproval: false,
 };
@@ -73,10 +73,10 @@ const CommonAreas = (props) => {
                       variables: editVariables,
                     });
                   } catch (error) {
-                    console.log("error >> ", error);
+                    console.log('error >> ', error);
                   }
                   if (data) {
-                    push("./comon-areas");
+                    push('./comon-areas');
                     //@ts-ignore
                     resetForm(initialValues);
                   }
@@ -124,7 +124,7 @@ const CommonAreas = (props) => {
                     errors={formik.errors}
                   />
 
-                  <Button title={query.edit ? "Editar" : "Agregar"} />
+                  <Button title={query.edit ? 'Editar' : 'Agregar'} />
                 </Form>
               )}
             </Formik>
@@ -133,9 +133,7 @@ const CommonAreas = (props) => {
         <div className="w-4/6 p-2">
           <div className="text-sm font-semibold uppercase tracking-wide text-indigo-500">
             {loading && <Loading />}
-            {data && called && (
-              <DataTable data={data.areas} headers={headers} />
-            )}
+            {data && called && <DataTable data={data.areas} headers={headers} />}
           </div>
         </div>
       </>

@@ -93,9 +93,7 @@ mutation CREATE_TAG_IDS($data: [TagIdCreateInput!]!) {
 
 query GET_PAYMENTS($initialDate: DateTime!, $finalDate: DateTime!) {
   payments(
-    where: {
-      AND: [{ dueAt: { lte: $finalDate } }, { dueAt: { gte: $initialDate } }]
-    }
+    where: { AND: [{ dueAt: { lte: $finalDate } }, { dueAt: { gte: $initialDate } }] }
   ) {
     property {
       owner {
@@ -142,8 +140,8 @@ mutation APROVE_PAYMENT($id: ID) {
   }
 }
 
-mutation UPDATE_PAYMENT_ADMIN($id: ID!, $status:PaymentStatusType!){
-  updatePayment(where:{id:$id}, data:{status:$status}){
+mutation UPDATE_PAYMENT_ADMIN($id: ID!, $status: PaymentStatusType!) {
+  updatePayment(where: { id: $id }, data: { status: $status }) {
     status
     id
   }
@@ -157,12 +155,16 @@ mutation UPDATE_USER($id: ID!, $image: Upload) {
     needsBill
   }
 }
+mutation UPDATE_USER_AVATAR($id: ID!, $image: Upload) {
+  updateUser(where: { id: $id }, data: { avatar: $image }) {
+    avatar {
+      publicUrl
+    }
+  }
+}
 
 mutation UPDATE_PAYMENT($id: ID!, $image: Upload) {
-  updatePayment(
-    where: { id: $id }
-    data: { bill: { create: { factura: $image } } }
-  ) {
+  updatePayment(where: { id: $id }, data: { bill: { create: { factura: $image } } }) {
     id
   }
 }
@@ -173,11 +175,8 @@ mutation DELETE_PAYMENT($id: ID!) {
   }
 }
 
-mutation DELETE_PERMANENT_PAYMENT($paymentId: ID!){
-  deletePayment(where:{
-    id:$paymentId
-  })
-  {
+mutation DELETE_PERMANENT_PAYMENT($paymentId: ID!) {
+  deletePayment(where: { id: $paymentId }) {
     id
   }
 }

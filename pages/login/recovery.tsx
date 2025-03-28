@@ -1,79 +1,70 @@
-import Field from "@/components/Field"
-import { Formik, Form } from "formik"
-import * as yup from "yup"
-import Link from "next/link"
-import { useState } from "react"
-import Button from "@/components/Button"
-import { useRouter } from "next/router"
-import { useLazyQuery } from "@apollo/client"
-import { UPDATE_PASSWORD, RECOVERY_PASSWORD } from "./queries.gql"
+import Field from '@/components/Field';
+import { Formik, Form } from 'formik';
+import * as yup from 'yup';
+import Link from 'next/link';
+import { useState } from 'react';
+import Button from '@/components/Button';
+import { useRouter } from 'next/router';
+import { useLazyQuery } from '@apollo/client';
+import { UPDATE_PASSWORD, RECOVERY_PASSWORD } from './queries.gql';
 
 const schema = yup.object().shape({
   email: yup.string().email().required(),
-})
+});
 
 const initialValues = {
-  email: "",
-}
+  email: '',
+};
 
 const recoveryValues = {
-  password: "",
-  recoveryPassword: "",
-}
+  password: '',
+  recoveryPassword: '',
+};
 const recoverySchema = yup.object().shape({
   password: yup
     .string()
-    .matches(/^[0-9]{4}$/, "El password debe ser cuatro digitos")
-    .required("El Password debe coincidir"),
+    .matches(/^[0-9]{4}$/, 'El password debe ser cuatro digitos')
+    .required('El Password debe coincidir'),
 
-  repeatPassword: yup
-    .string()
-    .oneOf([yup.ref("password"), null], "Passwords must match"),
-})
+  repeatPassword: yup.string().oneOf([yup.ref('password'), null], 'Passwords must match'),
+});
 
 // @ts-ignore: Unreachable code error
 const submit = (props, setIsLoading) => {
-  setIsLoading(true)
-}
+  setIsLoading(true);
+};
 
 export default function () {
-  const [isLoading, setIsLoading] = useState(false)
-  const [password, setPassword] = useState(null)
-  const router = useRouter()
-  const recoveryId = router?.query.recoveryId
+  const [isLoading, setIsLoading] = useState(false);
+  const [password, setPassword] = useState(null);
+  const router = useRouter();
+  const recoveryId = router?.query.recoveryId;
 
   const [updatePassword, updatePasswordQuery] = useLazyQuery(UPDATE_PASSWORD, {
     onCompleted: (data) =>
       data?.updatePassword
-        ? setTimeout(() => window.location.replace("/login"), 5000)
+        ? setTimeout(() => window.location.replace('/login'), 5000)
         : null,
-  })
-  const [recoverPassword, recoveryPasswordQuery] =
-    useLazyQuery(RECOVERY_PASSWORD)
+  });
+  const [recoverPassword, recoveryPasswordQuery] = useLazyQuery(RECOVERY_PASSWORD);
 
   if (updatePasswordQuery.called && updatePasswordQuery.data?.updatePassword) {
     return (
       <div className="m-4">
         <p>
-          Hemos actualizado tu password, seras redireccionado al login en 5
-          segundos...
+          Hemos actualizado tu password, seras redireccionado al login en 5 segundos...
         </p>
       </div>
-    )
+    );
   }
 
-  if (
-    recoveryPasswordQuery.called &&
-    recoveryPasswordQuery.data?.getRecoveryEmail
-  ) {
+  if (recoveryPasswordQuery.called && recoveryPasswordQuery.data?.getRecoveryEmail) {
     return (
       <div className="m-4">
-        <p>
-          Hemos enviado un correo con instrucciones para cambiar tu password...
-        </p>
+        <p>Hemos enviado un correo con instrucciones para cambiar tu password...</p>
         <p>Por favor revisa tu SPAM en caso que no lo encuentres...</p>
       </div>
-    )
+    );
   }
 
   return (
@@ -88,15 +79,15 @@ export default function () {
                 recoveryId,
                 password,
               },
-            })
+            });
           }}
         >
           {(formik) => (
             // @ts-ignore: Unreachable code error
             <Form>
               <p>
-                Ingresa tu nuevo password, recuerda que debe ser un numero de
-                cuatro digitos, como 1111, o 1423...
+                Ingresa tu nuevo password, recuerda que debe ser un numero de cuatro
+                digitos, como 1111, o 1423...
               </p>
               <Field
                 label="password"
@@ -119,9 +110,7 @@ export default function () {
               <Button
                 title="Cambiar password"
                 className="mx-auto my-2"
-                loading={
-                  recoveryPasswordQuery?.loading || updatePasswordQuery?.loading
-                }
+                loading={recoveryPasswordQuery?.loading || updatePasswordQuery?.loading}
               />
             </Form>
           )}
@@ -135,7 +124,7 @@ export default function () {
               variables: {
                 email,
               },
-            })
+            });
           }}
         >
           {(formik) => (
@@ -143,9 +132,9 @@ export default function () {
             <Form>
               <h3>No recuerdo mi contraseña!</h3>
               <p>
-                Si no recuerdas tu contraseña por favor confirma que el correo
-                con que te diste de alta este bien escrito, nosotros te
-                enviaremos una contraseña nueva.
+                Si no recuerdas tu contraseña por favor confirma que el correo con que te
+                diste de alta este bien escrito, nosotros te enviaremos una contraseña
+                nueva.
               </p>
               {/*// @ts-ignore: Unreachable code error*/}
               <Field
@@ -155,19 +144,16 @@ export default function () {
                 errors={formik.errors}
               />
               <p />
-              <Button
-                title="Recuperar mi contraseña"
-                className="mx-auto my-2"
-              />
+              <Button title="Recuperar mi contraseña" className="mx-auto my-2" />
               <p>
-                Si aun no tienes una cuenta, por favor{" "}
+                Si aun no tienes una cuenta, por favor{' '}
                 <Link
                   className="font-medium  text-teal-700 text-teal-800 hover:underline"
                   href="/login/sign-up"
                 >
                   crea una
                 </Link>
-                , si ya la tienes y estas aqui por error,{" "}
+                , si ya la tienes y estas aqui por error,{' '}
                 <Link
                   className="font-medium  text-teal-700 text-teal-800 hover:underline"
                   href="/login"
@@ -180,5 +166,5 @@ export default function () {
         </Formik>
       )}
     </div>
-  )
+  );
 }
