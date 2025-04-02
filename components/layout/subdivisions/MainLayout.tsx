@@ -1,14 +1,11 @@
 import { useState, useEffect } from 'react'
 import {
-  CashOutline,
   ChevronBack,
   ChevronForward,
-  CodeOutline,
   HomeOutline,
   MenuOutline,
-  NewspaperOutline,
   OpenOutline,
-  PeopleOutline,
+  ReaderOutline,
   Person,
 } from 'react-ionicons'
 import Link from 'next/link'
@@ -19,6 +16,8 @@ import path from 'path'
 type MenuProps = {
   menuOpen: boolean
   toggleMenu: () => void
+  userName?: string
+  email?: string
 }
 
 const Header = ({ menuOpen, toggleMenu }: MenuProps) => {
@@ -49,7 +48,12 @@ const Header = ({ menuOpen, toggleMenu }: MenuProps) => {
   )
 }
 
-const Sidebar = ({ menuOpen, toggleMenu }: MenuProps) => {
+const Sidebar = ({
+  menuOpen,
+  toggleMenu,
+  userName = 'nombre',
+  email = 'correo',
+}: MenuProps) => {
   const OPTIONS = [
     {
       title: 'Home',
@@ -64,12 +68,12 @@ const Sidebar = ({ menuOpen, toggleMenu }: MenuProps) => {
           }
         />
       ),
-      link: '/',
+      link: '/subdivisions',
     },
     {
-      title: 'Clients',
+      title: 'Encusta',
       icon: (
-        <PeopleOutline
+        <ReaderOutline
           style={{
             width: '18px',
             height: '18px',
@@ -79,12 +83,12 @@ const Sidebar = ({ menuOpen, toggleMenu }: MenuProps) => {
           }
         />
       ),
-      link: '/client',
+      link: '/subdivisions/survey/new',
     },
     {
-      title: 'Projects',
+      title: 'Encusta Admin',
       icon: (
-        <NewspaperOutline
+        <ReaderOutline
           style={{
             width: '18px',
             height: '18px',
@@ -94,67 +98,7 @@ const Sidebar = ({ menuOpen, toggleMenu }: MenuProps) => {
           }
         />
       ),
-      link: '/orders',
-    },
-    {
-      title: 'Billing',
-      icon: (
-        <CashOutline
-          style={{
-            width: '18px',
-            height: '18px',
-          }}
-          cssClasses={
-            '!text-green-500 mr-2 group-hover:translate-x-2 transition-all delay-100 duration-300 '
-          }
-        />
-      ),
-      link: '/clients',
-    },
-    {
-      title: 'Billing Example',
-      icon: (
-        <CashOutline
-          style={{
-            width: '18px',
-            height: '18px',
-          }}
-          cssClasses={
-            '!text-green-500 mr-2 group-hover:translate-x-2 transition-all delay-100 duration-300 '
-          }
-        />
-      ),
-      link: '/bill-details',
-    },
-    {
-      title: 'Team',
-      icon: (
-        <CodeOutline
-          style={{
-            width: '18px',
-            height: '18px',
-          }}
-          cssClasses={
-            '!text-green-500 mr-2 group-hover:translate-x-2 transition-all delay-100 duration-300 '
-          }
-        />
-      ),
-      link: '/team',
-    },
-    {
-      title: 'Add Member',
-      icon: (
-        <CodeOutline
-          style={{
-            width: '18px',
-            height: '18px',
-          }}
-          cssClasses={
-            '!text-green-500 mr-2 group-hover:translate-x-2 transition-all delay-100 duration-300 '
-          }
-        />
-      ),
-      link: '/add-member',
+      link: '/subdivisions/admin/surveys/',
     },
     {
       title: 'Log out',
@@ -217,8 +161,8 @@ const Sidebar = ({ menuOpen, toggleMenu }: MenuProps) => {
           <Person cssClasses={`text-green-500 !h-4`} />
         </div>
         <div className={`w-full ${!menuOpen && 'hidden'} `}>
-          <p className="text-sm text-slate-800 ">Carlos González</p>
-          <p className="text-xs text-slate-300">cyberpolin@gmail.com</p>
+          <p className="text-sm text-slate-800 ">{userName}</p>
+          <p className="text-[10px] text-slate-300">{email}</p>
         </div>
       </div>
       <div className=" flex flex-col">
@@ -283,7 +227,6 @@ const MainLayout = ({ children }: MainLayoutProps) => {
       }
     }
   }, [loading, user])
-  console.log('loading', loading, 'user', user)
 
   return (
     <div className="flex min-h-screen w-full flex-col bg-slate-100">
@@ -291,7 +234,12 @@ const MainLayout = ({ children }: MainLayoutProps) => {
       <div
         className={`mt-16 flex ${menuOpen ? 'ml-52' : 'ml-20'} transition-all`}
       >
-        <Sidebar menuOpen={menuOpen} toggleMenu={toggleMenu} />
+        <Sidebar
+          menuOpen={menuOpen}
+          toggleMenu={toggleMenu}
+          userName={user.name}
+          email={user.email}
+        />
         <div className=" w-full flex-grow ">{children}</div>
       </div>
     </div>

@@ -1,4 +1,4 @@
-import NLayout from '@/components/layout/NLayout'
+import MainLayout from '@/components/layout/subdivisions/MainLayout'
 import { useState, useEffect } from 'react'
 import { useQuery, useMutation } from '@apollo/client'
 import {
@@ -24,7 +24,7 @@ export default function Survey() {
     refetch,
     error,
   } = useQuery(id !== 'new' ? GET_SURVEY : GET_SURVEY_RECENT, {
-    variables: id !== 'new' ? { id: id } : {},
+    variables: id !== 'new' ? { id: id } : { id: user?.user?.hoa?.id },
   })
   const survey = id !== 'new' ? surveyData?.survey : surveyData?.surveys?.[0]
   const [voteSurvey, { loading: voteLoading, error: voteError }] =
@@ -88,7 +88,12 @@ export default function Survey() {
     voted()
   }, [vote])
 
-  if (loading) return <p>Loading...</p>
+  if (loading)
+    return (
+      <MainLayout>
+        <p>Loading...</p>
+      </MainLayout>
+    )
 
   const handleVote = async (option: string, index: number) => {
     setVote((prev) => ({ ...prev, [index]: option }))
@@ -112,7 +117,7 @@ export default function Survey() {
     })) ?? []
 
   return (
-    <NLayout>
+    <MainLayout>
       <div className="m-4 flex flex-col items-center overflow-hidden rounded-md bg-white shadow-lg">
         {getQuestions?.map((question: any, index: number) => (
           <>
@@ -207,6 +212,6 @@ export default function Survey() {
           </>
         ))}
       </div>
-    </NLayout>
+    </MainLayout>
   )
 }

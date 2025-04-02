@@ -33,10 +33,9 @@ export default function Login() {
 
   const [isUser, { data: haveUser }] = useLazyQuery(IS_USER)
 
-  const delay = useRef()
+  const delay = useRef<NodeJS.Timeout | null>(null)
   const router = useRouter()
   const { user } = UseAuth()
-
   useEffect(() => {
     if (user.id) {
       router.push('/subdivisions/')
@@ -56,8 +55,7 @@ export default function Login() {
             }
             try {
               const { data } = await loginMutation({ variables: cleanVars })
-              if (data) {
-                console.log('>>>>>>>', data.authenticateUserWithPassword)
+              if (!!data?.authenticateUserWithPassword.item) {
                 router.push('/subdivisions/')
               }
               if (
@@ -79,7 +77,6 @@ export default function Login() {
             return (
               <Form className="mb-8 mt-8 flex flex-col">
                 <Field
-                  // @ts-ignore
                   onChange={async (e) => {
                     formik.handleChange(e)
                     formik.setFieldValue(
@@ -90,7 +87,6 @@ export default function Login() {
                       if (delay.current) {
                         clearTimeout(delay.current)
                       }
-                      //@ts-ignore
                       delay.current = setTimeout(async () => {
                         const user = await isUser({
                           variables: {
@@ -112,7 +108,7 @@ export default function Login() {
                 />
 
                 <Field
-                  label="Password"
+                  label="Password2"
                   name="password"
                   id="password"
                   type="password"
@@ -141,7 +137,7 @@ export default function Login() {
                     <span className="mb-2 ml-1 inline-block text-left text-sm text-red-800">
                       El usuario o contraseña son incorrectors, intenta{' '}
                       <Link
-                        className="font-medium  text-teal-700 text-teal-800 hover:underline"
+                        className="font-medium text-teal-700 text-teal-800 hover:underline"
                         href="/login/recovery"
                       >
                         cambiando la contraseña
@@ -165,7 +161,7 @@ export default function Login() {
         <div className="row">
           <Link
             className="font-medium  text-teal-700 text-teal-800 hover:underline"
-            href="/login/recovery"
+            href="/subdivisions/login/recovery"
           >
             No recuerdo mi contraseña
           </Link>

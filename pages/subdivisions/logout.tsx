@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { useMutation } from '@apollo/client'
 import { LOG_OUT, IS_LOGGED } from './login/queries.gql'
+import PlainLayout from '@/components/layout/subdivisions/PlainLayout'
 
 const Logout = () => {
   const [logout] = useMutation(LOG_OUT, {
@@ -11,9 +12,9 @@ const Logout = () => {
     logout()
   }, [])
   return (
-    //@ts-ignore
-
-    <h1>Bye</h1>
+    <PlainLayout>
+      <h1>Bye</h1>
+    </PlainLayout>
   )
 }
 

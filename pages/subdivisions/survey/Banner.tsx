@@ -17,7 +17,7 @@ const Banner = () => {
       <div
         className="m-4 mb-4 cursor-pointer rounded-lg bg-blue-50 p-4 text-sm text-blue-800 transition-all hover:shadow-lg dark:bg-gray-800 dark:text-blue-400"
         role="alert"
-        onClick={() => router.push('/survey')}
+        onClick={() => router.push('/subdivisions/survey')}
       >
         <h2 className="font-semibold ">Nueva encuesta!</h2>
         <p>vota aqui!</p>

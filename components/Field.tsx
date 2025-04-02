@@ -1,14 +1,17 @@
-import { Field } from "formik";
+import { Field } from 'formik'
 
 type FieldProps = {
-  label?: string;
-  value?: string;
-  name: string;
-  errors?: any;
-  className?: string;
-  id: string;
-  type: string;
-};
+  label?: string
+  value?: string
+  name: string
+  errors?: any
+  className?: string
+  id: string
+  type: string
+  maxLength?: number
+  placeholder?: string
+  onChange?: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>
+}
 
 export default function (props: FieldProps) {
   return (
@@ -29,5 +32,5 @@ export default function (props: FieldProps) {
         </span>
       )}
     </>
-  );
+  )
 }

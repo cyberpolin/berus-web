@@ -1,13 +1,20 @@
-import Layout from '@/components/layout/NLayout'
+import MainLayout from '@/components/layout/subdivisions/MainLayout'
 import Table from '@/components/General/Table'
 import { useQuery } from '@apollo/client'
-import { GET_SURVEYS } from '../../admin/surveys/queries.gql'
+import { GET_SURVEYS } from './queries.gql'
 import router from 'next/router'
 import Button from '@/components/Button'
+import UseAuth from '@/lib/UseAuth'
+
 const ListSurveys = () => {
-  const { data: { surveys } = {} } = useQuery(GET_SURVEYS)
+  const { user } = UseAuth()
+  const { data: { surveys } = {} } = useQuery(GET_SURVEYS, {
+    variables: {
+      id: user?.user?.hoa?.id,
+    },
+  })
   return (
-    <Layout>
+    <MainLayout>
       <div className="mx-auto flex w-full max-w-[1400px] flex-col px-4 ">
         <h2 className="font-semi-bold text-2xl">Encuestas</h2>
         <Table
@@ -62,7 +69,7 @@ const ListSurveys = () => {
           )}
         </Table>
       </div>
-    </Layout>
+    </MainLayout>
   )
 }
 

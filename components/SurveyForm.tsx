@@ -98,7 +98,7 @@ const SurveyForm = ({
   }
 
   return (
-    <Layout>
+    <>
       <Form handleSubmit={handleSubmit} title={title} errors={errors}>
         {values?.questions?.map((question: Question, questionIndex: number) => (
           <div key={questionIndex}>
@@ -174,7 +174,7 @@ const SurveyForm = ({
           typeInput="datetime-local"
         />
       </Form>
-    </Layout>
+    </>
   )
 }
 

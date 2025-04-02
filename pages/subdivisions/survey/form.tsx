@@ -3,6 +3,8 @@ import { useRouter } from 'next/router'
 import { useMutation } from '@apollo/client'
 import { CREATE_SURVEY, CREATEADMIN } from './queries.gql'
 import { LOG_IN, IS_LOGGED } from '../../login/queries.gql'
+import MainLayout from '@/components/layout/subdivisions/MainLayout'
+import PlainLayout from '@/components/layout/subdivisions/PlainLayout'
 import SurveyForm, {
   FormValues,
   Question,
@@ -13,9 +15,11 @@ import Form from '@/components/General/Form'
 import { useFormik } from 'formik'
 import * as yup from 'yup'
 import React from 'react'
+import UseAuth from '@/lib/UseAuth'
 
 const FormSubdivision = () => {
   const router = useRouter()
+  const { user } = UseAuth()
   const [step, setStep] = useState(1)
   const [surveyData, setSurveyData] = useState({})
   const [createSurvey, { loading }] = useMutation(CREATE_SURVEY)
@@ -116,16 +120,18 @@ const FormSubdivision = () => {
       },
     })
 
+  const Layout = user.id ? MainLayout : PlainLayout
+
   return (
-    <>
+    <Layout>
       {step === 1 && (
-        <SurveyForm onSubmit={handleSubmitSurvey} title="Crear encuesta1" />
+        <SurveyForm onSubmit={handleSubmitSurvey} title="Crear encuesta" />
       )}
       {step === 2 && (
-        <div className="flex flex-col gap-y-4">
+        <div className="flex w-[600px] flex-col gap-y-4">
           <Form
             handleSubmit={handleSubmit}
-            title={'Crear encuesta2'}
+            title={'Crear encuesta'}
             errors={Object.values(errors) as string[]}
           >
             <Input
@@ -173,7 +179,7 @@ const FormSubdivision = () => {
           <button onClick={() => setStep(1)}>Volver</button>
         </div>
       )}
-    </>
+    </Layout>
   )
 }
 

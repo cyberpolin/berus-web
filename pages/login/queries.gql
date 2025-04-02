@@ -41,9 +41,13 @@ query IS_LOGGED {
       isAdmin
       needsBill
       name
+      email
       isVerified
       rfc {
         publicUrl
+      }
+      hoa {
+        id
       }
     }
   }

@@ -32,14 +32,7 @@ const recoverySchema = yup.object().shape({
     .oneOf([yup.ref('password'), null], 'Passwords must match'),
 })
 
-// @ts-ignore: Unreachable code error
-const submit = (props, setIsLoading) => {
-  setIsLoading(true)
-}
-
 export default function Recovery() {
-  const [isLoading, setIsLoading] = useState(false)
-  const [password, setPassword] = useState(null)
   const router = useRouter()
   const recoveryId = router?.query.recoveryId
 
@@ -54,12 +47,14 @@ export default function Recovery() {
 
   if (updatePasswordQuery.called && updatePasswordQuery.data?.updatePassword) {
     return (
-      <div className="m-4">
-        <p>
-          Hemos actualizado tu password, seras redireccionado al login en 5
-          segundos...
-        </p>
-      </div>
+      <PlaintLayout>
+        <div className="m-4">
+          <p>
+            Hemos actualizado tu password, seras redireccionado al login en 5
+            segundos...
+          </p>
+        </div>
+      </PlaintLayout>
     )
   }
 
@@ -68,18 +63,21 @@ export default function Recovery() {
     recoveryPasswordQuery.data?.getRecoveryEmail
   ) {
     return (
-      <div className="m-4">
-        <p>
-          Hemos enviado un correo con instrucciones para cambiar tu password...
-        </p>
-        <p>Por favor revisa tu SPAM en caso que no lo encuentres...</p>
-      </div>
+      <PlaintLayout>
+        <div className="m-4">
+          <p>
+            Hemos enviado un correo con instrucciones para cambiar tu
+            password...
+          </p>
+          <p>Por favor revisa tu SPAM en caso que no lo encuentres...</p>
+        </div>
+      </PlaintLayout>
     )
   }
 
   return (
     <PlaintLayout>
-      <div className="m-4">
+      <div className="m-20">
         {recoveryId ? (
           <Formik
             initialValues={recoveryValues}
@@ -94,24 +92,23 @@ export default function Recovery() {
             }}
           >
             {(formik) => (
-              // @ts-ignore: Unreachable code error
               <Form>
                 <p>
                   Ingresa tu nuevo password, recuerda que debe ser un numero de
                   cuatro digitos, como 1111, o 1423...
                 </p>
                 <Field
+                  id="password"
                   label="password"
                   name="password"
                   type="text"
-                  //@ts-ignore
-                  maxlength="4"
+                  maxLength={4}
                   errors={formik.errors}
                 />
                 <p></p>
                 <Field
-                  //@ts-ignore
-                  maxlength="4"
+                  id="repeatPassword"
+                  maxLength={4}
                   label="Repite tu password"
                   name="repeatPassword"
                   type="text"
@@ -142,7 +139,6 @@ export default function Recovery() {
             }}
           >
             {(formik) => (
-              // @ts-ignore: Unreachable code error
               <Form>
                 <h3>No recuerdo mi contraseña!</h3>
                 <p>
@@ -150,8 +146,8 @@ export default function Recovery() {
                   con que te diste de alta este bien escrito, nosotros te
                   enviaremos una contraseña nueva.
                 </p>
-                {/*// @ts-ignore: Unreachable code error*/}
                 <Field
+                  id="email"
                   label="Correo electronico"
                   name="email"
                   type="text"
@@ -165,14 +161,14 @@ export default function Recovery() {
                 <p>
                   Si aun no tienes una cuenta, por favor{' '}
                   <Link
-                    className="font-medium  text-teal-700 text-teal-800 hover:underline"
+                    className="font-medium text-teal-700 text-teal-800 hover:underline"
                     href="/subdivisions/login"
                   >
                     crea una
                   </Link>
                   , si ya la tienes y estas aqui por error,{' '}
                   <Link
-                    className="font-medium  text-teal-700 text-teal-800 hover:underline"
+                    className="font-medium text-teal-700 text-teal-800 hover:underline"
                     href="/subdivisions/login"
                   >
                     regresa a la pantalla de acceso.
