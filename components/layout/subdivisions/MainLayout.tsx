@@ -7,11 +7,12 @@ import {
   OpenOutline,
   ReaderOutline,
   Person,
+  ClipboardOutline,
+  BusinessOutline,
 } from 'react-ionicons'
 import Link from 'next/link'
 import UseAuth from '@/lib/UseAuth'
 import { useRouter } from 'next/router'
-import path from 'path'
 
 type MenuProps = {
   menuOpen: boolean
@@ -69,6 +70,39 @@ const Sidebar = ({
         />
       ),
       link: '/subdivisions',
+    },
+    {
+      title: 'Admin',
+      icon: (
+        <ClipboardOutline
+          style={{
+            width: '18px',
+            height: '18px',
+          }}
+          cssClasses={
+            '!text-green-500 mr-2 group-hover:translate-x-2 transition-all delay-100 duration-300 '
+          }
+        />
+      ),
+      link: '/subdivisions/admin',
+    },
+    {
+      title: 'Properties',
+      icon: (
+        <BusinessOutline
+          style={{
+            width: '18px',
+            height: '18px',
+            color: 'currentColor',
+            fill: 'currentColor',
+            stroke: 'currentColor',
+          }}
+          cssClasses={
+            '!text-green-500 mr-2 group-hover:translate-x-2 transition-all delay-100 duration-300'
+          }
+        />
+      ),
+      link: '/subdivisions/admin/properties',
     },
     {
       title: 'Encusta',
@@ -208,9 +242,10 @@ const Sidebar = ({
 
 type MainLayoutProps = {
   children: React.ReactNode
+  isLoading?: boolean
 }
 
-const MainLayout = ({ children }: MainLayoutProps) => {
+const MainLayout = ({ children, isLoading }: MainLayoutProps) => {
   const [menuOpen, setMenuOpen] = useState(false)
   const toggleMenu = () => setMenuOpen(!menuOpen)
   const router = useRouter()
@@ -240,7 +275,18 @@ const MainLayout = ({ children }: MainLayoutProps) => {
           userName={user.name}
           email={user.email}
         />
-        <div className=" w-full flex-grow ">{children}</div>
+        <div className=" w-full flex-grow ">
+          {isLoading ? (
+            <div
+              className="mb-4 rounded-lg bg-red-50 p-4 text-sm text-red-800 dark:bg-gray-800 dark:text-red-400"
+              role="alert"
+            >
+              Cargando...
+            </div>
+          ) : (
+            children
+          )}
+        </div>
       </div>
     </div>
   )
