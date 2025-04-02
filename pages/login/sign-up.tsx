@@ -1,8 +1,8 @@
-import Field from "@/components/Field";
-import { Formik, Form, FieldArray } from "formik";
+import Field from '@/components/Field'
+import { Formik, Form, FieldArray } from 'formik'
 
-import { useEffect, useState } from "react";
-import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
+import { useEffect, useState } from 'react'
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client'
 import {
   CREATE_USER,
   LOG_IN,
@@ -10,12 +10,12 @@ import {
   GENERATE_PAYMENTS,
   USER_EXISTS,
   IS_USER,
-} from "./queries.gql"
+} from './queries.gql'
 
-import { createUser, addProperties, makePayment } from "../schema"
-import Button from "@/components/Button"
-import Layout from "@/components/layout/login"
-import Link from "next/link"
+import { createUser, addProperties, makePayment } from '../schema'
+import Button from '@/components/Button'
+import Layout from '@/components/layout/login'
+import Link from 'next/link'
 
 // @ts-ignore: Unreachable code error
 const CreateUser = ({ goNext, goBack, data, final, haveUser, loading }) => {
@@ -49,30 +49,30 @@ const CreateUser = ({ goNext, goBack, data, final, haveUser, loading }) => {
           </p>
 
           <Field
+            id="name"
             label="Nombre completo"
-            // @ts-ignore: Unreachable code error
             placeholder="Roberto Jirafales"
             name="name"
             type="text"
             errors={formik.errors}
           />
           <Field
+            id="email"
             label="Correo electronico"
-            // @ts-ignore: Unreachable code error
             placeholder="roberto@gmail.com"
             name="email"
             type="text"
             errors={
               haveUser
                 ? {
-                    email: "Es posible que que éste correo ya haya sido usado.",
+                    email: 'Es posible que que éste correo ya haya sido usado.',
                   }
                 : { ...formik.errors }
             }
           />
           <Field
+            id="phone"
             label="Telefono celular (usar el mismo que en el chat)"
-            // @ts-ignore: Unreachable code error
             placeholder="9931000000"
             name="phone"
             type="text"
@@ -80,14 +80,14 @@ const CreateUser = ({ goNext, goBack, data, final, haveUser, loading }) => {
               haveUser
                 ? {
                     phone:
-                      "Es posible que que éste telefono ya haya sido usado.",
+                      'Es posible que que éste telefono ya haya sido usado.',
                   }
                 : { ...formik.errors }
             }
           />
           <Field
+            id="password"
             label="Pin (4 digitos)"
-            // @ts-ignore: Unreachable code error
             placeholder="0000"
             name="password"
             type="text"
@@ -96,15 +96,15 @@ const CreateUser = ({ goNext, goBack, data, final, haveUser, loading }) => {
           {haveUser ? (
             <>
               <p>
-                {" "}
-                Al parecer este usuario ya existe, por favor{" "}
+                {' '}
+                Al parecer este usuario ya existe, por favor{' '}
                 <Link
                   className="font-medium text-teal-700 hover:text-teal-800 hover:underline"
                   href="/login"
                 >
                   ingrese con su usuario y contraseña
-                </Link>{" "}
-                o si olvido su contraseña{" "}
+                </Link>{' '}
+                o si olvido su contraseña{' '}
                 <Link
                   className="font-medium text-teal-700 hover:text-teal-800 hover:underline"
                   href="/login/recovery"
@@ -113,7 +113,7 @@ const CreateUser = ({ goNext, goBack, data, final, haveUser, loading }) => {
                 </Link>
               </p>
               <p>
-                {" "}
+                {' '}
                 Si piensa que hay un error, contacte al administrador por favor
               </p>
 
@@ -139,9 +139,9 @@ const AddProperties = ({ goNext, data, final }) => {
   return (
     <div>
       <Formik
-        initialValues={{ ...data, properties: [{ lot: "", square: "" }] }}
+        initialValues={{ ...data, properties: [{ lot: '', square: '' }] }}
         initialErrors={{
-          properties: [{ lot: "required", square: "required" }],
+          properties: [{ lot: 'required', square: 'required' }],
         }}
         validationSchema={addProperties}
         onSubmit={async (props) => {
@@ -157,7 +157,7 @@ const AddProperties = ({ goNext, data, final }) => {
               })
             }
           } catch (error) {
-            console.log("error ", error)
+            console.log('error ', error)
           }
         }}
       >
@@ -216,7 +216,7 @@ const AddProperties = ({ goNext, data, final }) => {
                             {
                               // @ts-ignore: Unreachable code error
                               [...Array(25).keys()].map((i) => (
-                                <option key={i} value={i ? i : ""}>
+                                <option key={i} value={i ? i : ''}>
                                   {i}
                                 </option>
                               ))
@@ -242,7 +242,7 @@ const AddProperties = ({ goNext, data, final }) => {
                               !arrayProps.form.errors.properties?.[index] ? (
                                 <Button
                                   onClick={() =>
-                                    arrayProps.push({ lot: "", square: "" })
+                                    arrayProps.push({ lot: '', square: '' })
                                   }
                                   title="Agregar propiedad"
                                 />
@@ -282,7 +282,7 @@ const MakePayment = ({ goNext, data, final }) => (
       if (!final) {
         goNext(props)
       } else {
-        console.log("submit", data)
+        console.log('submit', data)
       }
     }}
   >
@@ -358,7 +358,7 @@ const SignUp = () => {
   }) => {
     if (currentStep >= thisStep) {
       return (
-        <div className="z-10 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-teal-900 ring-0 ring-white dark:bg-blue-900 dark:ring-gray-900 sm:ring-8">
+        <div className="z-10 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-teal-900 ring-0 ring-white sm:ring-8 dark:bg-blue-900 dark:ring-gray-900">
           <svg
             aria-hidden="true"
             className="h-4 w-4 text-blue-100 dark:text-blue-300"
@@ -376,7 +376,7 @@ const SignUp = () => {
       )
     }
     return (
-      <div className="z-10 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-gray-200 ring-0 ring-white dark:bg-gray-700 dark:ring-gray-900 sm:ring-8">
+      <div className="z-10 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-gray-200 ring-0 ring-white sm:ring-8 dark:bg-gray-700 dark:ring-gray-900">
         <svg
           aria-hidden="true"
           className="h-3 w-3 text-gray-800 dark:text-gray-300"
@@ -395,7 +395,6 @@ const SignUp = () => {
   }
 
   return (
-    // @ts-ignore: Unreachable code error
     <Layout>
       <>
         <ol className="mt-10 flex items-center">
@@ -429,4 +428,4 @@ const SignUp = () => {
   )
 }
 
-export default SignUp;
+export default SignUp
