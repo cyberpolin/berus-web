@@ -42,3 +42,22 @@ query GET_VOTE($id: ID, $user: ID) {
     vote
   }
 }
+
+query GET_TOTAL_VOTES($surveyId: ID!) {
+  getCountVotes(surveyId: $surveyId) {
+    maxVotes {
+      question
+      maxResults {
+        option
+        count
+      }
+    }
+    countVotes {
+      question
+      results {
+        option
+        count
+      }
+    }
+  }
+}
