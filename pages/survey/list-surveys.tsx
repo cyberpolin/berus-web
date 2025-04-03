@@ -32,10 +32,10 @@ const ListSurveys = () => {
             }) => {
               let parsedQuestions = questions ? JSON.parse(questions) : {}
 
-              const { question } = parsedQuestions[0] || {}
+              const { question1, option1, option2 } = parsedQuestions || {}
               return (
                 <tr key={id}>
-                  <td className=" px-6 py-4">{question}</td>
+                  <td className=" px-6 py-4">{question1}</td>
                   <td className=" px-6 py-4">{state}</td>
                   <td className="px-6 py-4">{`${new Date(
                     endDate
