@@ -1,0 +1,147 @@
+query GET_RESERVATION($date: DateTime!) {
+  getReservationByDate(date: $date) {
+    startsAt
+    endsAt
+    property {
+      name
+    }
+  }
+}
+
+query GET_VOUCHERS($from: DateTime!, $to: DateTime) {
+  vouchers(
+    where: { AND: [{ createdAt: { gte: $from } }, { createdAt: { lte: $to } }] }
+  ) {
+    createdAt
+    bankTransaction {
+      transactionId
+    }
+    image {
+      publicUrlTransformed(transformation: { width: "120", crop: "limit" })
+    }
+    notes
+  }
+}
+
+
+query CREATE_NEXT_PAYMENT_IF_DONT_EXIST($id: ID!) {
+  createNextPayment(id: $id)
+}
+
+query GET_POST($id: ID!) {
+  post(where: { id: $id }) {
+    content {
+      document
+    }
+    title
+  }
+}
+
+query GET_REPORTS {
+  reports(where: {}) {
+    fecha
+    reporteUrl
+  }
+}
+
+query USER_EXISTS($email: String!, $phone: String!) {
+  userExists(email: $email, phone: $phone)
+}
+
+query VERIFY_PHONE($code: String!) {
+  verifyPhone(code: $code)
+}
+
+query PHONE_VERIFIED {
+  phoneVerified
+}
+
+query IS_LOGGED {
+  authenticatedItem {
+    ... on User {
+      id
+      isAdmin
+      needsBill
+      name
+      isVerified
+      rfc {
+        publicUrl
+      }
+    }
+  }
+}
+
+query GENERATE_PAYMENTS {
+  generatePayments {
+    id
+  }
+}
+
+mutation LOG_IN($email: String!, $password: String!) {
+  authenticateUserWithPassword(email: $email, password: $password) {
+    ... on UserAuthenticationWithPasswordSuccess {
+      sessionToken
+      item {
+        properties {
+          square
+          lot
+        }
+      }
+    }
+    ... on UserAuthenticationWithPasswordFailure {
+      message
+    }
+  }
+}
+
+mutation UPDATE_PAYMENT($pId: ID!, $image: Upload) {
+  updatePayment(where: { id: $pId }, data: { status: pending, image: $image }) {
+    id
+    status
+  }
+}
+
+mutation CREATE_USER(
+  $name: String!
+  $phone: String!
+  $email: String!
+  $password: String!
+  $properties: [PropertyCreateInput!]
+) {
+  createUser(
+    data: {
+      name: $name
+      phone: $phone
+      email: $email
+      password: $password
+      properties: { create: $properties }
+    }
+  ) {
+    name
+  }
+}
+
+query GET_PAYMENTS($id: ID!) {
+  user(where: { id: $id }) {
+    properties {
+      id
+      square
+      lot
+      name
+      payments {
+        id
+        dueAt
+        status
+        dueAmount
+        image {
+          publicUrl
+          mimetype
+        }
+      }
+    }
+  }
+}
+
+mutation LOG_OUT {
+  endSession
+}

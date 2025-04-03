@@ -1,5 +1,5 @@
 query GET_SURVEYS {
-  surveys(orderBy: { createdAt: desc }) {
+  surveys(where: { hoa: null }, orderBy: { createdAt: desc }) {
     id
     state
     createdAt
@@ -19,12 +19,16 @@ query GET_SURVEY($id: ID!) {
 }
 
 query GET_SURVEY_RECENT {
-  surveys(orderBy: { createdAt: desc }, take: 1) {
+  surveys(where: { hoa: null }, orderBy: { createdAt: desc }, take: 1) {
     id
     state
     createdAt
     endDate
     questions
+    hoa {
+      id
+      name
+    }
   }
 }
 

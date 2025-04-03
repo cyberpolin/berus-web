@@ -1,0 +1,231 @@
+query CREATE_NEXT_PAYMENT_IF_DONT_EXIST($id: ID!) {
+  createNextPayment(id: $id)
+}
+
+query GET_BILLS($selectedDate: DateTime!) {
+  getBills(selectedDate: $selectedDate) {
+    id
+    dueAmount
+    dueAt
+    status
+    bill {
+      id
+      factura {
+        publicUrl
+      }
+    }
+    property {
+      name
+      owner {
+        name
+        id
+        rfc {
+          id
+          publicUrl
+        }
+      }
+    }
+  }
+}
+
+query GET_POST($id: ID!) {
+  post(where: { id: $id }) {
+    content {
+      document
+    }
+    title
+  }
+}
+
+query GET_AREAS {
+  areas(where: {}) {
+    id
+    name
+    description
+    reserved
+    needsAproval
+  }
+}
+
+mutation ADD_AREA(
+  $name: String!
+  $description: String!
+  $reserved: Boolean
+  $needsAproval: Boolean
+) {
+  createArea(
+    data: {
+      name: $name
+      description: $description
+      reserved: $reserved
+      needsAproval: $needsAproval
+    }
+  ) {
+    id
+  }
+}
+
+mutation UPDATE_AREA(
+  $id: ID!
+  $name: String!
+  $description: String!
+  $reserved: Boolean
+  $needsAproval: Boolean
+) {
+  updateArea(
+    where: { id: $id }
+    data: {
+      name: $name
+      description: $description
+      reserved: $reserved
+      needsAproval: $needsAproval
+    }
+  ) {
+    id
+  }
+}
+
+mutation CREATE_TAG_IDS($data: [TagIdCreateInput!]!) {
+  createTagIds(data: $data) {
+    tagId
+  }
+}
+
+query GET_PAYMENTS($initialDate: DateTime!, $finalDate: DateTime!) {
+  payments(
+    where: {
+      AND: [{ dueAt: { lte: $finalDate } }, { dueAt: { gte: $initialDate } }]
+    }
+  ) {
+    property {
+      owner {
+        name
+        phone
+        email
+        id
+      }
+      square
+      lot
+      name
+    }
+    id
+    createdAt
+    dueAt
+    status
+    image {
+      publicUrl
+      publicUrlTransformed(transformation: { width: "300" })
+    }
+  }
+}
+
+query PAYMENT_BY_USER($id: ID!) {
+  user(where: { id: $id }) {
+    properties {
+      id
+      payments {
+        id
+        status
+        dueAmount
+        image {
+          publicUrl
+        }
+      }
+    }
+  }
+}
+
+mutation APROVE_PAYMENT($id: ID) {
+  updatePayment(where: { id: $id }, data: { status: payed }) {
+    status
+    id
+  }
+}
+
+mutation UPDATE_PAYMENT_ADMIN($id: ID!, $status:PaymentStatusType!){
+  updatePayment(where:{id:$id}, data:{status:$status}){
+    status
+    id
+  }
+}
+
+mutation UPDATE_USER($id: ID!, $image: Upload) {
+  updateUser(where: { id: $id }, data: { rfc: $image }) {
+    rfc {
+      publicUrl
+    }
+    needsBill
+  }
+}
+
+mutation UPDATE_PAYMENT($id: ID!, $image: Upload) {
+  updatePayment(
+    where: { id: $id }
+    data: { bill: { create: { factura: $image } } }
+  ) {
+    id
+  }
+}
+
+mutation DELETE_PAYMENT($id: ID!) {
+  updatePayment(where: { id: $id }, data: { bill: { disconnect: true } }) {
+    id
+  }
+}
+
+mutation DELETE_PERMANENT_PAYMENT($paymentId: ID!){
+  deletePayment(where:{
+    id:$paymentId
+  })
+  {
+    id
+  }
+}
+
+query GET_PROPERTIES {
+  properties(orderBy: { name: asc }) {
+    name
+    square
+    lot
+    id
+    owner {
+      id
+    }
+    payments {
+      id
+    }
+  }
+}
+
+query GET_PAYMENT($id: ID) {
+  property(where: { id: $id }) {
+    name
+    paymentsCount
+    payments {
+      id
+      status
+      dueAt
+    }
+  }
+}
+
+query GET_CLUSTER($id: ID) {
+  cluster(where: { id: $id }) {
+    name
+    initialDate
+  }
+}
+
+mutation CREATE_PAYMENTS($data: [PaymentCreateInput!]!) {
+  createPayments(data: $data) {
+    id
+  }
+}
+
+query CREATE_ALL_PAYMENTS {
+  createAllPayments
+}
+
+query MAKE_IT_DUE {
+  makeItDue
+}

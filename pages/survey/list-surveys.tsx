@@ -9,7 +9,7 @@ const ListSurveys = () => {
   return (
     <Layout>
       <div className="mx-auto flex w-full max-w-[1400px] flex-col px-4 ">
-        <h2 className="font-semi-bold text-2xl">Encuestas</h2>
+        <h2 className="font-semi-bold text-2xl">Encuestasdos</h2>
         <Table
           headers={[
             { title: 'Pregunta' },
