@@ -12,7 +12,7 @@ export default function () {
             src="/square-logo.png"
             width={250}
             height={250}
-            alt="Cumbre Siete, Altozano Tabasco"
+            alt="Cumbre Siete, Altozano Tabasco. colonus.lat"
             style={{
               alignSelf: 'center',
               display: 'inline',
