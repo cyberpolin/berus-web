@@ -308,6 +308,12 @@ const Payments = ({ user }: any) => {
     variables: { id },
   })
 
+  console.log({
+    data,
+    loading,
+    error,
+  })
+
   useEffect(() => {
     return stopPolling
   }, [])
