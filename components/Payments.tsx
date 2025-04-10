@@ -308,7 +308,7 @@ const Payments = ({ user }: any) => {
     variables: { id },
   })
 
-  console.log({
+  console.log('>>>', {
     data,
     loading,
     error,
