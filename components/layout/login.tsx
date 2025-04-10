@@ -7,15 +7,14 @@ import styled from 'styled-components'
 const Layout = (props) => {
   const router = useRouter()
   const { user } = UseAuth()
-  console.log('user', user)
 
-  // if (user.id && user.isVerified) {
-  //   router.push("/dashboard/cuotas");
-  //   return;
-  // } else if (user.id) {
-  //   router.push("/dashboard/verify");
-  //   return;
-  // }
+  if (user.id && user.isVerified) {
+    router.push('/dashboard/cuotas')
+    return
+  } else if (user.id) {
+    router.push('/dashboard/verify')
+    return
+  }
 
   const childAry = Array.isArray(props.children)
     ? [...props.children]
