@@ -62,19 +62,7 @@ export default function () {
               ...variables,
               email: variables.email.replace(' ', ''),
             }
-            const { data } = await loginMutation({ variables: cleanVars })
-
-            if (
-              data?.authenticateUserWithPassword?.message ===
-              'Authentication failed.'
-            ) {
-              await isUser({
-                variables: { email: cleanVars.email, phone: '0000000000' },
-              })
-              await signUpMutation({ variables: cleanVars })
-              await loginMutation({ variables: cleanVars })
-              // reset()
-            }
+            await loginMutation({ variables: cleanVars })
           }}
         >
           {(formik) => {
@@ -147,7 +135,7 @@ export default function () {
                     <span className="mb-2 ml-1 inline-block text-left text-sm text-red-800">
                       El usuario o contraseña son incorrectors, intenta{' '}
                       <Link
-                        className="font-medium  text-teal-700 text-teal-800 hover:underline"
+                        className="font-medium text-teal-800 hover:underline"
                         href="/login/recovery"
                       >
                         cambiando la contraseña
@@ -162,7 +150,7 @@ export default function () {
         </Formik>
         <div className="row">
           <Link
-            className="font-medium  text-teal-700 text-teal-800 hover:underline"
+            className="font-medium text-teal-800 hover:underline"
             href="/login/sign-up"
           >
             Aun no tengo usuario...
@@ -170,7 +158,7 @@ export default function () {
         </div>
         <div className="row">
           <Link
-            className="font-medium  text-teal-700 text-teal-800 hover:underline"
+            className="font-medium text-teal-800 hover:underline"
             href="/login/recovery"
           >
             No recuerdo mi contraseña

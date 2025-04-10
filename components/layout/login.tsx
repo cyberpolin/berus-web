@@ -1,27 +1,28 @@
-import UseAuth from "@/lib/UseAuth";
-import { useRouter } from "next/router";
-import React from "react";
-import styled from "styled-components";
+import UseAuth from '@/lib/UseAuth'
+import { useRouter } from 'next/router'
+import React from 'react'
+import styled from 'styled-components'
 
 //@ts-ignore
 const Layout = (props) => {
-  const router = useRouter();
-  const { user } = UseAuth();
+  const router = useRouter()
+  const { user } = UseAuth()
+  console.log('user', user)
 
-  if (user.id && user.isVerified) {
-    router.push("/dashboard/cuotas");
-    return;
-  } else if (user.id) {
-    router.push("/dashboard/verify");
-    return;
-  }
+  // if (user.id && user.isVerified) {
+  //   router.push("/dashboard/cuotas");
+  //   return;
+  // } else if (user.id) {
+  //   router.push("/dashboard/verify");
+  //   return;
+  // }
 
   const childAry = Array.isArray(props.children)
     ? [...props.children]
-    : [props.children];
+    : [props.children]
 
   if (router.isFallback) {
-    return <h1>Data is loading</h1>;
+    return <h1>Data is loading</h1>
   }
 
   return (
@@ -33,11 +34,11 @@ const Layout = (props) => {
       </div>
     </div>
   )
-};
+}
 
-export default Layout;
+export default Layout
 
 const LayoutComponent = styled.div`
   margin: 100px 10%;
   text-align: center;
-`;
+`
