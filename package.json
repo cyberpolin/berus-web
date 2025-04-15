@@ -3,11 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "local-dev": "npx concurrently \"npm run ssl\" \"npm run local\"",
+    "ssl": "npx local-ssl-proxy --key local.${ENV}.colonus.lat-key.pem --cert local.${ENV}.colonus.lat.pem --source 3400 --target 3001",
+    "local": "PORT=3001 next dev",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "ssl": "npx local-ssl-proxy --key local.c7.altozanotabasco.com-key.pem --cert local.c7.altozanotabasco.com.pem --source 3400 --target 3000"
+    "lint": "next lint"
   },
   "dependencies": {
     "@apollo/client": "^3.7.16",

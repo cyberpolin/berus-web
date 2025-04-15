@@ -25,10 +25,7 @@ export default function () {
   const [loginMutation, { data, loading, error }] = useMutation(LOG_IN, {
     refetchQueries: [IS_LOGGED],
   })
-  const [signUpMutation, signUpMutationData] = useMutation(TEMP_CREATE_USER, {
-    refetchQueries: [IS_LOGGED],
-  })
-
+  console.log('>>>', { data, loading, error })
   const [isUser, { data: haveUser, error: isUserError }] = useLazyQuery(IS_USER)
 
   const delay = useRef()
@@ -62,6 +59,7 @@ export default function () {
               ...variables,
               email: variables.email.replace(' ', ''),
             }
+            console.log('cleanvars', cleanVars)
             await loginMutation({ variables: cleanVars })
           }}
         >

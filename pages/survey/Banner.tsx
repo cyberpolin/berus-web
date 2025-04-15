@@ -7,12 +7,12 @@ const Banner = () => {
   const { data: { surveys } = {} } = useQuery(GET_SURVEY_RECENT)
   const { data: { votes } = {} } = useQuery(GET_VOTE, {
     variables: {
-      survey: surveys?.[0].id,
+      survey: surveys?.[0]?.id,
       user: user?.user?.id,
     },
   })
   // GET_SURVEY_RECENT
-  if (surveys?.[0].state === 'ACTIVE' && !votes?.[0]) {
+  if (surveys?.[0]?.state === 'ACTIVE' && !votes?.[0]) {
     return (
       <div
         className="m-4 mb-4 cursor-pointer rounded-lg bg-blue-50 p-4 text-sm text-blue-800 transition-all hover:shadow-lg dark:bg-gray-800 dark:text-blue-400"
