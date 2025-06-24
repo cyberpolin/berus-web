@@ -1,11 +1,12 @@
 import { useQuery } from "@apollo/client"
 import dayjs from "dayjs"
 import "dayjs/locale/es"
-import { useState } from "react"
-import { GET_REPORTS } from "../pages/dashboard/queries.gql"
-import Vouchers from "./Vouchers"
+import { useEffect, useState } from 'react'
+import { GET_REPORTS } from '../pages/dashboard/queries.gql'
+import Details from './Details'
+import Vouchers from './Vouchers'
 
-dayjs.locale("es")
+dayjs.locale('es')
 
 const Reports = () => {
   const { data, loading, error } = useQuery(GET_REPORTS)
@@ -19,7 +20,11 @@ const Reports = () => {
     return data.reports
       .map(
         (
-          { fecha, reporteUrl }: { fecha: string; reporteUrl: string },
+          {
+            fecha,
+            reporteUrl,
+            details,
+          }: { fecha: string; reporteUrl: string; details?: string },
           i: number
         ) => (
           <div
@@ -32,14 +37,17 @@ const Reports = () => {
             >
               <a href={reporteUrl} target="blank">
                 <div className=" center rounded bg-slate-900 bg-opacity-75 p-4 text-3xl uppercase text-slate-300">
-                  {dayjs(fecha).format("MMMM")}
+                  {dayjs(fecha).format('MMMM')}
                 </div>
                 <div className="center text-l p-4 uppercase text-slate-400">
-                  {dayjs(fecha).format("YYYY")}
+                  {dayjs(fecha).format('YYYY')}
                 </div>
               </a>
             </div>
-            <a
+            <div className="p-4 text-slate-300">
+              <Details markdown={details || ''} />
+            </div>
+            {/* <a
               href="#"
               onClick={() => {
                 // @ts-ignore
@@ -47,7 +55,7 @@ const Reports = () => {
               }}
             >
               Comprobantes
-            </a>
+            </a> */}
 
             {
               // @ts-ignore

@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "local-dev": "npx concurrently \"npm run ssl\" \"npm run local\"",
-    "ssl": "npx local-ssl-proxy --key local.${ENV}.colonus.lat-key.pem --cert local.${ENV}.colonus.lat.pem --source 3400 --target 3001",
+    "ssl": "npx local-ssl-proxy --key local.staging.colonus.lat-key.pem --cert local.staging.colonus.lat.pem --source 3400 --target 3001",
     "local": "PORT=3001 next dev",
     "dev": "next dev",
     "build": "next build",
@@ -44,6 +44,9 @@
     "react-dom": "^18.2.0",
     "react-dropzone": "^14.2.3",
     "react-qr-svg": "^2.4.0",
+    "remark": "^15.0.1",
+    "remark-gfm": "^4.0.1",
+    "remark-html": "^16.0.1",
     "rsuite": "^5.35.1",
     "sass": "^1.57.1",
     "styled-components": "^5.3.9",

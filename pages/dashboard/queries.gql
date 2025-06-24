@@ -41,6 +41,7 @@ query GET_REPORTS {
   reports(where: {}) {
     fecha
     reporteUrl
+    details
   }
 }
 
