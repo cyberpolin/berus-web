@@ -7,6 +7,17 @@ export default function () {
   return (
     <>
       <div className="flex flex-col text-center  ">
+        <div
+          className="m-4 mb-4 cursor-pointer rounded-lg bg-blue-50 p-4 text-sm text-blue-800 transition-all hover:shadow-lg dark:bg-gray-800 dark:text-blue-400"
+          role="alert"
+          onClick={() => null}
+        >
+          <h2 className="font-semibold ">Aviso importante!</h2>
+          <p>
+            Plataforma unicamente informativa, estará activa hasta el 30 de
+            Septiembre del 2025
+          </p>
+        </div>
         <div className="flex-1">
           <Image
             src="/square-logo.png"
