@@ -25,7 +25,7 @@ export default function () {
   const [loginMutation, { data, loading, error }] = useMutation(LOG_IN, {
     refetchQueries: [IS_LOGGED],
   })
-  console.log('>>>', { data, loading, error })
+
   const [isUser, { data: haveUser, error: isUserError }] = useLazyQuery(IS_USER)
 
   const delay = useRef()

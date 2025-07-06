@@ -55,7 +55,7 @@ export default function PaymentUpload({
         setUploadError('Error al subir el archivo')
       }
     },
-    [payment.id, updatePayment]
+    [payment?.id, updatePayment]
   )
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
