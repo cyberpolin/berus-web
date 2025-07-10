@@ -24,35 +24,7 @@ const NLayout = (props: any) => {
   return (
     <div>
       <ProfileMenu user={user} show={ui.profile} />
-      <div
-        id="setting"
-        className={`${showSettings} right-2 top-20 block w-40  overflow-hidden rounded-md border-2 bg-white transition-opacity  dark:border-gray-600 dark:bg-gray-800`}
-      >
-        <Link href="#" className="block p-2 text-xs hover:bg-slate-200">
-          ...
-        </Link>
-        <Link
-          href="/admin/comon-areas"
-          className="block p-2 text-xs hover:bg-slate-200"
-        >
-          Areas Comunes
-        </Link>
-        <Link
-          href="/admin/tags"
-          className="block p-2 text-xs hover:bg-slate-200"
-        >
-          Add Tags
-        </Link>
-        <Link
-          href="/admin/facturacion"
-          className="block p-2 text-xs hover:bg-slate-200"
-        >
-          Facturación
-        </Link>
-        <Link href="#" className="block p-2 text-xs hover:bg-slate-200">
-          ...
-        </Link>
-      </div>
+
       <div>
         <nav className="m-0 mb-3 flex max-w-full flex-col border-gray-200 bg-white py-1 sm:flex-row dark:border-gray-600 dark:bg-gray-800">
           <div id="logo" className="w-full py-2 sm:w-2/6">
@@ -83,33 +55,8 @@ const NLayout = (props: any) => {
           </div>
           <div
             id="menu"
-            className={`${showMobile} w-full border-red-100 text-end sm:mx-2 sm:w-4/6 sm:w-max sm:py-2 `}
+            className={`${showMobile} w-full border-red-100 text-end sm:mx-2  sm:w-max sm:py-2 `}
           >
-            {user.isAdmin && (
-              <>
-                <Link
-                  className="block p-5 text-center text-sm hover:text-gray-800 hover:underline md:mt-0 md:inline-block dark:text-amber-50"
-                  href="/admin"
-                  key="/admin"
-                >
-                  Admin
-                </Link>
-                <Link
-                  className="block p-5 text-center text-sm hover:text-gray-800 hover:underline md:mt-0 md:inline-block dark:text-amber-50"
-                  href="/admin/properties"
-                  key="/admin/properties"
-                >
-                  Properties
-                </Link>
-                <Link
-                  className="block p-5 text-center text-sm hover:text-gray-800 hover:underline md:mt-0 md:inline-block dark:text-amber-50"
-                  href="/admin/surveys"
-                  key="/admin/surveys"
-                >
-                  Encuestas
-                </Link>
-              </>
-            )}
             <Link
               className="block p-5 text-center text-sm hover:text-gray-800 hover:underline md:mt-0 md:inline-block dark:text-amber-50"
               href="/dashboard/cuotas"
@@ -162,8 +109,8 @@ const NLayout = (props: any) => {
               width="30"
             />
 
-            <button
-              className="m-4 hidden transition-all hover:rotate-45 sm:inline-block"
+            <div
+              className="relative m-4 hidden transition-all sm:inline-block"
               onClick={ui.toggleSettings}
             >
               <svg
@@ -185,7 +132,67 @@ const NLayout = (props: any) => {
                   d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
                 />
               </svg>
-            </button>
+              <div
+                id="setting"
+                className={`${showSettings} absolute right-0 top-full z-50 mt-1 w-40 overflow-hidden rounded-md border-2 bg-white shadow-lg dark:border-gray-600 dark:bg-gray-800`}
+              >
+                <Link href="#" className="block p-2 text-xs hover:bg-slate-200">
+                  ...
+                </Link>
+                <Link
+                  href="/admin/comon-areas"
+                  className="block p-2 text-xs hover:bg-slate-200"
+                >
+                  Areas Comunes
+                </Link>
+                <Link
+                  href="/admin/tags"
+                  className="block p-2 text-xs hover:bg-slate-200"
+                >
+                  Add Tags
+                </Link>
+                <Link
+                  href="/admin/tags"
+                  className="block p-2 text-xs hover:bg-slate-200"
+                >
+                  Add Tags
+                </Link>
+                <Link
+                  href="/admin/facturacion"
+                  className="block p-2 text-xs hover:bg-slate-200"
+                >
+                  Facturación
+                </Link>
+                {user.admin && (
+                  <>
+                    <Link
+                      className="block p-2 text-xs hover:bg-slate-200"
+                      href="/admin"
+                      key="/admin"
+                    >
+                      Admin
+                    </Link>
+                    <Link
+                      className="block p-2 text-xs hover:bg-slate-200"
+                      href="/admin/properties"
+                      key="/admin/properties"
+                    >
+                      Properties
+                    </Link>
+                    <Link
+                      className="block p-2 text-xs hover:bg-slate-200"
+                      href="/admin/surveys"
+                      key="/admin/surveys"
+                    >
+                      Encuestas
+                    </Link>
+                  </>
+                )}
+                <Link href="#" className="block p-2 text-xs hover:bg-slate-200">
+                  ...
+                </Link>
+              </div>
+            </div>
           </div>
         </nav>
         <div className="mx-auto max-w-full overflow-hidden">
