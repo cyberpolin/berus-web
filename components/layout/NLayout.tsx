@@ -152,10 +152,10 @@ const NLayout = (props: any) => {
                   Add Tags
                 </Link>
                 <Link
-                  href="/admin/tags"
+                  href="/admin/overdue"
                   className="block p-2 text-xs hover:bg-slate-200"
                 >
-                  Add Tags
+                  Lista de adeudos
                 </Link>
                 <Link
                   href="/admin/facturacion"
