@@ -142,8 +142,8 @@ mutation APROVE_PAYMENT($id: ID) {
   }
 }
 
-mutation UPDATE_PAYMENT_ADMIN($id: ID!, $status:PaymentStatusType!){
-  updatePayment(where:{id:$id}, data:{status:$status}){
+mutation UPDATE_PAYMENT_ADMIN($id: ID!, $status: PaymentStatusType!) {
+  updatePayment(where: { id: $id }, data: { status: $status }) {
     status
     id
   }
@@ -173,11 +173,8 @@ mutation DELETE_PAYMENT($id: ID!) {
   }
 }
 
-mutation DELETE_PERMANENT_PAYMENT($paymentId: ID!){
-  deletePayment(where:{
-    id:$paymentId
-  })
-  {
+mutation DELETE_PERMANENT_PAYMENT($paymentId: ID!) {
+  deletePayment(where: { id: $paymentId }) {
     id
   }
 }
@@ -228,4 +225,27 @@ query CREATE_ALL_PAYMENTS {
 
 query MAKE_IT_DUE {
   makeItDue
+}
+
+query GET_OVERDUE_PROPERTIES {
+  properties(
+    # where: { payments: { some: { status: { equals: due } } } }
+    orderBy: { square: desc }
+  ) {
+    id
+    square
+    lot
+    name
+    owner {
+      id
+      name
+      phone
+      email
+    }
+    payments(where: { status: { equals: due } }, orderBy: { dueAt: asc }) {
+      id
+      dueAt
+      dueAmount
+    }
+  }
 }
