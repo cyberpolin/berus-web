@@ -136,7 +136,7 @@ const NLayout = (props: any) => {
                 id="setting"
                 className={`${showSettings} absolute right-0 top-full z-50 mt-1 w-40 overflow-hidden rounded-md border-2 bg-white shadow-lg dark:border-gray-600 dark:bg-gray-800`}
               >
-                <Link href="#" className="block p-2 text-xs hover:bg-slate-200">
+                {/* <Link href="#" className="block p-2 text-xs hover:bg-slate-200">
                   ...
                 </Link>
                 <Link
@@ -150,19 +150,19 @@ const NLayout = (props: any) => {
                   className="block p-2 text-xs hover:bg-slate-200"
                 >
                   Add Tags
-                </Link>
+                </Link> */}
                 <Link
                   href="/admin/overdue"
                   className="block p-2 text-xs hover:bg-slate-200"
                 >
                   Lista de adeudos
                 </Link>
-                <Link
+                {/* <Link
                   href="/admin/facturacion"
                   className="block p-2 text-xs hover:bg-slate-200"
                 >
                   Facturación
-                </Link>
+                </Link> */}
                 {user.admin && (
                   <>
                     <Link
