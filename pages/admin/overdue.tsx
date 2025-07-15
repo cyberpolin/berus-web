@@ -1,11 +1,15 @@
 import Layout from '@/components/layout/NLayout'
 import Table from '@/components/General/Table'
+import { useEffect, useState } from 'react'
 import { useQuery } from '@apollo/client'
 import { GET_OVERDUE_PROPERTIES } from './adminQueries.gql'
 import Link from 'next/link'
 import * as XLSX from 'xlsx'
 import { saveAs } from 'file-saver'
 import _ from 'lodash'
+import MonthSelect from '@/components/MonthSelect'
+import { months } from '../../lib/utils/date'
+import dayjs from 'dayjs'
 
 type Property = {
   id: string
@@ -21,6 +25,10 @@ type Property = {
 }
 
 const OverdueProperties = () => {
+  const today = dayjs()
+  const [selectedMonth, setSelectedMonth] = useState(
+    today.startOf('month').toISOString()
+  )
   const calculateTotalDebt = (
     payments: Array<{ dueAmount: string | null | undefined }>
   ) =>
@@ -29,7 +37,11 @@ const OverdueProperties = () => {
       0
     )
 
-  const { data: { properties } = {} } = useQuery(GET_OVERDUE_PROPERTIES)
+  const { data: { properties } = {} } = useQuery(GET_OVERDUE_PROPERTIES, {
+    variables: {
+      CreatedAt: selectedMonth,
+    },
+  })
 
   const propertiesFlat =
     properties?.map(
@@ -83,6 +95,11 @@ const OverdueProperties = () => {
       <div className="mx-auto flex w-full max-w-[1400px] flex-col px-4">
         <div className="mb-4 flex items-center justify-between">
           <h2 className="font-semi-bold text-2xl">Propiedades con adeudos</h2>
+          <MonthSelect
+            months={months}
+            selectedMonth={selectedMonth}
+            setSelectedMonth={setSelectedMonth}
+          />
           <button
             onClick={exportToExcel}
             className="flex items-center gap-2 rounded bg-green-600 px-4 py-2 font-medium text-white hover:bg-green-700"
@@ -128,7 +145,29 @@ const OverdueProperties = () => {
                   <td className="px-6 py-4">{property.square}</td>
                   <td className="px-6 py-4">{property.lot}</td>
                   <td className="px-6 py-4">
-                    {property.owner || 'No registrado'}
+                    {property.owner ? (
+                      <div className="flex items-center gap-2">
+                        <Link href={`/admin/user/${property.ownerId}`}>
+                          <svg
+                            className="tex-black-500 h-5 w-5  hover:text-green-400 dark:text-white"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+                            />
+                          </svg>
+                        </Link>
+                        {property.owner}
+                      </div>
+                    ) : (
+                      '--'
+                    )}
                   </td>
                   <td className="px-6 py-4">{property.ownerPhone || '--'}</td>
                   <td className="px-6 py-4">{property.ownerEmail || '--'}</td>
@@ -137,7 +176,7 @@ const OverdueProperties = () => {
                       href={`/dashboard/cuotas?pretend=${property.ownerId}`}
                     >
                       <svg
-                        className="h-6 w-6 dark:text-white"
+                        className="tex-black-500 h-5 w-5  hover:text-green-400 dark:text-white"
                         fill="none"
                         stroke="currentColor"
                         strokeWidth="1.5"

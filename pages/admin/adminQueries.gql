@@ -227,11 +227,8 @@ query MAKE_IT_DUE {
   makeItDue
 }
 
-query GET_OVERDUE_PROPERTIES {
-  properties(
-    # where: { payments: { some: { status: { equals: due } } } }
-    orderBy: { square: desc }
-  ) {
+query GET_OVERDUE_PROPERTIES($CreatedAt: DateTime) {
+  properties(orderBy: { square: desc }) {
     id
     square
     lot
@@ -242,10 +239,44 @@ query GET_OVERDUE_PROPERTIES {
       phone
       email
     }
-    payments(where: { status: { equals: due } }, orderBy: { dueAt: asc }) {
+    payments(
+      where: { status: { equals: due }, AND: [{ dueAt: { lte: $CreatedAt } }] }
+      orderBy: { dueAt: asc }
+    ) {
       id
       dueAt
       dueAmount
     }
+  }
+}
+
+query GET_USER($id: ID!) {
+  user(where: { id: $id }) {
+    id
+    name
+    email
+    phone
+    isAdmin
+    isSecurity
+    isProvider
+    providerType
+    needsBill
+    isVerified
+    properties {
+      id
+      name
+    }
+  }
+}
+
+mutation CREATE_USER($data: UserCreateInput!) {
+  createUser(data: $data) {
+    id
+  }
+}
+
+mutation UPDATE_USER_ADMIN($id: ID!, $data: UserUpdateInput!) {
+  updateUser(where: { id: $id }, data: $data) {
+    id
   }
 }

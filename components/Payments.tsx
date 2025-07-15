@@ -299,7 +299,7 @@ const Payments = ({ user }: any) => {
     refetchQueries: [GET_PAYMENTS],
     fetchPolicy: 'cache-and-network',
     onCompleted: (data) => {
-      // console.log(data)
+      console.log('data', data)
     },
   })
 
