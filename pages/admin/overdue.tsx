@@ -1,7 +1,7 @@
 import Layout from '@/components/layout/NLayout'
 import Table from '@/components/General/Table'
 import { useEffect, useState } from 'react'
-import { useQuery } from '@apollo/client'
+import { useLazyQuery } from '@apollo/client'
 import { GET_OVERDUE_PROPERTIES } from './adminQueries.gql'
 import Link from 'next/link'
 import * as XLSX from 'xlsx'
@@ -29,6 +29,7 @@ const OverdueProperties = () => {
   const [selectedMonth, setSelectedMonth] = useState(
     today.startOf('month').toISOString()
   )
+
   const calculateTotalDebt = (
     payments: Array<{ dueAmount: string | null | undefined }>
   ) =>
@@ -37,11 +38,16 @@ const OverdueProperties = () => {
       0
     )
 
-  const { data: { properties } = {} } = useQuery(GET_OVERDUE_PROPERTIES, {
-    variables: {
-      CreatedAt: selectedMonth,
-    },
-  })
+  const [getOverdueProperties, { data }] = useLazyQuery(
+    GET_OVERDUE_PROPERTIES,
+    {
+      fetchPolicy: 'network-only',
+      variables: {
+        dueAt: selectedMonth,
+      },
+    }
+  )
+  const properties = data?.properties || []
 
   const propertiesFlat =
     properties?.map(
@@ -89,6 +95,10 @@ const OverdueProperties = () => {
 
     saveAs(data, `Adeudos_${new Date().toISOString().split('T')[0]}.xlsx`)
   }
+
+  useEffect(() => {
+    getOverdueProperties()
+  }, [selectedMonth])
 
   return (
     <Layout>

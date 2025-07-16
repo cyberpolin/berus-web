@@ -227,7 +227,7 @@ query MAKE_IT_DUE {
   makeItDue
 }
 
-query GET_OVERDUE_PROPERTIES($CreatedAt: DateTime) {
+query GET_OVERDUE_PROPERTIES($dueAt: DateTime) {
   properties(orderBy: { square: desc }) {
     id
     square
@@ -240,7 +240,7 @@ query GET_OVERDUE_PROPERTIES($CreatedAt: DateTime) {
       email
     }
     payments(
-      where: { status: { equals: due }, AND: [{ dueAt: { lte: $CreatedAt } }] }
+      where: { status: { equals: due }, AND: [{ dueAt: { lte: $dueAt } }] }
       orderBy: { dueAt: asc }
     ) {
       id

@@ -63,6 +63,7 @@ const UserForm = () => {
   })
 
   const [updateUser] = useMutation(UPDATE_USER_ADMIN, {
+    refetchQueries: [GET_OVERDUE_PROPERTIES],
     onCompleted: () => {
       router.back()
     },
@@ -70,7 +71,6 @@ const UserForm = () => {
       setError(err.message)
       setIsSubmitting(false)
     },
-    refetchQueries: [GET_OVERDUE_PROPERTIES],
   })
 
   const handleChange = (e) => {
