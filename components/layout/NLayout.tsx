@@ -163,6 +163,18 @@ const NLayout = (props: any) => {
                 >
                   Facturación
                 </Link>
+                <Link
+                  href="/provider/new"
+                  className="block p-2 text-xs hover:bg-slate-200"
+                >
+                  agregar factura
+                </Link>
+                <Link
+                  href="/provider/provider-payments"
+                  className="block p-2 text-xs hover:bg-slate-200"
+                >
+                  pagos proveedores
+                </Link>
                 {user.admin && (
                   <>
                     <Link

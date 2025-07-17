@@ -1,0 +1,41 @@
+query GET_PROVIDERS_PAYMENTS($id: ID) {
+  providerPayments(where: { provider: { id: { equals: $id } } }) {
+    id
+    status
+    dueAt
+    amountWithTax
+    concept
+    image {
+      publicUrl
+    }
+  }
+}
+query GET_PROVIDER_PAYMENT($id: ID!) {
+  providerPayment(where: { id: $id }) {
+    id
+    status
+    dueAt
+    amountWithTax
+    concept
+    image {
+      publicUrl
+    }
+    provider {
+      id
+    }
+  }
+}
+mutation UPDATE_PROVIDER_PAYMENT($id: ID!, $data: ProviderPaymentUpdateInput!) {
+  updateProviderPayment(where: { id: $id }, data: $data) {
+    id
+    image {
+      publicUrl
+    }
+  }
+}
+
+mutation CREATE_PROVIDER_PAYMENT($data: ProviderPaymentCreateInput!) {
+  createProviderPayment(data: $data) {
+    id
+  }
+}
