@@ -57,28 +57,45 @@ const NLayout = (props: any) => {
             id="menu"
             className={`${showMobile} w-full border-red-100 text-end sm:mx-2  sm:w-max sm:py-2 `}
           >
-            <Link
-              className="block p-5 text-center text-sm hover:text-gray-800 hover:underline md:mt-0 md:inline-block dark:text-amber-50"
-              href="/dashboard/cuotas"
-              key="/dashboard/cuotas"
-            >
-              Cuotas
-            </Link>
-            <Link
-              className="block p-5 text-center text-sm hover:text-gray-800 hover:underline md:mt-0 md:inline-block dark:text-amber-50"
-              href="/dashboard/descargables"
-              key="/dashboard/descargables"
-            >
-              Descargables
-            </Link>
-            <Link
-              className="block p-5 text-center text-sm hover:text-gray-800 hover:underline md:mt-0 md:inline-block dark:text-amber-50"
-              href="/survey/new"
-              key="/survey"
-            >
-              Encuesta
-            </Link>
-            {/* <Link
+            {user.isProvider ? (
+              <>
+                <Link
+                  href="/provider/new"
+                  className="block p-5 text-center text-sm hover:text-gray-800 hover:underline md:mt-0 md:inline-block dark:text-amber-50"
+                >
+                  agregar factura
+                </Link>
+                <Link
+                  href="/provider/provider-payments"
+                  className="block p-5 text-center text-sm hover:text-gray-800 hover:underline md:mt-0 md:inline-block dark:text-amber-50"
+                >
+                  pagos proveedores
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link
+                  className="block p-5 text-center text-sm hover:text-gray-800 hover:underline md:mt-0 md:inline-block dark:text-amber-50"
+                  href="/dashboard/cuotas"
+                  key="/dashboard/cuotas"
+                >
+                  Cuotas
+                </Link>
+                <Link
+                  className="block p-5 text-center text-sm hover:text-gray-800 hover:underline md:mt-0 md:inline-block dark:text-amber-50"
+                  href="/dashboard/descargables"
+                  key="/dashboard/descargables"
+                >
+                  Descargables
+                </Link>
+                <Link
+                  className="block p-5 text-center text-sm hover:text-gray-800 hover:underline md:mt-0 md:inline-block dark:text-amber-50"
+                  href="/survey/new"
+                  key="/survey"
+                >
+                  Encuesta
+                </Link>
+                {/* <Link
               className="block p-5 text-center text-sm hover:text-gray-800 hover:underline dark:text-amber-50 md:mt-0 md:inline-block"
               href="/dashboard/areas"
               key="/dashboard/areas"
@@ -92,6 +109,8 @@ const NLayout = (props: any) => {
               >
               Card
             </Link> */}
+              </>
+            )}
             <Link
               className="block p-5 text-center text-sm hover:text-gray-800 hover:underline md:mt-0 md:inline-block dark:text-amber-50"
               href="/logout"
@@ -163,19 +182,8 @@ const NLayout = (props: any) => {
                 >
                   Facturación
                 </Link>
-                <Link
-                  href="/provider/new"
-                  className="block p-2 text-xs hover:bg-slate-200"
-                >
-                  agregar factura
-                </Link>
-                <Link
-                  href="/provider/provider-payments"
-                  className="block p-2 text-xs hover:bg-slate-200"
-                >
-                  pagos proveedores
-                </Link>
-                {user.admin && (
+
+                {user.isAdmin && (
                   <>
                     <Link
                       className="block p-2 text-xs hover:bg-slate-200"
@@ -197,6 +205,18 @@ const NLayout = (props: any) => {
                       key="/admin/surveys"
                     >
                       Encuestas
+                    </Link>
+                    <Link
+                      href="/provider/new"
+                      className="block p-2 text-xs hover:bg-slate-200"
+                    >
+                      agregar factura
+                    </Link>
+                    <Link
+                      href="/provider/provider-payments"
+                      className="block p-2 text-xs hover:bg-slate-200"
+                    >
+                      pagos proveedores
                     </Link>
                   </>
                 )}

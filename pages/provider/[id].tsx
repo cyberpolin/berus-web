@@ -5,7 +5,11 @@ import Drop from '@/components/layout/Drop'
 import Layout from '@/components/layout/NLayout'
 import { useFormik } from 'formik'
 import * as yup from 'yup'
-import { CREATE_PROVIDER_PAYMENT, UPDATE_PROVIDER_PAYMENT } from './queries.gql'
+import {
+  CREATE_PROVIDER_PAYMENT,
+  UPDATE_PROVIDER_PAYMENT,
+  GET_PROVIDERS_PAYMENTS,
+} from './queries.gql'
 import { useMutation, useQuery } from '@apollo/client'
 import { GET_PROVIDER_PAYMENT } from './queries.gql'
 import { useRouter } from 'next/router'
@@ -24,17 +28,26 @@ const initialValues = {
 }
 
 const InvoiceForm = () => {
+  const router = useRouter()
   const [updateProviderPayment, { loading: updateLoading }] = useMutation(
-    UPDATE_PROVIDER_PAYMENT
+    UPDATE_PROVIDER_PAYMENT,
+    {
+      refetchQueries: [{ query: GET_PROVIDERS_PAYMENTS }],
+      onCompleted: () => {
+        router.push('//provider/provider-payments')
+      },
+    }
   )
   const [createProviderPayment, { loading: createLoading }] = useMutation(
-    CREATE_PROVIDER_PAYMENT
+    CREATE_PROVIDER_PAYMENT,
+    {
+      refetchQueries: [{ query: GET_PROVIDERS_PAYMENTS }],
+    }
   )
   const { user } = UseAuth()
   const { id } = useRouter().query
   const [selectedImage, setSelectedImage] = useState<File | null>(null)
   const [imagePreview, setImagePreview] = useState<string | null>(null)
-  console.log('user', user.id)
   const {
     data,
     loading: queryLoading,
@@ -42,6 +55,9 @@ const InvoiceForm = () => {
   } = useQuery(GET_PROVIDER_PAYMENT, {
     variables: { id },
     skip: id === 'new',
+    onCompleted: (data) => {
+      setImagePreview(data?.providerPayment?.image?.publicUrl)
+    },
   })
 
   // Reset image preview when selectedImage changes
@@ -54,17 +70,15 @@ const InvoiceForm = () => {
   }, [imagePreview])
 
   const handleImageDrop = (file: File) => {
-    setSelectedImage(file)
     setImagePreview(URL.createObjectURL(file))
   }
 
   const onSubmit = async (variables: any) => {
     try {
       const input = {
-        ...variables,
         amountWithTax: variables.amountWithTax.toString(),
         dueAt: new Date(variables.dueAt).toISOString(),
-        provider: { connect: { id: user.id } },
+        concept: variables.concept,
       }
 
       console.log('input', input)
@@ -79,6 +93,7 @@ const InvoiceForm = () => {
           variables: {
             data: {
               ...input,
+              provider: { connect: { id: user.id } },
               image: selectedImage,
             },
           },
@@ -90,6 +105,7 @@ const InvoiceForm = () => {
             id,
             data: {
               ...input,
+              // ...(selectedImage && { image: selectedImage }),
               image: selectedImage,
             },
           },
