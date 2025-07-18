@@ -70,6 +70,7 @@ const InvoiceForm = () => {
   }, [imagePreview])
 
   const handleImageDrop = (file: File) => {
+    setSelectedImage(file)
     setImagePreview(URL.createObjectURL(file))
   }
 
@@ -105,15 +106,14 @@ const InvoiceForm = () => {
             id,
             data: {
               ...input,
-              // ...(selectedImage && { image: selectedImage }),
-              image: selectedImage,
+              ...(selectedImage && { image: selectedImage }),
             },
           },
           context,
         })
       }
 
-      // Reset después de enviar
+      // Reset
       setSelectedImage(null)
       setImagePreview(null)
       values.amountWithTax = ''

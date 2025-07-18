@@ -48,15 +48,14 @@ const ResidentTenantsForm = () => {
       validationSchema: schemaProvider,
       enableReinitialize: true,
       onSubmit: async (variables, { resetForm }) => {
+        const { confirmPassword, ...sendData } = variables
         await create_provider({
           variables: {
-            name: variables.name,
-            phone: variables.phone,
-            email: variables.email,
-            password: variables.password,
-            isProvider: true,
-            isVerified: true,
-            providerType: variables.providerType,
+            data: {
+              ...sendData,
+              isProvider: true,
+              isVerified: true,
+            },
           },
         })
         if (error) {

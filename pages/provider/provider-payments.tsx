@@ -132,12 +132,16 @@ const PaymentList = () => {
                           </button>
                         </>
                       ) : (
-                        <button
-                          className="mr-2 rounded bg-emerald-500 px-3 py-1 text-white hover:bg-green-600"
-                          onClick={() => router.push(`/provider/${payment.id}`)}
-                        >
-                          Editar &#9998;
-                        </button>
+                        payment.status === 'onTime' && (
+                          <button
+                            className="mr-2 rounded bg-emerald-500 px-3 py-1 text-white hover:bg-green-600"
+                            onClick={() =>
+                              router.push(`/provider/${payment.id}`)
+                            }
+                          >
+                            Editar &#9998;
+                          </button>
+                        )
                       )}
                     </div>
                   </td>

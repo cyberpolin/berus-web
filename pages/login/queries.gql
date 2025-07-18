@@ -144,22 +144,8 @@ query GET_PAYMENTS($id: ID!) {
   }
 }
 
-mutation CREATE_PROVIDER(
-  $name: String!
-  $phone: String!
-  $email: String!
-  $password: String!
-  $isProvider: Boolean
-) {
-  createUser(
-    data: {
-      name: $name
-      phone: $phone
-      email: $email
-      password: $password
-      isProvider: $isProvider
-    }
-  ) {
+mutation CREATE_PROVIDER($data: UserCreateInput!) {
+  createUser(data: $data) {
     name
   }
 }
