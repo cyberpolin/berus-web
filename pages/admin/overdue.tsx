@@ -4,12 +4,11 @@ import { useEffect, useState } from 'react'
 import { useLazyQuery } from '@apollo/client'
 import { GET_OVERDUE_PROPERTIES } from './adminQueries.gql'
 import Link from 'next/link'
-import * as XLSX from 'xlsx'
-import { saveAs } from 'file-saver'
 import _ from 'lodash'
 import MonthSelect from '@/components/MonthSelect'
 import { months } from '../../lib/utils/date'
 import dayjs from 'dayjs'
+import { utils, writeFile } from 'xlsx-js-style'
 
 type Property = {
   id: string
@@ -70,30 +69,155 @@ const OverdueProperties = () => {
     ) || []
 
   const exportToExcel = () => {
-    const excelData = propertiesFlat.map((property: Property) => ({
-      Manzana: property.square,
-      Lote: property.lot,
-      Propietario: property.owner,
-      Teléfono: property.ownerPhone,
-      Email: property.ownerEmail,
-      'Meses adeudados': property.dueMonths,
-      'Total adeudado (MXN)': property.totalDebt.toFixed(2),
-      URL: window.location.origin + `/dashboard/cuotas?pretend=${property.id}`,
-    }))
+    // 1. Obtener todos los años distintos de los pagos
+    const allYears = Array.from(
+      new Set(
+        properties.flatMap(
+          (property) =>
+            property.payments?.map((payment) => dayjs(payment.dueAt).year()) ||
+            []
+        )
+      )
+    ).sort()
 
-    const worksheet = XLSX.utils.json_to_sheet(excelData)
-    const workbook = XLSX.utils.book_new()
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Adeudos')
+    if (allYears.length === 0) {
+      allYears.push(dayjs().year())
+    }
 
-    const excelBuffer = XLSX.write(workbook, {
-      bookType: 'xlsx',
-      type: 'array',
+    const wb = utils.book_new()
+
+    allYears.forEach((year) => {
+      const propertiesForYear = properties.map((property) => {
+        const payments =
+          property.payments?.filter(
+            (payment) => dayjs(payment.dueAt).year() === year
+          ) || []
+
+        const paymentsByMonth: Record<string, any> = {}
+        payments.forEach((payment) => {
+          const month = dayjs(payment.dueAt).locale('es').format('MMMM')
+          paymentsByMonth[month] = payment
+        })
+
+        return {
+          ...property,
+          payments,
+          paymentsByMonth,
+        }
+      })
+
+      const ws = utils.aoa_to_sheet([])
+      const sheetName = `Pagos ${year}`
+
+      const headerStyle = {
+        fill: { fgColor: { rgb: '4472C4' } },
+        font: { bold: true, color: { rgb: 'FFFFFF' } },
+        alignment: { horizontal: 'center' },
+      }
+
+      const subHeaderStyle = {
+        fill: { fgColor: { rgb: '8EA9DB' } },
+        font: { bold: true },
+        alignment: { horizontal: 'center' },
+      }
+
+      const months = Array.from({ length: 12 }, (_, i) =>
+        dayjs().month(i).locale('es').format('MMMM')
+      )
+
+      const headers = [
+        [
+          { v: 'Teléfono', t: 's', s: headerStyle },
+          { v: 'Propietario', t: 's', s: headerStyle },
+          { v: 'Manzana', t: 's', s: headerStyle },
+          { v: 'Lote', t: 's', s: headerStyle },
+        ],
+      ]
+
+      months.forEach((month) => {
+        headers[0].push(
+          { v: month, t: 's', s: headerStyle },
+          { v: '', t: 's', s: headerStyle },
+          { v: '', t: 's', s: headerStyle },
+          { v: '', t: 's', s: headerStyle },
+          { v: '', t: 's', s: headerStyle }
+        )
+      })
+
+      const subHeaders = [
+        [
+          '',
+          '',
+          '',
+          '',
+          ...months.flatMap(() => [
+            'Importe',
+            'Fecha',
+            'Banco emisor',
+            'Número rastreo',
+            'Observaciones',
+          ]),
+        ],
+      ]
+
+      subHeaders[0].forEach((_, i) => {
+        if (i >= 4) {
+          subHeaders[0][i] = {
+            v: subHeaders[0][i],
+            t: 's',
+            s: subHeaderStyle,
+          }
+        }
+      })
+
+      const merges = []
+      let colIndex = 4
+
+      months.forEach(() => {
+        merges.push({ s: { r: 0, c: colIndex }, e: { r: 0, c: colIndex + 4 } })
+        colIndex += 5
+      })
+
+      const dataRows = propertiesForYear.map((property) => {
+        const row = [
+          property.owner?.phone || '',
+          property.owner?.name || '',
+          property.square,
+          property.lot,
+        ]
+
+        months.forEach((month) => {
+          const payment = property.paymentsByMonth[month]
+          row.push(
+            payment?.dueAmount || '0',
+            payment ? dayjs(payment.dueAt).format('DD/MM/YYYY') : '',
+            '',
+            '',
+            ''
+          )
+        })
+
+        return row
+      })
+
+      utils.sheet_add_aoa(ws, headers, { origin: 'A1' })
+      utils.sheet_add_aoa(ws, subHeaders, { origin: 'A2' })
+      utils.sheet_add_aoa(ws, dataRows, { origin: 'A3' })
+
+      ws['!merges'] = merges
+      ws['!cols'] = [
+        { wch: 15 },
+        { wch: 25 },
+        { wch: 10 },
+        { wch: 10 },
+        ...Array(months.length * 5).fill({ wch: 15 }),
+      ]
+      ws['!freeze'] = { xSplit: 4, ySplit: 2 }
+
+      utils.book_append_sheet(wb, ws, sheetName)
     })
-    const data = new Blob([excelBuffer], {
-      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-    })
 
-    saveAs(data, `Adeudos_${new Date().toISOString().split('T')[0]}.xlsx`)
+    writeFile(wb, `Pagos_por_año_${dayjs().format('YYYY-MM-DD')}.xlsx`)
   }
 
   useEffect(() => {
