@@ -153,7 +153,7 @@ const NLayout = (props: any) => {
                 </Link> */}
                 <Link
                   href="/admin/overdue"
-                  className="block p-2 text-xs hover:bg-slate-200"
+                  className="block p-2 text-xs hover:bg-slate-200 hover:text-gray-700 dark:text-white"
                 >
                   Lista de adeudos
                 </Link>

@@ -69,7 +69,6 @@ const OverdueProperties = () => {
     ) || []
 
   const exportToExcel = () => {
-    // 1. Obtener todos los años distintos de los pagos
     const allYears = Array.from(
       new Set(
         properties.flatMap(
@@ -283,7 +282,7 @@ const OverdueProperties = () => {
                       <div className="flex items-center gap-2">
                         <Link href={`/admin/user/${property.ownerId}`}>
                           <svg
-                            className="tex-black-500 h-5 w-5  hover:text-green-400 dark:text-white"
+                            className="h-5 w-5 text-black hover:text-green-400"
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
@@ -310,7 +309,7 @@ const OverdueProperties = () => {
                       href={`/dashboard/cuotas?pretend=${property.ownerId}`}
                     >
                       <svg
-                        className="tex-black-500 h-5 w-5  hover:text-green-400 dark:text-white"
+                        className="h-5 w-5 text-black hover:text-green-400"
                         fill="none"
                         stroke="currentColor"
                         strokeWidth="1.5"
