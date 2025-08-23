@@ -1,5 +1,6 @@
 const Input = ({
   extraStyles,
+  extraStylesContainer,
   typeInput,
   placeholder,
   name,
@@ -10,6 +11,7 @@ const Input = ({
   error,
 }: {
   extraStyles?: string
+  extraStylesContainer?: string
   typeInput?: string
   placeholder?: string
   name?: string
@@ -19,7 +21,7 @@ const Input = ({
   onChange?: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>
   error?: any
 }) => (
-  <div className="w-full">
+  <div className={`${extraStylesContainer} w-full`}>
     <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-300">
       {label ? label : name}
     </label>
